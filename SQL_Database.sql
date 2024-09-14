@@ -7,7 +7,7 @@ CREATE TABLE `Information` (
 	`Job` VARCHAR(255),
 	`Department` VARCHAR(255),
 	`Address` VARCHAR(255),
-	`Medical_History` LONGTEXT(65535),
+	`Medical_History` LONGTEXT,
 	PRIMARY KEY(`CCCD`)
 );
 
@@ -51,12 +51,12 @@ CREATE TABLE `Receipt` (
 	`ID_Doctor` VARCHAR(255),
 	`Place` VARCHAR(255),
 	`Date` DATETIME,
-	`Reason` LONGTEXT(65535),
+	`Reason` LONGTEXT,
 	`Diagnosis` VARCHAR(255),
 	`Treat` VARCHAR(255),
 	`Url_Result` VARCHAR(255),
 	`ID_Bill` BIGINT,
-	`Remind` LONGTEXT(65535),
+	`Remind` LONGTEXT,
 	`Date_Visit` DATETIME,
 	`Blood_Pressure` INTEGER,
 	`Weight` INTEGER,
