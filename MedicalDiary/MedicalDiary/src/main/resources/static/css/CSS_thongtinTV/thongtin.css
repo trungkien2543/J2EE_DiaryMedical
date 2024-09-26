@@ -1,0 +1,30 @@
+/* CSS_thongtinTV/thongtin.css */
+
+.form-group label {
+    display: inline-block;
+    width: 100px; /* Điều chỉnh chiều rộng của label tùy theo nhu cầu */
+    margin-right: 10px; /* Khoảng cách giữa label và input */
+}
+
+.form-group input {
+    display: inline-block;
+    width: calc(60%); /* Chiều rộng của input sẽ lấp đầy phần còn lại của form group */
+}
+
+.form-group .change_pass {
+    display: inline-block;
+
+}
+
+.tt_vp {
+    display: flex; /* Sử dụng flexbox để căn chỉnh phần tử con */
+    align-items: center; /* Căn chỉnh theo chiều dọc */
+    margin-bottom: 20px; /* Khoảng cách dưới */
+}
+
+.tt_vp p {
+    margin: 0; /* Loại bỏ margin mặc định của các phần tử p */
+    margin-right: 10px;
+}
+
+}

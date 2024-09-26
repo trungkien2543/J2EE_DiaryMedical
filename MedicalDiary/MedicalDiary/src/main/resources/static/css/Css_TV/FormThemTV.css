@@ -1,0 +1,23 @@
+.add-form {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #ffffff;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+
+    /* Thêm các thuộc tính sau để căn giữa theo chiều ngang và chiều dọc */
+        width: 400px;
+        max-width: 90%;
+}
+.add-form h2{
+    text-align: center;
+}
+.add-form #personType{
+    opacity: 0.7;
+}

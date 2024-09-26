@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>SB Admin 2 - Tables</title>
+
+    <!-- Custom fonts for this template -->
+    <link href="../vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link
+            href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+            rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="../css/sb-admin-2.min.css" rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous">
+
+
+    <!-- Custom styles for this page -->
+    <link href="../vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
+</head>
+
+<body id="page-top">
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+
+    <!-- Sidebar -->
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+        <!-- Sidebar - Brand -->
+        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="#">
+            <div class="sidebar-brand-icon rotate-n-15">
+                <i class="fas fa-laugh-wink"></i>
+            </div>
+            <div class="sidebar-brand-text mx-3">Quản Lý Thành Viên </div>
+        </a>
+
+        <!-- Divider -->
+        <hr class="sidebar-divider my-0">
+
+        <!-- Nav Item - Dashboard -->
+        <li class="nav-item active">
+            <a class="nav-link" href="ThanhVien.html">
+                <i class="fas fa-fw fa-users"></i>
+                <span>Thành viên</span></a>
+        </li>
+
+        <!-- Nav Item - Dashboard -->
+        <li class="nav-item">
+            <a class="nav-link" href="ThietBi.html">
+                <i class="fas fa-desktop"></i>
+                <span>Thiết bị </span></a>
+        </li>
+
+        <!-- Nav Item - Dashboard -->
+        <li class="nav-item">
+            <a class="nav-link" href="XuLyViPham.html">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>Xử lý vi phạm</span></a>
+        </li>
+
+        <!-- Nav Item - Dashboard -->
+        <li class="nav-item">
+            <a class="nav-link" href="ThongKe.html">
+                <i class="fas fa-chart-bar"></i>
+                <span>Thống kê</span></a>
+        </li>
+
+
+        <!-- Divider -->
+        <hr class="sidebar-divider d-none d-md-block">
+
+        <!-- Sidebar Toggler (Sidebar) -->
+        <div class="text-center d-none d-md-inline">
+            <button class="rounded-circle border-0" id="sidebarToggle"></button>
+        </div>
+
+    </ul>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content">
+
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
+                <!-- DataTales Example -->
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h2 class="m-0 font-weight-bold text-primary">Quản Lý Thành Viên</h2>
+                            </div>
+                            <div class="col-auto">
+                                <div class="icon-container">
+                                    <a class="btn btn-primary btn-circle btn-lg" id="addButton">
+                                        <i class="fas fa-plus"></i> <!-- Thêm -->
+                                    </a>
+<!--                                    <label for="excelFileInput" class="btn btn-info btn-circle btn-lg" style="margin-left: 10px;">-->
+<!--                                        <i class="fas fa-file-excel"></i> &lt;!&ndash; Icon file Excel &ndash;&gt;-->
+<!--                                        <input type="file" id="excelFileInput" class="file-input" accept=".xlsx, .xls" />-->
+<!--                                    </label>-->
+                                    <a class="btn btn-danger btn-circle btn-lg" onclick="deleteThanhVien()">
+                                        <i class="fas fa-trash-alt"></i> <!-- Xóa -->
+                                    </a>
+                                    <a class="btn btn-warning btn-circle btn-lg" id="enterButton" onclick="openFormEnter()">
+                                        <i class="fas fa-sign-in-alt"></i>
+                                    </a>
+                                    <a class="btn btn-success btn-circle btn-lg" onclick="openFormGive()">
+                                        <i class="fas fa-allergies"></i> <!-- Xóa -->
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                <thead>
+                                <tr>
+                                    <th style="width: 50px;"><input type="checkbox" name="selectedItems" id="checkAll" class="larger-checkbox" style="margin-top: 5px;"/></th>
+                                    <th>Mã Thành Viên</th>
+                                    <th>Họ Tên</th>
+                                    <th>Khoa</th>
+                                    <th>Ngành</th>
+                                    <th>Số Điện Thoại</th>
+                                    <th>Password</th>
+                                    <th>Email</th>
+                                    <th>Sửa</th>
+                                    <th>Mượn</th>
+                                </tr>
+                                </thead>
+
+                                <tbody>
+
+                                <tr th:each="row, state: ${data}" th:idtv="${row.MaTV}" th:tentv="${row.Ten}" th:khoa="${row.Khoa}" th:nganh="${row.Nganh}" th:sdt="${row.SDT}" th:email="${row.Email}" th:password="${row.Password}">
+                                    <td><input type="checkbox" th:id="'checkbox_' + ${row.MaTV}" name="selectedItems" th:value="${row.MaTV}" class="checkbox_ID larger-checkbox"/></td>
+
+                                    <td th:utext="${row.MaTV}">...</td>
+                                    <td th:utext="${row.Ten}">...</td>
+                                    <td th:utext="${row.Khoa}">...</td>
+                                    <td th:utext="${row.Nganh}">...</td>
+                                    <td th:utext="${row.SDT}">...</td>
+                                    <td th:utext="${row.Password}">...</td>
+                                    <td th:utext="${row.Email}">...</td>
+
+                                    <td>
+                                        <a class="btn btn-success btn-circle btn-lg openFormButton">
+                                            <i class="fas fa-pencil-alt"></i>  <!-- Sửa -->
+                                        </a>
+
+                                    </td> <!-- Sửa đường dẫn ở đây -->
+
+                                    <td>
+                                        <a th:href ="@{'/MuonThietBi/' +${row.MaTV}}"  class="btn btn-primary btn-circle btn-lg openFormMuon"> <!-- Thay đổi màu nền của nút thành màu xanh dương -->
+                                            <i class="fas fa-toolbox"></i> <!-- Sử dụng biểu tượng "toolbox" thay vì "pencil-alt" -->
+                                        </a>
+                                    </td>
+
+
+
+                                </tr>
+
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <!-- /.container-fluid -->
+
+        </div>
+        <!-- End of Main Content -->
+
+        <!-- Footer -->
+        <footer class="sticky-footer bg-white">
+            <div class="container my-auto">
+                <div class="copyright text-center my-auto">
+                    <span>Copyright &copy; Your Website 2020</span>
+                </div>
+            </div>
+        </footer>
+        <!-- End of Footer -->
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+</div>
+<!-- End of Page Wrapper -->
+
+
+<div class="container">
+    <div id="editForm" class="edit-form">
+        <h2>Sửa thông tin thành viên</h2>
+        <form id="personForm">
+            <div class="form-group">
+                <label for="personCode">Mã thành viên:</label>
+                <input type="text" class="form-control" id="personCode" value="Mã thành viên" readonly />
+            </div>
+            <div class="form-group">
+                <label for="personName">Tên thành viên:</label>
+                <input type="text" class="form-control" id="personName" value="Tên thành viên" />
+            </div>
+            <div class="form-group">
+                <label for="personName">Khoa:</label>
+                <input type="text" class="form-control" id="personKhoa" value="Khoa thành viên"  />
+            </div>
+            <div class="form-group">
+                <label for="personName">Ngành:</label>
+                <input type="text" class="form-control" id="personNganh" value="Ngành thành viên"  />
+            </div>
+            <div class="form-group">
+                <label for="personSDT">SDT:</label>
+                <input type="text" class="form-control" id="personSDT" value="SDT thành viên"  />
+            </div>
+            <div class="form-group">
+                <label for="personName">Email:</label>
+                <input type="email" class="form-control" id="personEmail" value="Email thành viên"  />
+            </div>
+            <div class="form-group">
+                <label for="personName">Password:</label>
+                <input type="text" class="form-control" id="personPassword" value="Password thành viên"  />
+            </div>
+            <button type="button" class="btn btn-primary" onclick="saveChanges()">Lưu thay đổi</button>
+            <button type="button" class="btn btn-secondary" onclick="closeFormEdit()">Đóng</button>
+        </form>
+    </div>
+</div>
+
+<div class="container">
+    <div id="addForm" class="add-form">
+        <h2>Thêm thành viên</h2>
+        <form id="addPersonForm">
+
+            <div class="form-group">
+                <label for="personName">Tên thành viên:</label>
+                <input type="text" class="form-control" id="addPersonName" value="" />
+            </div>
+            <div class="form-group">
+                <label for="personKhoa">Khoa:</label>
+                <select class="form-control" id="addPersonKhoa">
+                    <option value="QTKD">QTKD</option>
+                    <option value="SP KHTN">SP KHTN</option>
+                    <option value="SP KHXH">SP KHXH</option>
+                    <option value="Ngoại Ngữ">Ngoại Ngữ</option>
+                    <option value="QLGD">QLGD</option>
+                    <option value="Toán UD">Toán UD</option>
+                    <option value="CNTT">CNTT</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="personNganh">Ngành:</label>
+                <select class="form-control" id="addPersonNganh">
+                    <option>QTKD</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="personSDT">SDT:</label>
+                <input type="text" class="form-control" id="addPersonSDT" value="" />
+            </div>
+            <div class="form-group">
+                <label for="personEmail">Email:</label>
+                <input type="email" class="form-control" id="addPersonEmail" value="" />
+            </div>
+            <div class="form-group">
+                <label for="personPassword">Password:</label>
+                <input type="text" class="form-control" id="addPersonPassword" value="" />
+            </div>
+            <button type="button" class="btn btn-primary" onclick="saveAdd()">Lưu thay đổi</button>
+            <button type="button" class="btn btn-secondary" onclick="closeFormAdd()">Đóng</button>
+        </form>
+    </div>
+</div>
+
+<div class="container">
+    <div id="enterForm" class="enter-form">
+        <h2>Khu Vực Học Tập</h2>
+        <form id="enterPersonForm">
+
+            <div class="form-group">
+                <label for="personName">Mã Thành Viên</label>
+                <!--                <select class="form-control" id="enterPersonCode">-->
+                <!--                    <option value="">Chọn mã thành viên</option>-->
+                <!--                    <option th:each="user: ${ListMaTV}" th:value="${user.MaTV}" th:text="${user.MaTV}" ></option>-->
+                <!--                </select>-->
+                <input type="text" class="form-control" id="enterPersonCode" value="" />
+            </div>
+            <div class="form-group" >
+                <label for="personSDT">Tên Thành Viên:</label>
+                <input type="text" class="form-control" id="enterPersonName" value="" readonly/>
+            </div>
+            <div class="form-group">
+                <label for="personSDT">Khoa:</label>
+                <input type="text" class="form-control" id="enterPersonKhoa" value="" readonly />
+            </div>
+            <div class="form-group">
+                <label for="personSDT">Ngành:</label>
+                <input type="text" class="form-control" id="enterPersonNganh" value="" readonly />
+            </div>
+            <div class="form-group">
+                <label for="personSDT">SDT:</label>
+                <input type="text" class="form-control" id="enterPersonSDT" value="" readonly />
+            </div>
+            <div class="form-group">
+                <label for="personEmail">Email:</label>
+                <input type="email" class="form-control" id="enterPersonEmail" value=""  readonly/>
+            </div>
+
+            <button type="button" class="btn btn-secondary" onclick="closeFormEnter()">Đóng</button>
+        </form>
+    </div>
+</div>
+
+<div class="container">
+    <div id="giveForm" class="give-form">
+        <h2>Danh Sách Các Thiết Bị Đang Được Mượn</h2>
+        <form id="givePersonForm">
+            <div class="card-body">
+                <div class="table-responsive" style="overflow-x: auto;">
+                    <table class="table table-bordered" id="dataTable-Tra" width="100%" cellspacing="0">
+                        <thead>
+                        <tr>
+                            <th>Mã Thông Tin</th>
+                            <th>Tên Thành Viên</th>
+                            <th>Tên Thiết Bị</th>
+                            <th>Thời Gian Mượn</th>
+                            <th>Thời Gian Trả</th>
+                            <th>Trả Thiết bị</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="row, state: ${data1}" th:idtt="${row.MaTT}" th:idtv="${row.MaTV}" th:idtb="${row.MaTB}" th:tgmuon="${row.TGMuon}" th:tgtra="${row.TGTra}">
+                            <td th:utext="${row.MaTT}">...</td>
+                            <td th:utext="${row.MaTV.Ten}">...</td>
+                            <td th:utext="${row.MaTB.TenTB}">...</td>
+                            <td th:utext="${row.TGMuon}">...</td>
+                            <td th:utext="${row.TGTra}">...</td>
+                            <!-- Sửa đường dẫn ở đây -->
+                            <td>
+                                <a class="btn btn-success btn-circle btn-lg openFormTra">
+                                    <i class="fas fa-exchange-alt"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <button type="button" class="btn btn-secondary" onclick="closeFormGive()">Đóng</button>
+        </form>
+    </div>
+</div>
+
+
+<!-- Scroll to Top Button-->
+<a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+</a>
+
+<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                <a class="btn btn-primary" href="../login.html">Logout</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+Bootstrap core JavaScript
+<script src="../vendor/jquery/jquery.min.js"></script>
+<script src="../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+<!-- Core plugin JavaScript-->
+<script src="../vendor/jquery-easing/jquery.easing.min.js"></script>
+
+<!-- Custom scripts for all pages-->
+<script src="../js/sb-admin-2.min.js"></script>
+
+<!-- Page level plugins -->
+<script src="../vendor/datatables/jquery.dataTables.min.js"></script>
+<script src="../vendor/datatables/dataTables.bootstrap4.min.js"></script>
+
+<!-- Page level custom scripts -->
+<script src="../js/demo/datatables-demo.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-JzfvrGFIbTJNhKXwrIvVHbAxOHTzS0jopOgZsd2V3yn6UJveE6wJl+qdY2n0dfZw" crossorigin="anonymous"></script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+
+
+</body>
+
+</html>

@@ -1,0 +1,34 @@
+.give-form {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #ffffff;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    overflow-y: auto; /* Thêm thanh cuộn dọc khi nội dung vượt quá kích thước */
+
+    /* Thêm các thuộc tính sau để căn giữa theo chiều ngang và chiều dọc */
+        width: 1200px;
+        max-width: 90%;
+}
+
+.give-form h2{
+    text-align: center;
+}
+
+@media screen and (max-height: 500px) {
+    .give-form {
+        height: auto; /
+    }
+}
+
+@media screen and (min-height: 500px) {
+    .give-form {
+        height: 800px;
+    }
+}
