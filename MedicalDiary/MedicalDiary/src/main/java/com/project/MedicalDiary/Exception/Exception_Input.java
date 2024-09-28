@@ -1,4 +1,4 @@
 package com.project.MedicalDiary.Exception;
 
-public class TestException {
+public class Exception_Input {
 }
