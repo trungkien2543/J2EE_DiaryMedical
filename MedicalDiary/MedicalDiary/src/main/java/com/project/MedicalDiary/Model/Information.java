@@ -2,6 +2,8 @@ package com.project.MedicalDiary.Model;
 import jakarta.persistence.*;
 import lombok.*;
 
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Data
 @Table(name = "Information")
