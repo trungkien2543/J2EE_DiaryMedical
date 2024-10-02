@@ -1,19 +1,24 @@
 package com.project.MedicalDiary.Model;
 
 
+import jakarta.persistence.*;
 import lombok.*;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@ToString
+@Entity
+@Data
+@Table(name = "Account")
 public class Account {
 
-    private String Username;
-    private String Password;
-    private String Email;
-    private int Permission;
+    @Id
+    @Column(name = "UserName", nullable = false, unique = true)
+    private String userName;
 
+    @Column(name = "PassWord")
+    private String passWord;
 
+    @Column(name = "Email")
+    private String email;
+
+    @Column(name = "Permission")
+    private Boolean permission;
 }
