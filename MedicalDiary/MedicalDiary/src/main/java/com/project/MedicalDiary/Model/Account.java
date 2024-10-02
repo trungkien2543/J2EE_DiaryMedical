@@ -21,5 +21,5 @@ public class Account {
     private String email;
 
     @Column(name = "Permission")
-    private Boolean permission;
+    private int permission;
 }
