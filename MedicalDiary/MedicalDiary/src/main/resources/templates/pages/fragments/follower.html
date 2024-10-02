@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+
+      th:replace="~{layouts/main}">
+<!--layout:decorate="~{layouts/main}">-->
+<body >
+<!-- Begin Page Content -->
+<div class="container-fluid" th:fragment="content">
+
+  <!-- Page Heading -->
+  <h1 class="h3 mb-2 text-gray-800">Người quan tâm</h1>
+  <p class="mb-4">Người mà mình quan tâm đến vấn đề sức khoẻ nhất .</p>
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+    Launch static backdrop modal
+  </button>
+
+  <!-- Modal -->
+  <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          ...
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Understood</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Data -->
+  <div class="card shadow mb-4">
+    <div class="card-header py-3">
+      <h6 class="m-0 font-weight-bold text-primary">Người Quan Tâm</h6>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+          <thead>
+          <tr>
+            <th>CCCD</th>
+            <th>Họ tên</th>
+            <th>Giới tính</th>
+            <th>Công việc</th>
+            <th>Chức vụ</th>
+            <th>Địa chỉ</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td>060305023412</td>
+            <td>Huỳnh Quốc Tiến</td>
+            <td>Nam</td>
+            <td>Nhân viên</td>
+            <td>Giam doc</td>
+            <td>129 Nguyen Trai, Q5, TPHCM</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+<!-- /.container-fluid -->
+</body>
+</html>
