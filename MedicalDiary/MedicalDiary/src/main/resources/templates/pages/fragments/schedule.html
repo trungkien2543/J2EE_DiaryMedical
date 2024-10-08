@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <script th:src="@{/js/index.global.js}"></script>
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<style>
+    html, body {
+      font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
+      font-size: 14px;
+      height: 100%;
+      margin: 0;
+    }
+
+    #calendar-container {
+      width: 100%;
+      padding: 20px;
+    }
+
+    .fc-header-toolbar {
+
+    }
+</style>
+<body th:replace="~{layouts/main_kiet :: layout}">
+<div class="container-fluid" th:fragment="content">
+
+    <th:block th:each="receipt : ${listReceipt}">
+        <script th:inline="javascript">
+            console.log("Hello");
+            var place = /*[[${receipt.reason}]]*/ '';
+            var start = /*[[${receipt.date}]]*/ '';
+            var id_receipt= /*[[${receipt.idReceipt}]]*/ '';
+            console.log("Place:" + place + " and Date:" + start + "and ID_Receipt:" + id_receipt);
+
+            // Thêm sự kiện vào mảng events
+            var event = {
+                groupId: id_receipt || 'No ID',
+                title: place || 'No Place',  // Sử dụng 'No Place' nếu không có giá trị
+                start: start || '2023-01-01'  // Sử dụng ngày mặc định nếu không có giá trị
+            };
+            // Lưu vào một mảng sự kiện
+            if (!window.events) {
+                window.events = []; // Tạo mảng events nếu chưa có
+            }
+            window.events.push(event); // Thêm sự kiện vào mảng
+        </script>
+    </th:block>
+    <div id='calendar-container'>
+        <div id='calendar'></div>
+    </div>
+    <h3>Working....</h3>
+</div>
+</body>
+</html>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+
+        // Khởi tạo lịch với mảng events đã lưu
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            height: 'auto',
+            expandRows: true,
+            slotMinTime: '08:00',
+            slotMaxTime: '20:00',
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+            },
+            initialView: 'dayGridMonth',
+            initialDate: '2024-10-10',
+            navLinks: true,
+            editable: true,
+            selectable: true,
+            nowIndicator: true,
+            dayMaxEvents: true,
+            events: window.events || [], // Sử dụng mảng events đã tạo
+
+            dateClick: function(info) {
+                // Lấy tất cả sự kiện của ngày được click
+                var eventsOnDate = calendar.getEvents().filter(function(event) {
+                    // Lấy ngày sự kiện và ngày được click
+                    var eventDate = new Date(event.start);
+                    var clickedDate = new Date(info.date);
+
+                    // Đặt giờ của cả hai ngày về 0 để so sánh chỉ phần ngày
+                    eventDate.setHours(0, 0, 0, 0);
+                    clickedDate.setHours(0, 0, 0, 0);
+
+                    // So sánh chỉ phần ngày mà không so sánh thời gian
+                    return eventDate.getTime() === clickedDate.getTime();
+                });
+
+                // Kiểm tra và hiển thị groupId hoặc thông báo không có sự kiện
+                if (eventsOnDate.length > 0) {
+                    var groupId = eventsOnDate[0].groupId;
+
+                    // Gửi groupId qua Controller bằng AJAX
+                    fetch(`/getReceiptInfo`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ groupId: groupId })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        // Hiển thị SweetAlert với thông tin trả về từ Controller
+                        Swal.fire({
+                            title: `<h3 style="color: #4CAF50;">Receipt Information</h3>`,
+                            html: `
+                                <div style="text-align: left; padding: 15px; font-size: 16px;">
+                                    <p><i class="fas fa-receipt"></i> <strong>Receipt ID:</strong> ${data.idReceipt}</p>
+                                    <p><i class="fas fa-user"></i> <strong>Patient ID:</strong> ${data.idPatient}</p>
+                                    <p><i class="fas fa-user-md"></i> <strong>Doctor ID:</strong> ${data.idDoctor}</p>
+                                    <p><i class="fas fa-map-marker-alt"></i> <strong>Place:</strong> ${data.place}</p>
+                                    <p><i class="fas fa-calendar-alt"></i> <strong>Date:</strong> ${data.date}</p>
+                                </div>`,
+                            icon: 'info',
+                            confirmButtonText: '<i class="fas fa-check-circle"></i> OK',
+                            confirmButtonColor: '#4CAF50',
+                            background: '#f9f9f9',
+                            showClass: {
+                                popup: 'animate__animated animate__fadeInDown'
+                            },
+                            hideClass: {
+                                popup: 'animate__animated animate__fadeOutUp'
+                            }
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'Không thể lấy thông tin của receipt!',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'Không có sự kiện',
+                        text: 'Không có sự kiện nào vào ngày này!',
+                        icon: 'warning',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            }
+
+        });
+        calendar.render();
+    });
+</script>

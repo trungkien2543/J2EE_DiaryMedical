@@ -61,4 +61,11 @@ public class Receipt {
 
     @Column(name = "Temperature")
     private Integer temperature;
+
+    public Receipt(String idPat , String idDoc, String place, java.time.LocalDateTime date){
+        this.idPatient= idPat;
+        this.idDoctor= idDoc;
+        this.place= place;
+        this.date= date;
+    }
 }

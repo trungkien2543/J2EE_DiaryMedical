@@ -7,6 +7,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class ReceiptMapper implements RowMapper<Receipt> {
+
+    public static final String BASE_SQL = "select * from receipt";
     @Override
     public Receipt mapRow(ResultSet rs, int rowNum) throws SQLException {
         return new Receipt(
