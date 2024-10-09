@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<body th:replace="~{layouts/main:: layout}">
+<div class="container-fluid" th:fragment="content">
+<!-- Hero Section -->
+<header class="hero py-5">
+  <div class="container text-center py-5">
+    <h1 class="display-4">Track Your Health Journey</h1>
+    <p class="lead">MediDiary helps you maintain a comprehensive record of your medical history, appointments, and wellness goals.</p>
+    <a href="#cta" class="btn btn-primary btn-lg">Get Started</a>
+  </div>
+</header>
+
+<!-- Features Section -->
+<section id="features" class="py-5">
+  <div class="container">
+    <h2 class="text-center mb-5">Why Choose MediDiary?</h2>
+    <div class="row">
+      <div class="col-md-4 mb-4">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5 class="card-title">Secure & Private</h5>
+            <p class="card-text">Your medical data is encrypted and stored securely. Only you have access to your information.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 mb-4">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5 class="card-title">Easy to Use</h5>
+            <p class="card-text">Intuitive interface makes it simple to log symptoms, medications, and appointments.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 mb-4">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5 class="card-title">Comprehensive Reports</h5>
+            <p class="card-text">Generate detailed health reports to share with your healthcare providers.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Call to Action -->
+<section id="cta" class="bg-primary text-white py-5">
+  <div class="container text-center">
+    <h2 class="mb-4">Start Your Health Journey Today</h2>
+    <form class="form-inline justify-content-center">
+      <div class="form-group mb-2 mr-2">
+        <label for="email" class="sr-only">Email</label>
+        <input type="email" class="form-control" id="email" placeholder="Enter your email">
+      </div>
+      <button type="submit" class="btn btn-light mb-2">Sign Up</button>
+    </form>
+  </div>
+</section>
+</div>
+</body>
+</html>
