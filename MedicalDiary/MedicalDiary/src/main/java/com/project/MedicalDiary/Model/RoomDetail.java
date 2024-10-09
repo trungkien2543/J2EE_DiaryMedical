@@ -1,5 +1,6 @@
 package com.project.MedicalDiary.Model;
-import jakarta.persistence.*;
+
+
 import lombok.*;
 
 @Getter
@@ -7,9 +8,11 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class Family {
+public class RoomDetail {
+    private String ID_Room;
 
-    private Long ID_Family;
+    private String ID_isFollewed;
 
-    private String Name;
+    private int Status;
+
 }

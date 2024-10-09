@@ -14,12 +14,12 @@ public class AccountMapper implements RowMapper<Account> {
     @Override
     public Account mapRow(ResultSet rs, int rowNum) throws SQLException {
 
-        String Username = rs.getString("UserName");
+        Long ID_Family = rs.getLong("ID_Family");
         String Password = rs.getString("PassWord");
         String Email = rs.getString("Email");
-        int Permission = rs.getInt("Permission");
 
-        return new Account(Username, Password, Email, Permission);
+
+        return new Account(ID_Family, Password, Email);
     }
 }
 
