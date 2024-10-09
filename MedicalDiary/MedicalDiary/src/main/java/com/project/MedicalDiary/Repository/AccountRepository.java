@@ -32,10 +32,10 @@ public class AccountRepository extends JdbcDaoSupport {
         return list;
     }
 
-    public Account getAccountByUserName(String userName) {
-        String sql = AccountMapper.BASE_SQL + " where UserName = ?";  // Sử dụng ? làm placeholder
+    public Account getAccountByUserName(String email) {
+        String sql = AccountMapper.BASE_SQL + " where Email = ?";  // Sử dụng ? làm placeholder
 
-        Object[] params = new Object[]{ userName };  // Truyền tham số userName vào mảng params
+        Object[] params = new Object[]{ email };  // Truyền tham số userName vào mảng params
         AccountMapper accountMapper = new AccountMapper();
         try{
             Account account = this.getJdbcTemplate().queryForObject(sql, params, accountMapper);

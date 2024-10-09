@@ -59,7 +59,7 @@
 </html>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         var calendarEl = document.getElementById('calendar');
 
         // Khởi tạo lịch với mảng events đã lưu
@@ -82,9 +82,9 @@
             dayMaxEvents: true,
             events: window.events || [], // Sử dụng mảng events đã tạo
 
-            dateClick: function(info) {
+            dateClick: function (info) {
                 // Lấy tất cả sự kiện của ngày được click
-                var eventsOnDate = calendar.getEvents().filter(function(event) {
+                var eventsOnDate = calendar.getEvents().filter(function (event) {
                     // Lấy ngày sự kiện và ngày được click
                     var eventDate = new Date(event.start);
                     var clickedDate = new Date(info.date);
@@ -107,14 +107,14 @@
                         headers: {
                             'Content-Type': 'application/json'
                         },
-                        body: JSON.stringify({ groupId: groupId })
+                        body: JSON.stringify({groupId: groupId})
                     })
-                    .then(response => response.json())
-                    .then(data => {
-                        // Hiển thị SweetAlert với thông tin trả về từ Controller
-                        Swal.fire({
-                            title: `<h3 style="color: #4CAF50;">Receipt Information</h3>`,
-                            html: `
+                        .then(response => response.json())
+                        .then(data => {
+                            // Hiển thị SweetAlert với thông tin trả về từ Controller
+                            Swal.fire({
+                                title: `<h3 style="color: #4CAF50;">Receipt Information</h3>`,
+                                html: `
                                 <div style="text-align: left; padding: 15px; font-size: 16px;">
                                     <p><i class="fas fa-receipt"></i> <strong>Receipt ID:</strong> ${data.idReceipt}</p>
                                     <p><i class="fas fa-user"></i> <strong>Patient ID:</strong> ${data.idPatient}</p>
@@ -122,27 +122,27 @@
                                     <p><i class="fas fa-map-marker-alt"></i> <strong>Place:</strong> ${data.place}</p>
                                     <p><i class="fas fa-calendar-alt"></i> <strong>Date:</strong> ${data.date}</p>
                                 </div>`,
-                            icon: 'info',
-                            confirmButtonText: '<i class="fas fa-check-circle"></i> OK',
-                            confirmButtonColor: '#4CAF50',
-                            background: '#f9f9f9',
-                            showClass: {
-                                popup: 'animate__animated animate__fadeInDown'
-                            },
-                            hideClass: {
-                                popup: 'animate__animated animate__fadeOutUp'
-                            }
+                                icon: 'info',
+                                confirmButtonText: '<i class="fas fa-check-circle"></i> OK',
+                                confirmButtonColor: '#4CAF50',
+                                background: '#f9f9f9',
+                                showClass: {
+                                    popup: 'animate__animated animate__fadeInDown'
+                                },
+                                hideClass: {
+                                    popup: 'animate__animated animate__fadeOutUp'
+                                }
+                            });
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            Swal.fire({
+                                title: 'Error',
+                                text: 'Không thể lấy thông tin của receipt!',
+                                icon: 'error',
+                                confirmButtonText: 'OK'
+                            });
                         });
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        Swal.fire({
-                            title: 'Error',
-                            text: 'Không thể lấy thông tin của receipt!',
-                            icon: 'error',
-                            confirmButtonText: 'OK'
-                        });
-                    });
                 } else {
                     Swal.fire({
                         title: 'Không có sự kiện',
