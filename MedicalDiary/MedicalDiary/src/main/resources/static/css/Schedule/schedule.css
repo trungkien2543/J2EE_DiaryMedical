@@ -1,0 +1,83 @@
+    html, body {
+        font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
+        font-size: 14px;
+        height: 100%;
+        margin: 0;
+    }
+    #mini-calendar, #calendar {
+        width: 100%;
+    }
+    .fc-header-toolbar {
+        margin-bottom: 15px;
+    }
+    .container-calendar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    #mini-calendar {
+        width: 200px;
+        height: auto;
+        font-size: 12px;
+        border: none;
+        box-shadow: none;
+        padding: 10px;
+        overflow: hidden;
+    }
+    #mini-calendar .fc-header-toolbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 8px;
+    }
+
+    #mini-calendar .fc-button {
+        font-size: 10px;
+        padding: 5px 8px;
+    }
+
+    #mini-calendar .fc-daygrid-day-number {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        font-size: 12px;
+    }
+
+    #mini-calendar .fc-daygrid-day:hover .fc-daygrid-day-number::before {
+        width: 30px;
+        height: 30px;
+        background-color: rgba(30, 144, 255, 0.2);
+    }
+
+    #mini-calendar .fc-daygrid-day.fc-day-today .fc-daygrid-day-number {
+        background-color: rgba(30, 144, 255, 0.5);
+        border-radius: 50%;
+        color: white;
+    }
+    .fc-header-toolbar button {
+        background: none;
+        border: none;
+        color: #007bff;
+        font-size: 10px;
+        font-weight: bold;
+    }
+    #mini-calendar .fc-daygrid-day.active .fc-daygrid-day-number {
+        background-color: rgba(128, 128, 128, 0.3);
+        border-radius: 50%;
+        color: black;
+        text-decoration:none;
+    }
+    #mini-calendar .fc-daygrid-day:hover .fc-daygrid-day-number {
+        background-color: rgba(128, 128, 128, 0.2);
+        border-radius: 50%;
+        color: black;
+        text-decoration: none;
+    }
+    #mini-calendar {
+        border: none; /* Xóa viền ngoài của mini-calendar */
+        box-shadow: none;
+    }
+    #mini-calendar .fc-daygrid-day {
+        border: none;
+    }

@@ -1,277 +1,45 @@
 <!DOCTYPE html>
-<html xmlns:th="http://thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <script th:src="@{/js/index.global.js}"></script>
-    <!-- SweetAlert2 CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-    <!-- SweetAlert2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js"></script>
-    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+    <link th:href="@{/css/Schedule/schedule.css}" rel="stylesheet" />
 </head>
 
-<style>
-    html, body {
-        font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
-        font-size: 14px;
-        height: 100%;
-        margin: 0;
-    }
-
-    #mini-calendar, #calendar {
-        width: 100%;
-    }
-
-    .fc-header-toolbar {
-        margin-bottom: 15px;
-    }
-
-    .container-calendar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    #mini-calendar {
-        width: 200px;
-        height: auto; /* Để chiều cao tự điều chỉnh */
-        font-size: 12px; /* Giảm kích thước font */
-        border: none;
-        box-shadow: none;
-        padding: 10px;
-        overflow: hidden; /* Loại bỏ scrollbar */
-    }
-
-    #mini-calendar .fc-header-toolbar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        font-size: 8px; /* Giảm kích thước font cho tiêu đề và nút */
-    }
-
-    #mini-calendar .fc-button {
-        font-size: 10px; /* Giảm kích thước font cho nút điều hướng */
-        padding: 5px 8px; /* Giảm padding để các nút nhỏ hơn */
-    }
-
-    #mini-calendar .fc-daygrid-day-number {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 100%; /* Đảm bảo số ngày nằm giữa */
-        font-size: 12px; /* Giảm kích thước số ngày */
-    }
-
-    #mini-calendar .fc-daygrid-day:hover .fc-daygrid-day-number::before {
-        width: 30px; /* Thu nhỏ kích thước khi hover */
-        height: 30px;
-        background-color: rgba(30, 144, 255, 0.2);
-    }
-
-    #mini-calendar .fc-daygrid-day.fc-day-today .fc-daygrid-day-number {
-        background-color: rgba(30, 144, 255, 0.5);
-        border-radius: 50%;
-        color: white;
-    }
-
-    .fc-header-toolbar button {
-        background: none;
-        border: none;
-        color: #007bff;
-        font-size: 10px; /* Giảm kích thước font của các nút điều hướng */
-        font-weight: bold;
-    }
-    /* Thêm hiệu ứng cho ngày được click */
-    #mini-calendar .fc-daygrid-day.active .fc-daygrid-day-number {
-        background-color: rgba(128, 128, 128, 0.3); /* Màu xám khi được chọn */
-        border-radius: 50%; /* Tạo khung tròn */
-        color: black; /* Màu chữ */
-        text-decoration:none;
-    }
-    #mini-calendar .fc-daygrid-day:hover .fc-daygrid-day-number {
-        background-color: rgba(128, 128, 128, 0.2); /* Màu nền xám khi hover */
-        border-radius: 50%; /* Bo tròn để tạo hiệu ứng tròn */
-        color: black; /* Màu chữ khi hover */
-        text-decoration: none; /* Xóa gạch chân (text-decoration) khi hover */
-    }
-    #mini-calendar {
-        border: none; /* Xóa viền ngoài của mini-calendar */
-        box-shadow: none; /* Xóa bất kỳ hiệu ứng shadow nào nếu có */
-    }
-    #mini-calendar .fc-daygrid-day {
-        border: none; /* Xóa viền giữa các ô ngày */
-    }
-}
-</style>
-
 <body th:replace="~{layouts/main :: layout}">
-<div class="container-fluid" th:fragment="content">
-    <th:block th:each="receipt : ${listReceipt}">
-        <script th:inline="javascript">
-            var place = /*[[${receipt.reason}]]*/ '';
-            var start = /*[[${receipt.date}]]*/ '';
-            var id_receipt = /*[[${receipt.idReceipt}]]*/ '';
-            var event = {
-                groupId: id_receipt || 'No ID',
-                title: place || 'No Place',
-                start: start || '2023-01-01'
-            };
-            if (!window.events) {
-                window.events = [];
-            }
-            window.events.push(event);
-        </script>
-    </th:block>
-
-    <div class="row">
-        <div class="col-2">
-            <div id="mini-calendar"></div>
-        </div>
-        <div class="col-10">
-            <div id='calendar-container'>
-                <div id='calendar'></div>
+    <div class="container-fluid" th:fragment="content">
+        <th:block th:each="receipt : ${listReceipt}">
+            <script th:inline="javascript">
+                var place = /*[[${receipt.reason}]]*/ '';
+                var start = /*[[${receipt.date}]]*/ '';
+                var id_receipt = /*[[${receipt.idReceipt}]]*/ '';
+                var event = {
+                    groupId: id_receipt || 'No ID',
+                    title: place || 'No Place',
+                    start: start || '2023-01-01'
+                };
+                if (!window.events) {
+                    window.events = [];
+                }
+                window.events.push(event);
+            </script>
+        </th:block>
+        <div class="row">
+            <div class="col-2">
+                <div id="mini-calendar"></div>
+            </div>
+            <div class="col-10">
+                <div id='calendar-container'>
+                    <div id='calendar'></div>
+                </div>
             </div>
         </div>
     </div>
-</div>
-
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-
 </body>
 </html>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Khởi tạo calendar chính
-        var calendarEl = document.getElementById('calendar');
-        var calendar = new FullCalendar.Calendar(calendarEl, {
-            height: 'auto',
-            expandRows: true,
-            slotMinTime: '08:00',
-            slotMaxTime: '20:00',
-            headerToolbar: {
-                left: 'prev,next today',
-                center: 'title',
-                right: 'dayGridMonth,timeGridWeek,listWeek'
-            },
-            initialView: 'dayGridMonth',
-            initialDate: '2024-10-10',
-            navLinks: true,
-            editable: true,
-            selectable: true,
-            nowIndicator: true,
-            dayMaxEvents: true,
-            events: window.events || [],
-
-            // Xử lý sự kiện khi click vào ngày
-            dateClick: function (info) {
-                var eventsOnDate = calendar.getEvents().filter(function (event) {
-                    var eventDate = new Date(event.start);
-                    var clickedDate = new Date(info.date);
-                    eventDate.setHours(0, 0, 0, 0);
-                    clickedDate.setHours(0, 0, 0, 0);
-                    return eventDate.getTime() === clickedDate.getTime();
-                });
-
-                if (eventsOnDate.length > 0) {
-                    var groupId = eventsOnDate[0].groupId;
-                    fetch(`/getReceiptInfo`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ groupId: groupId })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        Swal.fire({
-                            html: `
-                            <div style="display: flex; flex-direction: column; font-size: 16px; padding: 10px;">
-                                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; align-items: start; text-align: justify; padding-left: 20px;">
-                                    <p><i class="fas fa-receipt"></i> <strong>Receipt ID:</strong> ${data.idReceipt}</p>
-                                    <p><i class="fas fa-user"></i> <strong>Patient ID:</strong> ${data.idPatient}</p>
-                                    <p><i class="fas fa-user-md"></i> <strong>Doctor ID:</strong> ${data.idDoctor}</p>
-                                    <p><i class="fas fa-map-marker-alt"></i> <strong>Place:</strong> ${data.place}</p>
-                                    <p><i class="fas fa-calendar-alt"></i> <strong>Date:</strong> ${data.date}</p>
-                                    <p><i class="fas fa-clock"></i> <strong>Time:</strong> ${data.time}</p>
-                                    <p><i class="fas fa-file-invoice-dollar"></i> <strong>Total Amount:</strong> ${data.totalAmount}</p>
-                                    <p><i class="fas fa-procedures"></i> <strong>Service ID:</strong> ${data.idService}</p>
-                                    <p><i class="fas fa-clinic-medical"></i> <strong>Clinic:</strong> ${data.clinic}</p>
-                                    <p><i class="fas fa-notes-medical"></i> <strong>Diagnosis:</strong> ${data.diagnosis}</p>
-                                    <p><i class="fas fa-phone-alt"></i> <strong>Phone:</strong> ${data.phone}</p>
-                                    <p><i class="fas fa-envelope"></i> <strong>Email:</strong> ${data.email}</p>
-                                </div>
-                                <div style="display: flex; flex-direction: row; justify-content: space-between; margin-top: 20px;">
-                                    <div>
-                                        <p>Hình ảnh kết quả</p>
-                                        <img src="../../img/OIP.jpg" alt="Image 1" style="width: 350px; object-fit: cover; border-radius: 8px;">
-                                    </div>
-                                    <div>
-                                        <p>Hình ảnh thuốc</p>
-                                        <img src="../../img/OIP.jpg" alt="Image 2" style="width: 350px; object-fit: cover; border-radius: 8px;">
-                                    </div>
-                                </div>
-                            </div>
-                            `,  // Nội dung HTML hiển thị thông tin receipt
-                            confirmButtonText: '<i class="fas fa-check-circle"></i> OK',
-                            confirmButtonColor: '#4CAF50',
-                            background: '#f9f9f9',
-                            width: '825px',
-                        });
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        Swal.fire({
-                            title: 'Error',
-                            text: 'Không thể lấy thông tin của receipt!',
-                            icon: 'error',
-                            confirmButtonText: 'OK'
-                        });
-                    });
-                } else {
-                    Swal.fire({
-                        title: 'Không có sự kiện',
-                        text: 'Không có sự kiện nào vào ngày này!',
-                        icon: 'warning',
-                        confirmButtonText: 'OK'
-                    });
-                }
-            }
-        });
-        calendar.render();
-
-        // Khởi tạo mini-calendar
-        var miniCalendarEl = document.getElementById('mini-calendar');
-        if (miniCalendarEl) {
-            var miniCalendar = new FullCalendar.Calendar(miniCalendarEl, {
-                headerToolbar: {
-                    left: 'title',
-                    right: 'prev,next'
-                },
-                initialView: 'dayGridMonth',
-                initialDate: '2024-10-10',
-                selectable: false,
-                editable: false,
-                dayMaxEvents: true,
-                dayHeaderFormat: { weekday: 'narrow' },  // Hiển thị chỉ 1 chữ cái đầu
-                dateClick: function(info) {
-                    // Xóa tất cả các ngày đã có lớp "active"
-                    var allActiveDays = miniCalendarEl.querySelectorAll('.fc-daygrid-day.active');
-                    allActiveDays.forEach(function(day) {
-                        day.classList.remove('active');
-                    });
-
-                    // Thêm lớp "active" vào ngày được click
-                    var clickedDay = info.dayEl;
-                    clickedDay.classList.add('active');
-
-                    // Chuyển đến tháng của ngày được click trên lịch chính
-                    calendar.gotoDate(info.date);
-                }
-            });
-            miniCalendar.render();
-        }
-    });
-</script>
+<script src="../js/Schedule/calendar.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
