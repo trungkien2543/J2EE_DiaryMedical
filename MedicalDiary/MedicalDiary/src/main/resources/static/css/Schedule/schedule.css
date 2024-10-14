@@ -34,7 +34,12 @@
     #mini-calendar .fc-button {
         font-size: 10px;
         padding: 5px 8px;
+        border:none;
+        color:black;
+        background:transparent;
     }
+
+
 
     #mini-calendar .fc-daygrid-day-number {
         display: flex;
@@ -81,3 +86,31 @@
     #mini-calendar .fc-daygrid-day {
         border: none;
     }
+     #mini-calendar .fc-button {
+            font-size: 10px;
+            padding: 5px 8px;
+            border:none;
+            color:black;
+            background:transparent;
+        }
+        #mini-calendar .fc-button:hover{
+            background-color: rgba(128, 128, 128, 0.3);
+            border-radius: 50%;
+            color: black;
+            text-decoration:none;
+        }
+        #calendar .fc-button{
+            border:none;
+            color:black;
+            background:transparent;
+        }
+        #calendar .fc-button:hover{
+            background-color: rgba(128, 128, 128, 0.3);
+            border-radius: 50%;
+            color: black;
+            text-decoration:none;
+        }
+
+
+
+
