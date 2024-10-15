@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <title th:text="${message}"> </title>
+  <link rel="icon" th:href="@{/img/favicon.ico}" sizes="32x32" type="image/x-icon">
+
   <!-- Custom fonts for this template -->
   <link th:href="@{/vendor/fontawesome-free/css/all.min.css}" rel="stylesheet" type="text/css">
   <link
@@ -16,5 +18,9 @@
 
   <!-- Custom styles for this page -->
   <link th:href="@{/vendor/datatables/dataTables.bootstrap4.min.css}" rel="stylesheet">
-
+  <script th:src="@{/js/index.global.js}" th:if="${currentUrl == '/schedule'}"></script>
+  <!-- SweetAlert2 CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" th:if="${currentUrl == '/schedule'}">
+  <!-- SweetAlert2 JS -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" th:if="${currentUrl == '/schedule'}"></script>
 </head>

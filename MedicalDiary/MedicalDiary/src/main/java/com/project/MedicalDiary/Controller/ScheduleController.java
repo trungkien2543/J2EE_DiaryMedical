@@ -26,6 +26,7 @@ public class ScheduleController {
         String idPatient= "112233445";
         List<Receipt> listReceipt= rRe.getListReceiptByIdPatient(idPatient);
         model.addAttribute("listReceipt",listReceipt);
+        model.addAttribute("currentUrl", "/schedule"); //Kiếm tra link hiện tại của web
         return "pages/fragments/schedule";
     }
 
