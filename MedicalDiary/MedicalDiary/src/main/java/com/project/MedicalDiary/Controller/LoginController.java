@@ -19,31 +19,10 @@ public class LoginController {
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String LoadData(Model model) {
-
-
-        Account account = new Account(1L,"","");
-
-        model.addAttribute("account", account);
-
+        System.out.println("Login Page");
         return "login.html";
     }
 
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public String Login(Account account, Model model){
-        System.out.println(account);
 
-        Account account_temp = accountRepository.getAccountByUserName(account.getEmail());
-
-        if (account_temp == null){
-            model.addAttribute("errorMessage", "Tên đăng nhập không tồn tại");
-            return "login.html";
-        }
-        else if (!account.getPassWord().equals(account_temp.getPassWord())) {
-            model.addAttribute("errorMessage", "Mật khẩu bị sai");
-            return "login.html";
-        }
-        return "redirect:/schedule";
-
-    }
 
 }
