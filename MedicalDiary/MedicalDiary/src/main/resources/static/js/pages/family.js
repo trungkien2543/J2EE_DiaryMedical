@@ -65,7 +65,6 @@ $(document).on("click", ".family-detail", function () {
     });
 });
 function clearInputFields() {
-    function clearAndEnableInputFields() {
         // Clear input fields and enable them
         $("#CCCD").val("").prop("disabled", false);
         $("#HoTen").val("").prop("disabled", false);
@@ -81,8 +80,6 @@ function clearInputFields() {
         $("#Address").val("").prop("disabled", false); // If you have this field
         $("#Medical_History").val("").prop("disabled", false); // If you have this field
         $("#ID_Family").val("").prop("disabled", false); // If you have this field
-    }
-
 }
 $(document).on("click",".family-add",function (){
     clearInputFields();
@@ -91,7 +88,7 @@ $(document).on("click",".family-add",function (){
     $("#btn-updates").hide();
 });
 
-$(document).on("click",".family-add",function (){
+$(document).on("click",".family-update",function (){
 
     let cccd = $(this).data("id");
     $("#titleModal").text("Chỉnh sửa chi tiết");
