@@ -2,7 +2,7 @@
 <html lang="en">
 <head th:replace="~{components/head :: head}">
 </head>
-<body>
+<body th:replace="~{layouts/main:: layout}">
 <div class="main" th:fragment="content">
   <div class="row">
     <div class="col-md-4">
@@ -41,8 +41,11 @@
               <img src="https://img.icons8.com/bubbles/50/000000/girl-and-playing-card.png" width="20" class="img2" />
               <img src="https://img.icons8.com/bubbles/50/000000/short-hair-girl-question-mark.png" width="20" class="img3" />
             </div>
-          </div>
 
+          </div>
+          <div class="widget-49-meeting-action">
+            <a href="#" class="btn btn-sm btn-flash-border-warning">View All</a>
+          </div>
         </div>
       </div>
 
