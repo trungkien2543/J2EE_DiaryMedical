@@ -7,6 +7,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class FamilyMapper implements RowMapper<Family> {
+    public static final String BASE_SQL = "SELECT * FROM family f ";
+
     @Override
     public Family mapRow(ResultSet rs, int rowNum) throws SQLException {
         return new Family(

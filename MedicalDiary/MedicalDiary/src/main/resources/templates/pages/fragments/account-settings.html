@@ -2,29 +2,61 @@
 <html xmlns:th="http://thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <!--layout:decorate="~{layouts/main}">-->
+<head th:replace="~{components/head :: head}"></head>
 <body th:replace="~{layouts/main :: layout}">
-<div class="card mb-4">
-  <div class="card-header">Change Password</div>
-  <div class="card-body">
-    <form>
-      <!-- Form Group (current password)-->
-      <div class="mb-3">
-        <label class="small mb-1" for="currentPassword">Current Password</label>
-        <input class="form-control" id="currentPassword" type="password" placeholder="Enter current password">
+<main th:fragment="content">
+  <header class="page-header page-header-compact page-header-light border-bottom bg-white mb-4">
+    <div class="container-xl px-4">
+      <div class="page-header-content">
+        <div class="row align-items-center justify-content-between pt-3">
+          <div class="col-auto mb-3">
+            <h1 class="h3 mb-2 text-gray-800">
+              <div class="page-header-icon">
+                <!--<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>-->
+                Account Settings - Profile
+              </div>
+            </h1>
+          </div>
+        </div>
       </div>
-      <!-- Form Group (new password)-->
-      <div class="mb-3">
-        <label class="small mb-1" for="newPassword">New Password</label>
-        <input class="form-control" id="newPassword" type="password" placeholder="Enter new password">
+    </div>
+  </header>
+  <!-- Main page content-->
+  <div class="container-xl px-4 mt-4">
+    <!-- Account page navigation-->
+    <nav class="nav nav-borders">
+      <a class="nav-link active ms-0" href="/profile">Profile</a>
+      <!--            <a class="nav-link" href="account-billing.html">Billing</a>-->
+      <a class="nav-link active" href="/account-settings">Security</a>
+      <!--            <a class="nav-link" href="account-notifications.html">Notifications</a>-->
+    </nav>
+    <hr class="mt-0 mb-4">
+    <div class="row">
+      <div class="card mb-4">
+        <div class="card-header">Change Password</div>
+        <div class="card-body">
+          <form>
+            <!-- Form Group (current password)-->
+            <div class="mb-3">
+              <label class="small mb-1" for="currentPassword">Current Password</label>
+              <input class="form-control" id="currentPassword" type="password" placeholder="Enter current password">
+            </div>
+            <!-- Form Group (new password)-->
+            <div class="mb-3">
+              <label class="small mb-1" for="newPassword">New Password</label>
+              <input class="form-control" id="newPassword" type="password" placeholder="Enter new password">
+            </div>
+            <!-- Form Group (confirm password)-->
+            <div class="mb-3">
+              <label class="small mb-1" for="confirmPassword">Confirm Password</label>
+              <input class="form-control" id="confirmPassword" type="password" placeholder="Confirm new password">
+            </div>
+            <button class="btn btn-primary" type="button">Save</button>
+          </form>
+        </div>
       </div>
-      <!-- Form Group (confirm password)-->
-      <div class="mb-3">
-        <label class="small mb-1" for="confirmPassword">Confirm Password</label>
-        <input class="form-control" id="confirmPassword" type="password" placeholder="Confirm new password">
-      </div>
-      <button class="btn btn-primary" type="button">Save</button>
-    </form>
+    </div>
   </div>
-</div>
+</main>
 </body>
 </html>

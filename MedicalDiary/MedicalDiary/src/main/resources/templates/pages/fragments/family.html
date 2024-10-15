@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<!--layout:decorate="~{layouts/main}">-->
+<head th:replace="~{components/head :: head}">
+  <link rel="icon" th:href="@{/img/favicon.ico}" sizes="32x32" type="image/x-icon">
+</head>
+<body th:replace="~{layouts/main:: layout}">
+<!-- Begin Page Content -->
+<div class="container-fluid" th:fragment="content">
+
+  <!-- Page Heading -->
+  <h1 class="h3 mb-2 text-gray-800">Người quan tâm</h1>
+  <p class="mb-4">Người mà mình quan tâm đến vấn đề sức khoẻ nhất .</p>
+  <div class="text-right mb-2 mx-3">
+    <button class="btn btn-primary family-add" type="button" data-toggle="modal" data-target="#AddQuanTam">Thêm người nhà</button>
+  </div>
+  <!-- Data -->
+  <div class="card shadow mb-4">
+    <div class="card-header py-3">
+      <!--      <h6 class="m-0 font-weight-bold text-primary">Người Quan Tâm</h6>-->
+      <!--      <div class="text-right">-->
+      <!--        &lt;!&ndash; Button trigger modal &ndash;&gt;-->
+      <!--        <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#AddQuanTam">Thêm người nhà</button>-->
+      <!--      </div>-->
+      <!-- Modal -->
+      <div class="modal fade" id="AddQuanTam" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropAddQuanTam" aria-hidden="true">
+        <!--      <div class="modal fade" id="AddQuanTam" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">-->
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="titleModal">Thêm người trong nhà</h5>
+              <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <form class="forms-sample">
+              <div class="modal-body">
+                <div class="form-group">
+                  <label for="CCCD">CCCD</label>
+                  <input type="text" class="form-control" id="CCCD" placeholder="Căn cước công dân">
+                </div>
+                <div class="form-group">
+                  <label for="HoTen">Họ và tên</label>
+                  <input type="text" class="form-control" id="HoTen" placeholder="Họ và tên">
+                </div>
+                <div class="form-row">
+                  <div class="form-group col-md-3">
+                    <label for="Gender">Giới tính</label>
+                    <select class="form-control" id="Gender">
+                      <option value="1">Nam</option>
+                      <option value="0">Nữ</option>
+                    </select>
+                  </div>
+                  <div class="form-group col-md-9">
+                    <label for="BHYT">BHYT</label>
+                    <input type="text" class="form-control" id="BHYT" placeholder="Bảo hiểm y tế">
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group col-md-6">
+                    <label for="Phone">Số điện thoại</label>
+                    <input type="text" class="form-control" id="Phone" placeholder="Số điện thoại">
+                  </div>
+                  <div class="form-group col-md-6">
+                    <label for="Job">Nghề nghiệp</label>
+                    <input type="text" class="form-control" id="Job" placeholder="Nghề nghiệp">
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group col-md-6">
+                    <label for="Department">Phòng ban</label>
+                    <input type="text" class="form-control" id="Department" placeholder="Phòng ban">
+                  </div>
+                  <div class="form-group col-md-6">
+                    <label for="ID_Family">Hộ gia đình</label>
+                    <input type="text" class="form-control" id="ID_Family" placeholder="Hộ gia đình">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="Address">Địa chỉ</label>
+                  <input type="text" class="form-control" id="Address" placeholder="Địa chỉ">
+                </div>
+                <div class="form-group">
+                  <label for="Medical_History">Tiền sử bệnh</label>
+                  <textarea class="form-control" id="Medical_History" placeholder="Tiền sử bệnh"></textarea>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
+                <button id="btn-saves" class="btn btn-primary" type="submit">Saves</button>
+                <button id="btn-updates" class="btn btn-primary" type="button">Updates</button>
+              </div>
+            </form>
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+          <thead>
+          <tr>
+            <th>CCCD</th>
+            <th>Họ tên</th>
+            <th>Giới tính</th>
+            <th>Công việc</th>
+            <th>Chức vụ</th>
+            <th>Địa chỉ</th>
+            <!--            <th>Status</th>-->
+            <th>Tác vụ</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="i : ${list}">
+            <td th:text="${i.cccd}"></td>
+            <td th:text="${i.name}"></td>
+            <td th:text="${i.gender ? 'Nam' : 'Nữ'}"></td>
+            <td th:text="${i.job}"></td>
+            <td th:text="${i.department}"></td>
+            <td th:text ="${i.address}"></td>
+            <!--            <td><div class="badge bg-success text-white rounded-pill">Active</div></td>-->
+            <td>
+              <button  th:attr="data-id=${i.cccd}" class="btn btn-datatable btn-icon btn-transparent-dark me-2 px-1 family-detail" data-placement="top" title="Xem chi tiết" data-toggle="modal" data-target="#AddQuanTam">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
+                  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                  <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
+                </svg>
+              </button>
+              <button  th:attr="data-id=${i.cccd}" class="btn btn-datatable btn-icon btn-transparent-dark me-2 px-1 family-edit" data-placement="top" title="Sửa" data-toggle="modal" data-target="#AddQuanTam">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                  <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                  <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+                </svg>
+              </button>
+              <button  th:attr="data-id=${i.cccd}" class="btn btn-datatable btn-icon btn-transparent-dark px-1 family-delete" data-placement="top" title="Xoá">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                  <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
+                  <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
+                </svg>
+              </button>
+              <!--              <button class="btn btn-datatable btn-icon btn-transparent-dark me-2 px-1" data-placement="top" title="Xem nhat ">-->
+              <!--                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">-->
+              <!--                  <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/>-->
+              <!--                </svg>-->
+              <!--              </button>-->
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- /.container-fluid -->
+</body>
+<script th:src="@{/js/pages/family.js}"></script>
+
+</html>
