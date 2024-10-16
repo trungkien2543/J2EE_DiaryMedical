@@ -14,6 +14,7 @@ public class RoomController {
     @GetMapping("")
     public String home( Model model) {
         model.addAttribute("message", "Rooms");
+        model.addAttribute("currentUrl", "/rooms"); //Kiếm tra link hiện tại của web
         return "pages/fragments/rooms";
     }
 }
