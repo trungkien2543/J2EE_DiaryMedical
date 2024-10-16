@@ -47,7 +47,7 @@ public class WebSecurityConfig {
                 )
                 .logout((logout) -> logout.permitAll())
                 .rememberMe((rememberMe) -> rememberMe
-                        .key("uniqueAndSecret")  // Khóa dùng để mã hóa cookie remember-me
+                        .key("5bZUZjoAB21JT1gYRkfm")  // Khóa dùng để mã hóa cookie remember-me
                         .tokenValiditySeconds(86400)  // Thời gian hiệu lực của cookie (ở đây là 24 giờ)
                         .rememberMeParameter("remember-me")  // Tên tham số của checkbox "Remember Me"
                         .userDetailsService(userDetailsService())  // Thêm UserDetailsService cho Remember Me
