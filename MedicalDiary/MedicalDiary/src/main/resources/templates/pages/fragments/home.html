@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head th:replace="~{components/head :: head}">
+  <link rel="icon" th:href="@{/img/favicon.ico}" sizes="32x32" type="image/x-icon">
+</head>
 <body th:replace="~{layouts/main:: layout}">
 <div class="container-fluid" th:fragment="content">
 <!-- Hero Section -->

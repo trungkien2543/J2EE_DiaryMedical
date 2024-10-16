@@ -13,4 +13,6 @@ public class HomeController {
         model.addAttribute("message", "Home");
         return "pages/fragments/home";
     }
+
+
 }

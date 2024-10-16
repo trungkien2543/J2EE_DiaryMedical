@@ -7,7 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class InformationMapper implements RowMapper<Information> {
-    public static final String BASE_SQL = "SELECT * FROM information";
+    public static final String BASE_SQL = "SELECT * FROM information i ";
 
 
     @Override
