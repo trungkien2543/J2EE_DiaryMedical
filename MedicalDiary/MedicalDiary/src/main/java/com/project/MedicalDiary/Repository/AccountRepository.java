@@ -45,5 +45,31 @@ public class AccountRepository extends JdbcDaoSupport {
         }
     }
 
+    public void insertAccount(Account account) {
+        String sql = "INSERT INTO Account (ID_Family,PassWord,Email) VALUES (?, ?, ?)";
+
+        Object[] params = new Object[]{
+                account.getID_Family(),
+                account.getPassword(),
+                account.getEmail(),
+        };
+
+        this.getJdbcTemplate().update(sql, params);
+    }
+
+    public void updateAccount(Account account) {
+        String sql = "UPDATE Account SET ID_Family = ?, PassWord = ? WHERE Email = ?";
+
+        Object[] params = new Object[]{
+                account.getID_Family(),
+                account.getPassword(),
+                account.getEmail()
+        };
+
+        this.getJdbcTemplate().update(sql, params);
+    }
+
+
+
 
 }
