@@ -63,10 +63,10 @@ public class FamilyController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
-    @PostMapping
-    Family CreateFamily(@RequestBody Family family) {
-
-    }
+//    @PostMapping
+//    Family CreateFamily(@RequestBody Family family) {
+//
+//    }
 
 
 }
