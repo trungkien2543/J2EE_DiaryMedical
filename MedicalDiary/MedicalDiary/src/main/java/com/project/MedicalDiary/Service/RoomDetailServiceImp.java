@@ -1,20 +1,19 @@
 package com.project.MedicalDiary.Service;
 
 import com.project.MedicalDiary.Model.RoomDetail;
-import com.project.MedicalDiary.Repository.InformationRepository;
 import com.project.MedicalDiary.Repository.RoomDetailRepository;
-import com.project.MedicalDiary.Service.Imp.RoomDetailServiceImp;
+import com.project.MedicalDiary.Service.Imp.RoomDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class RoomDetailService implements RoomDetailServiceImp {
+public class RoomDetailServiceImp implements RoomDetailService {
     private final RoomDetailRepository  roomDetailRepository;
 
     @Autowired
-    public RoomDetailService( RoomDetailRepository roomDetailRepository) {
+    public RoomDetailServiceImp(RoomDetailRepository roomDetailRepository) {
         this.roomDetailRepository = roomDetailRepository;
     }
     @Override

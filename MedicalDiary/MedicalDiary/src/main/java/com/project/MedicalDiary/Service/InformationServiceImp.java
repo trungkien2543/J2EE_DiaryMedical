@@ -2,7 +2,7 @@ package com.project.MedicalDiary.Service;
 
 import com.project.MedicalDiary.Model.Information;
 import com.project.MedicalDiary.Repository.InformationRepository;
-import com.project.MedicalDiary.Service.Imp.InformationServiceImp;
+import com.project.MedicalDiary.Service.Imp.InformationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,12 +10,12 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class InformationService implements InformationServiceImp {
+public class InformationServiceImp implements InformationService {
 
     private final InformationRepository informationRepository;
 
     @Autowired
-    public InformationService(InformationRepository informationRepository) {
+    public InformationServiceImp(InformationRepository informationRepository) {
         this.informationRepository = informationRepository;
     }
     @Override

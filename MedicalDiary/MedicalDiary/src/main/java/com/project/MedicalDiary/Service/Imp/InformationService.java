@@ -5,7 +5,7 @@ import com.project.MedicalDiary.Model.Information;
 import java.util.List;
 import java.util.Optional;
 
-public interface InformationServiceImp {
+public interface InformationService {
     public List<Information> getAll();
     public List<Information> findByIDFamily(long idFamily);
     public Optional<Information> findByCCCD(String cccd);

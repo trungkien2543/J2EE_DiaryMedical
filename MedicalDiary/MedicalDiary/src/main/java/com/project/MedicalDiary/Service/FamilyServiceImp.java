@@ -2,7 +2,7 @@ package com.project.MedicalDiary.Service;
 
 import com.project.MedicalDiary.Model.Family;
 import com.project.MedicalDiary.Repository.FamilyReponsitory;
-import com.project.MedicalDiary.Service.Imp.FamilyServiceImp;
+import com.project.MedicalDiary.Service.Imp.FamilyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,11 +10,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class FamilyService  implements FamilyServiceImp {
+public class FamilyServiceImp implements FamilyService {
     private final FamilyReponsitory familyReponsitory;
 
     @Autowired
-    public FamilyService(FamilyReponsitory familyReponsitory) {
+    public FamilyServiceImp(FamilyReponsitory familyReponsitory) {
         this.familyReponsitory = familyReponsitory;
     }
 

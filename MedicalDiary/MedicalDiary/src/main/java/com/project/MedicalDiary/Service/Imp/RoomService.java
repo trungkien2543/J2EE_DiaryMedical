@@ -1,11 +1,10 @@
 package com.project.MedicalDiary.Service.Imp;
 
-import com.project.MedicalDiary.Mapper.RoomMapper;
 import com.project.MedicalDiary.Model.Room;
 
 import java.util.List;
 
-public interface RoomServiceImp {
+public interface RoomService {
     public Boolean createRoom(Room room) ;
 
     public List<Room> getAll();

@@ -2,12 +2,9 @@ package com.project.MedicalDiary.Controller;
 
 import com.project.MedicalDiary.Model.Family;
 import com.project.MedicalDiary.Model.Information;
-import com.project.MedicalDiary.Repository.AccountRepository;
-import com.project.MedicalDiary.Repository.FamilyReponsitory;
-import com.project.MedicalDiary.Repository.InformationRepository;
 import com.project.MedicalDiary.Service.CustomUserDetails;
-import com.project.MedicalDiary.Service.Imp.FamilyServiceImp;
-import com.project.MedicalDiary.Service.Imp.InformationServiceImp;
+import com.project.MedicalDiary.Service.Imp.FamilyService;
+import com.project.MedicalDiary.Service.Imp.InformationService;
 import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,9 +22,9 @@ import java.util.Optional;
 @RequestMapping("/family")
 public class FamilyController {
     @Autowired
-    private InformationServiceImp informationServiceImp;
+    private InformationService informationServiceImp;
     @Autowired
-    private FamilyServiceImp familyServiceImp;
+    private FamilyService familyServiceImp;
     @GetMapping("")
     public String follower(Authentication authentication, Model model) {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
@@ -63,10 +60,16 @@ public class FamilyController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
-//    @PostMapping
-//    Family CreateFamily(@RequestBody Family family) {
-//
-//    }
+    @PostMapping
+    public ResponseEntity<Family> createFamily(@RequestBody Family family) {
+        // You can add validation logic here if needed
+
+        // Save the family object to the database
+        Family createdFamily = familyServiceImp.createFamily(family);
+
+        // Return a response with the created family and a status code
+        return new ResponseEntity<>(createdFamily, HttpStatus.CREATED);
+    }
 
 
 }

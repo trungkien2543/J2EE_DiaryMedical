@@ -4,7 +4,7 @@ import com.project.MedicalDiary.Model.RoomDetail;
 
 import java.util.List;
 
-public interface RoomDetailServiceImp {
+public interface RoomDetailService {
 
     public Boolean createRoomDetail(RoomDetail roomDetail) ;
 
