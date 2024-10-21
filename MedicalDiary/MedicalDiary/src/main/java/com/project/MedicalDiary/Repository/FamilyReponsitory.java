@@ -37,4 +37,49 @@ public class FamilyReponsitory extends JdbcDaoSupport {
         // Trả về Optional, nếu không có bản ghi thì sẽ là Optional.empty()
         return listFamilys.stream().findFirst();
     }
+
+    public Family createFamily(@org.jetbrains.annotations.NotNull Family family) {
+        String sql = "INSERT INTO Family (ID_Family, Name) VALUES (?, ?);";
+
+        Object[] params = new Object[]{
+                family.getID_Family(),
+                family.getName(),
+        };
+
+        this.getJdbcTemplate().update(sql, params);
+
+        // Return the created family object
+        return family;
+    }
+
+    public List<Family> getAll() {
+        String sql = FamilyMapper.BASE_SQL;
+
+        List<Family> listFamilies = this.getJdbcTemplate().query(sql, new FamilyMapper());
+
+        return listFamilies;
+    }
+
+    public boolean deleteFamily(Family family) {
+        String sql = "DELETE FROM Family WHERE ID_Family = ?";
+
+        Object[] params = new Object[]{family.getID_Family()};
+
+        int rowsAffected = this.getJdbcTemplate().update(sql, params);
+
+        return rowsAffected > 0;
+    }
+
+    public boolean updateFamily(Family family) {
+        String sql = "UPDATE Family SET Name = ? WHERE ID_Family = ?";
+
+        Object[] params = new Object[]{
+                family.getName(),
+                family.getID_Family(),
+        };
+
+        int rowsAffected = this.getJdbcTemplate().update(sql, params);
+
+        return rowsAffected > 0;
+    }
 }

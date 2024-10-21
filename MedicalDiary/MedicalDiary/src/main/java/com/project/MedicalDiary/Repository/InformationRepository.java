@@ -30,6 +30,19 @@ public class InformationRepository extends JdbcDaoSupport {
 
         return listInformations;
     }
+    public List<Information> findByIDFamily(long idFamily) {
+        // SQL query to retrieve information based on ID_Family
+        String sql = InformationMapper.BASE_SQL + " WHERE i.ID_Family = ?";
+
+        Object[] params = new Object[]{idFamily};
+        InformationMapper informationMapper = new InformationMapper();
+
+        // Execute query and return the list of Information
+        List<Information> listInformations = this.getJdbcTemplate().query(sql, params, informationMapper);
+
+        return listInformations;
+    }
+
     public Optional<Information> findByCCCD(String cccd) {
         // Câu truy vấn SQL để lấy thông tin dựa trên CCCD
         String sql = InformationMapper.BASE_SQL + " WHERE i.CCCD = ?";
@@ -43,6 +56,61 @@ public class InformationRepository extends JdbcDaoSupport {
         // Trả về Optional, nếu không có bản ghi thì sẽ là Optional.empty()
         return listInformations.stream().findFirst();
     }
+    public Boolean createInformation(Information information) {
+        String sql = "INSERT INTO Information (cccd, name, gender, bhyt, phone, job, department, address, medicalHistory, ID_Family) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        Object[] params = new Object[] {
+                information.getCccd(),
+                information.getName(),
+                information.getGender(),
+                information.getBhyt(),
+                information.getPhone(),
+                information.getJob(),
+                information.getDepartment(),
+                information.getAddress(),
+                information.getMedicalHistory(),
+                information.getID_Family()
+        };
+
+        int rowsAffected = this.getJdbcTemplate().update(sql, params);
+
+        // Return the created information object
+        return rowsAffected >0 ;
+    }
+    public boolean deleteInformation(Information information) {
+        String sql = "DELETE FROM Information WHERE cccd = ?";
+
+        Object[] params = new Object[] { information.getCccd() };
+
+        int rowsAffected = this.getJdbcTemplate().update(sql, params);
+
+        return rowsAffected > 0;
+    }
+    public Boolean updateInformation(Information information) {
+        String sql = "UPDATE Information SET name = ?, gender = ?, bhyt = ?, phone = ?, job = ?, department = ?, address = ?, medicalHistory = ?, ID_Family = ? " +
+                "WHERE cccd = ?";
+
+        Object[] params = new Object[] {
+                information.getName(),
+                information.getGender(),
+                information.getBhyt(),
+                information.getPhone(),
+                information.getJob(),
+                information.getDepartment(),
+                information.getAddress(),
+                information.getMedicalHistory(),
+                information.getID_Family(),
+                information.getCccd()
+        };
+
+        int rowsAffected = this.getJdbcTemplate().update(sql, params);
+
+        return rowsAffected > 0;
+    }
+
+
+
 
 
 }

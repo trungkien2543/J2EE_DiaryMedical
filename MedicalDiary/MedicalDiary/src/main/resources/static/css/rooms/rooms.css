@@ -10,7 +10,8 @@ body{
 }
 .one{
     width: 270px;
-    background-color: #000;
+    background-color: #4e73df;
+    cursor: pointer;
     justify-content: center;
     align-items: center;
     text-align: center;
