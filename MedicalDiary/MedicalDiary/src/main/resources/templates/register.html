@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 
 <head>
 
@@ -20,65 +20,156 @@
     <!-- Custom styles for this template-->
     <link href="css/sb-admin-2.min.css" rel="stylesheet">
 
+    <link href="css/login/register.css" rel="stylesheet">
+
 </head>
 
 <body class="bg-gradient-primary">
 
-    <div class="container">
+    <div class="container custom-container">
 
         <div class="card o-hidden border-0 shadow-lg my-5">
             <div class="card-body p-0">
                 <!-- Nested Row within Card Body -->
                 <div class="row">
-                    <div class="col-lg-5 d-none d-lg-block bg-register-image"></div>
-                    <div class="col-lg-7">
+                    <div class="col-lg-6 d-none d-lg-block bg-login-image"  style="padding: 50px 0px 50px 10px;">
+                        <img src="../img/login.png" style="width: 100%; height: auto;" alt="Image">
+                    </div>
+                    <div class="col-lg-6">
                         <div class="p-5">
                             <div class="text-center">
                                 <h1 class="h4 text-gray-900 mb-4">Create an Account!</h1>
                             </div>
-                            <form class="user">
+                            <form class="user" method="POST">
                                 <div class="form-group row">
-                                    <div class="col-sm-6 mb-3 mb-sm-0">
-                                        <input type="text" class="form-control form-control-user" id="exampleFirstName"
-                                            placeholder="First Name">
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <input type="text" class="form-control form-control-user" id="exampleLastName"
-                                            placeholder="Last Name">
+                                    <div class="col-sm-12 mb-3 mb-sm-0">
+                                        <input type="text" class="form-control form-control-user" id="exampleFirstName" placeholder="Family Name" name="familyName">
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <input type="email" class="form-control form-control-user" id="exampleInputEmail"
-                                        placeholder="Email Address">
+                                    <input type="email" class="form-control form-control-user" id="exampleInputEmail" placeholder="Email Address" name="email">
                                 </div>
                                 <div class="form-group row">
                                     <div class="col-sm-6 mb-3 mb-sm-0">
-                                        <input type="password" class="form-control form-control-user"
-                                            id="exampleInputPassword" placeholder="Password">
+                                        <input type="password" class="form-control form-control-user" id="exampleInputPassword" placeholder="Password" name="password">
                                     </div>
                                     <div class="col-sm-6">
-                                        <input type="password" class="form-control form-control-user"
-                                            id="exampleRepeatPassword" placeholder="Repeat Password">
+                                        <input type="password" class="form-control form-control-user" id="exampleRepeatPassword" placeholder="Repeat Password" name="repeatPassword">
                                     </div>
                                 </div>
-                                <a href="login.html" class="btn btn-primary btn-user btn-block">
+
+                                <button type="button" class="btn btn-primary btn-user btn-block" id="submitBtn">
                                     Register Account
-                                </a>
-                                <hr>
-                                <a href="index_Kiet.html" class="btn btn-google btn-user btn-block">
-                                    <i class="fab fa-google fa-fw"></i> Register with Google
-                                </a>
-                                <a href="index_Kiet.html" class="btn btn-facebook btn-user btn-block">
-                                    <i class="fab fa-facebook-f fa-fw"></i> Register with Facebook
-                                </a>
+                                </button>
                             </form>
+
                             <hr>
                             <div class="text-center">
-                                <a class="small" href="forgot-password.html">Forgot Password?</a>
+                                <a class="small" href="forgot_password">Forgot Password?</a>
                             </div>
                             <div class="text-center">
-                                <a class="small" href="login.html">Already have an account? Login!</a>
+                                <a class="small" href="login">Already have an account? Login!</a>
                             </div>
+                        </div>
+                    </div>
+
+
+                    <div class="card-body">
+                        <div class="text-right mb-2 mx-3">
+                            <button class="btn btn-primary family-add" type="button" onclick="showForm('add')" style="margin-bottom: 20px">Add Family Member</button>
+                        </div>
+
+                        <div class="modal-backdrop"></div>
+                        <!--Nen mo phia sau cai form-->
+
+
+                        <div id="familyForm" class="modal-dialog" role="document" style="display: none;">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="titleModal">Add Family Member</h5>
+                                    <button class="close" type="button" onclick="hideForm()" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <form class="forms-sample" id="familyFormedit">
+                                    <div class="modal-body">
+                                        <div class="form-group">
+                                            <label for="CCCD">CCCD</label>
+                                            <input type="number" class="form-control" id="CCCD" placeholder="CCCD" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="HoTen">Full Name</label>
+                                            <input type="text" class="form-control" id="HoTen" placeholder="Full name" required>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group col-md-3">
+                                                <label for="Gender">Gender</label>
+                                                <select class="form-control" id="Gender">
+                                                    <option value="1">Male</option>
+                                                    <option value="0">Female</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group col-md-9">
+                                                <label for="BHYT">Health Insurance</label>
+                                                <input type="text" class="form-control" id="BHYT" placeholder="Health insurance" required>
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group col-md-6">
+                                                <label for="Phone">Phone</label>
+                                                <input type="number" class="form-control" id="Phone" placeholder="Phone" required>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label for="Job">Job</label>
+                                                <input type="text" class="form-control" id="Job" placeholder="Job" required>
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group col-md-6">
+                                                <label for="Department">Department</label>
+                                                <input type="text" class="form-control" id="Department" placeholder="Department" required>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="Address">Address</label>
+                                            <input type="text" class="form-control" id="Address" placeholder="Address" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="Medical_History">Background medical history</label>
+                                            <textarea class="form-control" id="Medical_History" placeholder="Background medical history" required></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button class="btn btn-secondary" type="button" onclick="hideForm()">Close</button>
+                                        <button id="btn-saves" class="btn btn-primary" type="button">Add</button>
+                                        <button id="btn-updates" class="btn btn-primary" type="button">Update</button>
+                                    </div>
+                                </form>
+
+
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                <thead>
+                                <tr>
+                                    <th>CCCD</th>
+                                    <th>Full name</th>
+                                    <th>Gender</th>
+                                    <th>Health Insurance</th>
+                                    <th>Phone</th>
+                                    <th>Job</th>
+                                    <th>Department</th>
+                                    <th>Address</th>
+                                    <th>Background medical history</th>
+                                    <th></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -96,6 +187,21 @@
 
     <!-- Custom scripts for all pages-->
     <script src="js/sb-admin-2.min.js"></script>
+
+
+
+    <script th:inline="javascript">
+        // Lưu danh sách vào biến toàn cục để có thể truy cập từ file JS bên ngoài
+        var membersList = /*[[${list}]]*/ [];
+
+        console.log(membersList)
+    </script>
+
+    <script src="js/login/register.js"></script>
+
+    <!-- Include SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
 </body>
 

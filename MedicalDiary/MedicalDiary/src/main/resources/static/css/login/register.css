@@ -1,0 +1,47 @@
+
+.custom-container {
+    max-width: 1300px; /* Adjust as needed */
+    margin: 0 auto; /* Center the container */
+}
+
+#familyForm {
+    display: none; /* Ẩn form mặc định */
+    position: fixed; /* Cố định modal */
+    top: 50%; /* Căn chỉnh giữa theo chiều dọc */
+    left: 50%; /* Căn chỉnh giữa theo chiều ngang */
+    transform: translate(-50%, -50%); /* Điều chỉnh để modal nằm chính giữa */
+    z-index: 1000; /* Đảm bảo form luôn nằm trên cùng */
+    width: 90%; /* Thu nhỏ form theo chiều ngang */
+    max-width: 500px; /* Kích thước tối đa của modal */
+    border-radius: 15px; /* Bo góc form */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Đổ bóng để form nổi bật */
+    max-height: 95vh; /* Giới hạn chiều cao tối đa của modal */
+    margin-top: 0px;
+}
+
+/* Thêm một phần tử con để cho phép cuộn */
+.modal-content {
+    max-height: 95vh; /* Giới hạn chiều cao của phần nội dung */
+    overflow-y: scroll; /* Cho phép cuộn dọc trong phần nội dung */
+    padding-right: 15px; /* Tạo không gian cho nội dung cuộn */
+}
+
+/* Ẩn thanh cuộn */
+.modal-content::-webkit-scrollbar {
+    display: none; /* Ẩn thanh cuộn trong trình duyệt WebKit */
+}
+
+body.modal-open {
+    overflow: hidden; /* Tắt cuộn trang khi modal mở */
+}
+
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5); /* Màu nền mờ đằng sau modal */
+    z-index: 999; /* Đảm bảo nền mờ nằm dưới modal */
+    display: none; /* Mặc định ẩn */
+}

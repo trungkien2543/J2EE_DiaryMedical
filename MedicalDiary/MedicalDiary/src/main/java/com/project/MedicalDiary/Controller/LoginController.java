@@ -1,7 +1,9 @@
 package com.project.MedicalDiary.Controller;
 
 import com.project.MedicalDiary.Model.Account;
+import com.project.MedicalDiary.Model.Information;
 import com.project.MedicalDiary.Repository.AccountRepository;
+import com.project.MedicalDiary.Repository.InformationRepository;
 import com.project.MedicalDiary.Service.SendEmailService;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpSession;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.crypto.Cipher;
+import java.util.ArrayList;
 import java.util.Random;
 
 @Controller
@@ -28,6 +31,9 @@ public class LoginController {
     private AccountRepository accountRepository;
 
     @Autowired
+    private InformationRepository informationRepository;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
 
@@ -40,22 +46,21 @@ public class LoginController {
         return "login.html";
     }
 
+
+    // Xu ly phan quen mat khau
+
     @RequestMapping(value = "/forgot_password", method = RequestMethod.GET)
     public String LoadForgotPassword(Model model) {
         return "/pages/fragments/forgot_password";
     }
 
-    @RequestMapping(value = "/reset_password", method = RequestMethod.GET)
-    public String LoadResetPassword(Model model) {
-        return "/pages/fragments/reset_password";
-    }
 
     @RequestMapping(value = "/forgot_password", method = RequestMethod.POST)
     public String checkEmail(Model model, @RequestParam String email) {
         account = accountRepository.getAccountByUserName(email);
 
         if (account == null) {
-            model.addAttribute("errorMessage", "Email này chưa được đăng kí trong hệ thống");
+            model.addAttribute("errorMessage", "This email is not registered in the system");
             return "/pages/fragments/forgot_password";  // Trả về trực tiếp trang forgot_password
         } else {
 
@@ -70,11 +75,18 @@ public class LoginController {
                 sendEmailService.sendEmail(account.getEmail(), Long.toString(YourCode), "Mã code để đổi mật khẩu");
                 model.addAttribute("successMessage", "We will send code to your mail");
             } catch (MessagingException e) {
-                model.addAttribute("errorMessage", "Lỗi gửi email vui lòng chờ");
+                model.addAttribute("errorMessage", "Error sending email, please wait");
             }
 
             return "/pages/fragments/forgot_password";  // Trả về trực tiếp trang forgot_password
         }
+    }
+
+    // Xu ly phan reset password
+
+    @RequestMapping(value = "/reset_password", method = RequestMethod.GET)
+    public String LoadResetPassword(Model model) {
+        return "/pages/fragments/reset_password";
     }
 
     @RequestMapping(value = "/reset_password", method = RequestMethod.POST)
@@ -91,16 +103,40 @@ public class LoginController {
 
             }
             else{
-                model.addAttribute("errorMessage", "2 mật khẩu không giống nhau");
+                model.addAttribute("errorMessage", "The 2 passwords are not the same");
             }
         }
         else {
-            model.addAttribute("errorMessage", "Mã code bị sai");
+            model.addAttribute("errorMessage", "The code is wrong");
         }
 
 
         return "/pages/fragments/reset_password";
     }
+
+
+    // Xu ly phan dang ky tai khoan
+
+    @RequestMapping(value = "/register", method = RequestMethod.GET)
+    public String LoadRegister(Model model) {
+
+        ArrayList<Information> temp = (ArrayList<Information>) informationRepository.getAll();
+
+
+        // Kiểm tra xem dữ liệu có tồn tại không
+        if (temp == null || temp.isEmpty()) {
+            System.out.println("No data available in the list");
+        } else {
+            System.out.println("Data in list: " + temp);
+        }
+
+        model.addAttribute("list", temp);
+
+        return "register.html";
+
+    }
+
+
 
 
 
