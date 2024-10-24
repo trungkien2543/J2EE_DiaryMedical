@@ -11,7 +11,7 @@
   <div class="container text-center py-5">
     <h1 class="display-4">Track Your Health Journey</h1>
     <p class="lead">MediDiary helps you maintain a comprehensive record of your medical history, appointments, and wellness goals.</p>
-    <a href="#cta" class="btn btn-primary btn-lg">Get Started</a>
+    <a href="login" class="btn btn-primary btn-lg" sec:authorize="!isAuthenticated()">Get Started</a>
   </div>
 </header>
 
@@ -50,9 +50,9 @@
 
 <!-- Call to Action -->
 <section id="cta" class="bg-primary text-white py-5">
-  <div class="container text-center">
+  <div class="container text-center" >
     <h2 class="mb-4">Start Your Health Journey Today</h2>
-    <form class="form-inline justify-content-center">
+    <form class="form-inline justify-content-center" sec:authorize="!isAuthenticated()">
       <div class="form-group mb-2 mr-2">
         <label for="email" class="sr-only">Email</label>
         <input type="email" class="form-control" id="email" placeholder="Enter your email">

@@ -10,10 +10,10 @@
 <div class="container-fluid" th:fragment="content">
 
   <!-- Page Heading -->
-  <h1 class="h3 mb-2 text-gray-800">Người quan tâm</h1>
-  <p class="mb-4">Người mà mình quan tâm đến vấn đề sức khoẻ nhất .</p>
+  <h1 class="h3 mb-2 text-gray-800">Family member</h1>
+  <p class="mb-4">The person whose health I care about the most.</p>
   <div class="text-right mb-2 mx-3">
-    <button class="btn btn-primary family-add" type="button" data-toggle="modal" data-target="#AddQuanTam">Thêm người nhà</button>
+    <button class="btn btn-primary family-add" type="button" data-toggle="modal" data-target="#AddQuanTam">Add Family Member</button>
   </div>
   <!-- Data -->
   <div class="card shadow mb-4">
@@ -29,7 +29,7 @@
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="titleModal">Thêm người trong nhà</h5>
+              <h5 class="modal-title" id="titleModal">Add Family Member</h5>
               <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
@@ -38,52 +38,52 @@
               <div class="modal-body">
                 <div class="form-group">
                   <label for="CCCD">CCCD</label>
-                  <input type="text" class="form-control" id="CCCD" placeholder="Căn cước công dân">
+                  <input type="text" class="form-control" id="CCCD" placeholder="CCCD">
                 </div>
                 <div class="form-group">
-                  <label for="HoTen">Họ và tên</label>
-                  <input type="text" class="form-control" id="HoTen" placeholder="Họ và tên">
+                  <label for="HoTen">Full Name</label>
+                  <input type="text" class="form-control" id="HoTen" placeholder="Full name">
                 </div>
                 <div class="form-row">
                   <div class="form-group col-md-3">
-                    <label for="Gender">Giới tính</label>
+                    <label for="Gender">Gender</label>
                     <select class="form-control" id="Gender">
-                      <option value="1">Nam</option>
-                      <option value="0">Nữ</option>
+                      <option value="1">Male</option>
+                      <option value="0">Female</option>
                     </select>
                   </div>
                   <div class="form-group col-md-9">
-                    <label for="BHYT">BHYT</label>
-                    <input type="text" class="form-control" id="BHYT" placeholder="Bảo hiểm y tế">
+                    <label for="BHYT">Health Insurance</label>
+                    <input type="text" class="form-control" id="BHYT" placeholder="Health insurance">
                   </div>
                 </div>
                 <div class="form-row">
                   <div class="form-group col-md-6">
-                    <label for="Phone">Số điện thoại</label>
-                    <input type="text" class="form-control" id="Phone" placeholder="Số điện thoại">
+                    <label for="Phone">Phone</label>
+                    <input type="text" class="form-control" id="Phone" placeholder="Phone">
                   </div>
                   <div class="form-group col-md-6">
-                    <label for="Job">Nghề nghiệp</label>
-                    <input type="text" class="form-control" id="Job" placeholder="Nghề nghiệp">
+                    <label for="Job">Job</label>
+                    <input type="text" class="form-control" id="Job" placeholder="Job">
                   </div>
                 </div>
                 <div class="form-row">
                   <div class="form-group col-md-6">
-                    <label for="Department">Phòng ban</label>
-                    <input type="text" class="form-control" id="Department" placeholder="Phòng ban">
+                    <label for="Department">Department</label>
+                    <input type="text" class="form-control" id="Department" placeholder="Department">
                   </div>
                   <div class="form-group col-md-6">
-                    <label for="ID_Family">Hộ gia đình</label>
-                    <input type="text" class="form-control" id="ID_Family" placeholder="Hộ gia đình">
+                    <label for="ID_Family">Household Code</label>
+                    <input type="text" class="form-control" id="ID_Family" placeholder="Household code">
                   </div>
                 </div>
                 <div class="form-group">
-                  <label for="Address">Địa chỉ</label>
-                  <input type="text" class="form-control" id="Address" placeholder="Địa chỉ">
+                  <label for="Address">Address</label>
+                  <input type="text" class="form-control" id="Address" placeholder="Address">
                 </div>
                 <div class="form-group">
-                  <label for="Medical_History">Tiền sử bệnh</label>
-                  <textarea class="form-control" id="Medical_History" placeholder="Tiền sử bệnh"></textarea>
+                  <label for="Medical_History">Background medical history</label>
+                  <textarea class="form-control" id="Medical_History" placeholder="Background medical history"></textarea>
                 </div>
               </div>
               <div class="modal-footer">
@@ -104,13 +104,13 @@
           <thead>
           <tr>
             <th>CCCD</th>
-            <th>Họ tên</th>
-            <th>Giới tính</th>
-            <th>Công việc</th>
-            <th>Chức vụ</th>
-            <th>Địa chỉ</th>
+            <th>Full name</th>
+            <th>Gender</th>
+            <th>Job</th>
+            <th>Department</th>
+            <th>Address</th>
             <!--            <th>Status</th>-->
-            <th>Tác vụ</th>
+            <th>Action</th>
           </tr>
           </thead>
           <tbody>
