@@ -18,12 +18,21 @@ document.addEventListener('DOMContentLoaded', function () {
         dayMaxEvents: 3,  // Giới hạn số sự kiện hiển thị và hiển thị "+ more"
         selectable: true,
         nowIndicator: true,
+        eventLimitClick: 'day', // Hoặc xóa dòng này để tắt tính năng popover
         events: window.events || [],
 
         // Xử lý sự kiện khi click vào event
         eventClick: function (info) {
+            info.jsEvent.preventDefault();  // Sửa: Tắt popover mặc định
             var groupId = info.event.groupId; // Lấy groupId từ sự kiện được click
 
+            // Đóng bất kỳ popover nào đang mở
+            var popovers = document.querySelectorAll('.fc-popover');
+            popovers.forEach(function(popover) {
+                popover.style.display = 'none';  // Đóng popover
+            });
+
+            // Tiếp tục xử lý sự kiện
             fetch(`/getReceiptInfo`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },

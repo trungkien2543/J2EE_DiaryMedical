@@ -31,6 +31,7 @@ public class FamilyController {
         model.addAttribute("message", "Family");
         return "pages/fragments/family";
     }
+
     @GetMapping("/getDetail")
     @ResponseBody
     public ResponseEntity<Information> getDetail(@RequestParam String cccd) {

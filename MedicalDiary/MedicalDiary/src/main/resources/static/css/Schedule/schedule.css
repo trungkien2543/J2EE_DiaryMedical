@@ -110,7 +110,52 @@
             color: black;
             text-decoration:none;
         }
+        .checkbox-list {
+                    padding: 10px;
+                    border: 1px solid #ddd;
+                    border-radius: 5px;
+                    width: 100%;
+                    max-width: 300px;
+                }
 
+                .checkbox-list label {
+                    display: flex;
+                    align-items: center;
+                    margin-bottom: 10px;
+                    font-size: 1rem;
+                }
+
+                .checkbox-list input[type="checkbox"] {
+                    appearance: none;
+                    width: 18px;
+                    height: 18px;
+                    border: 2px solid #ccc;
+                    border-radius: 4px;
+                    margin-right: 10px;
+                    outline: none;
+                    cursor: pointer;
+                }
+
+                /* Tùy chỉnh màu khi checkbox được chọn */
+                .checkbox-list input[type="checkbox"]:checked {
+                    background-color: #1E88E5; /* Màu xanh (Lâm Hào Kiệt) */
+                    border-color: #1E88E5;
+                }
+
+                .checkbox-list input[type="checkbox"]:nth-of-type(2):checked {
+                    background-color: #43A047; /* Màu xanh lá (Birthdays) */
+                    border-color: #43A047;
+                }
+
+                .checkbox-list input[type="checkbox"]:nth-of-type(3):checked {
+                    background-color: #8E24AA; /* Màu tím (Gia đình) */
+                    border-color: #8E24AA;
+                }
+
+                .checkbox-list input[type="checkbox"]:nth-of-type(4):checked {
+                    background-color: #FB8C00; /* Màu cam (Tasks) */
+                    border-color: #FB8C00;
+                }
 
 
 

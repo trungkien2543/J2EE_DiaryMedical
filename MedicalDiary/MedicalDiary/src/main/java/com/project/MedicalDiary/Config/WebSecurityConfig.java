@@ -28,6 +28,7 @@ public class WebSecurityConfig {
      * */
 
     // Use BCrypt password encoder
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -99,4 +100,5 @@ public class WebSecurityConfig {
     //Giải mã cookie để lấy thông tin như username.
     //Sử dụng UserDetailsService để tải thông tin người dùng từ cơ sở dữ liệu (hoặc nơi bạn đã cấu hình để lưu trữ người dùng).
     //Nếu người dùng tồn tại, Spring Security sẽ tạo một phiên làm việc mới cho họ mà không cần yêu cầu họ nhập lại thông tin đăng nhập.
+
 }
