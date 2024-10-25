@@ -1,6 +1,6 @@
 package com.project.MedicalDiary.Service;
 
-import com.project.MedicalDiary.Model.RoomDetail;
+import com.project.MedicalDiary.Entity.RoomDetail;
 import com.project.MedicalDiary.Repository.RoomDetailRepository;
 import com.project.MedicalDiary.Service.Imp.RoomDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,34 +10,40 @@ import java.util.List;
 
 @Service
 public class RoomDetailServiceImp implements RoomDetailService {
-    private final RoomDetailRepository  roomDetailRepository;
+
+    private final RoomDetailRepository roomDetailRepository;
 
     @Autowired
     public RoomDetailServiceImp(RoomDetailRepository roomDetailRepository) {
         this.roomDetailRepository = roomDetailRepository;
     }
+
     @Override
-    public Boolean createRoomDetail(RoomDetail roomDetail) {
-        return roomDetailRepository.createRoomDetail(roomDetail);
+    public RoomDetail createRoomDetail(RoomDetail roomDetail) {
+        return roomDetailRepository.save(roomDetail);
     }
 
     @Override
     public List<RoomDetail> getAllRoomDetails() {
-        return roomDetailRepository.getAllRoomDetails();
+        return roomDetailRepository.findAll();
     }
 
     @Override
     public Boolean deleteRoomDetail(RoomDetail roomDetail) {
-        return roomDetailRepository.deleteRoomDetail(roomDetail);
+        if (roomDetailRepository.existsById(Long.valueOf(roomDetail.getIDRoom()))) {
+            roomDetailRepository.delete(roomDetail);
+            return true; // Deletion successful
+        }
+        return false; // RoomDetail does not exist
     }
 
     @Override
-    public Boolean updateRoomDetail(RoomDetail roomDetail) {
-        return roomDetailRepository.updateRoomDetail(roomDetail);
+    public RoomDetail updateRoomDetail(RoomDetail roomDetail) {
+        return roomDetailRepository.save(roomDetail);
     }
 
     @Override
     public List<RoomDetail> getAllRoomDetailsByRoomID(String idRoom) {
-        return roomDetailRepository.getAllRoomDetailsByIdRoom(idRoom);
+        return roomDetailRepository.findByIDRoom(idRoom);
     }
 }

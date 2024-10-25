@@ -1,7 +1,7 @@
 package com.project.MedicalDiary.Service;
 
-import com.project.MedicalDiary.Model.Family;
-import com.project.MedicalDiary.Repository.FamilyReponsitory;
+import com.project.MedicalDiary.Entity.Family;
+import com.project.MedicalDiary.Repository.FamilyRepository;
 import com.project.MedicalDiary.Service.Imp.FamilyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,36 +11,45 @@ import java.util.Optional;
 
 @Service
 public class FamilyServiceImp implements FamilyService {
-    private final FamilyReponsitory familyReponsitory;
+
+    private final FamilyRepository familyRepository;
 
     @Autowired
-    public FamilyServiceImp(FamilyReponsitory familyReponsitory) {
-        this.familyReponsitory = familyReponsitory;
+    public FamilyServiceImp(FamilyRepository familyRepository) {
+        this.familyRepository = familyRepository;
     }
 
     @Override
     public Optional<Family> findByID(long id) {
-        return familyReponsitory.findByID(id);
+        return familyRepository.findById(id);
     }
 
     @Override
     public Family createFamily(Family family) {
-        return familyReponsitory.createFamily(family);
+        return familyRepository.save(family);
     }
 
     @Override
     public List<Family> getAll() {
-        return familyReponsitory.getAll();
+        return familyRepository.findAll();
     }
 
     @Override
     public boolean updateFamily(Family family) {
-        return familyReponsitory.updateFamily(family);
+        // You may want to check if the family exists before saving
+        if (familyRepository.existsById(family.getIDFamily())) {
+            familyRepository.save(family);
+            return true;
+        }
+        return false; // Family does not exist, so update is not possible
     }
 
     @Override
     public boolean deleteFamily(Family family) {
-        return familyReponsitory.deleteFamily(family);
+        if (familyRepository.existsById(family.getIDFamily())) {
+            familyRepository.delete(family);
+            return true; // Deletion successful
+        }
+        return false; // Family does not exist, so deletion is not possible
     }
-
 }

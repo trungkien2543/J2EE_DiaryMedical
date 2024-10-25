@@ -1,12 +1,13 @@
 package com.project.MedicalDiary.Controller;
 
-import com.project.MedicalDiary.Model.Account;
-import com.project.MedicalDiary.Model.Information;
+import com.project.MedicalDiary.Entity.Account;
+import com.project.MedicalDiary.Entity.Information;
 import com.project.MedicalDiary.Repository.AccountRepository;
 import com.project.MedicalDiary.Repository.InformationRepository;
+import com.project.MedicalDiary.Service.AccountServiceImp;
+import com.project.MedicalDiary.Service.InformationServiceImp;
 import com.project.MedicalDiary.Service.SendEmailService;
 import jakarta.mail.MessagingException;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.crypto.Cipher;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -28,10 +28,10 @@ public class LoginController {
     private Account account = null;
 
     @Autowired
-    private AccountRepository accountRepository;
+    private AccountServiceImp accountServiceImp;
 
     @Autowired
-    private InformationRepository informationRepository;
+    private InformationServiceImp informationServiceImp;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -57,7 +57,7 @@ public class LoginController {
 
     @RequestMapping(value = "/forgot_password", method = RequestMethod.POST)
     public String checkEmail(Model model, @RequestParam String email) {
-        account = accountRepository.getAccountByUserName(email);
+        account = accountServiceImp.findByEmail(email).get();
 
         if (account == null) {
             model.addAttribute("errorMessage", "This email is not registered in the system");
@@ -97,9 +97,9 @@ public class LoginController {
 
                 model.addAttribute("successMessage", "We will send code to your mail");
 
-                account.setPassWord(passwordEncoder.encode(NewPassword));
+                account.setPassword(passwordEncoder.encode(NewPassword));
 
-                accountRepository.updateAccount(account);
+                accountServiceImp.updateAccount(account);
 
             }
             else{
@@ -120,7 +120,7 @@ public class LoginController {
     @RequestMapping(value = "/register", method = RequestMethod.GET)
     public String LoadRegister(Model model) {
 
-        ArrayList<Information> temp = (ArrayList<Information>) informationRepository.getAll();
+        ArrayList<Information> temp = (ArrayList<Information>) informationServiceImp.getAll();
 
 
         // Kiểm tra xem dữ liệu có tồn tại không

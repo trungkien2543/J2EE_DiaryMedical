@@ -1,6 +1,6 @@
 package com.project.MedicalDiary.Service;
 
-import com.project.MedicalDiary.Model.Information;
+import com.project.MedicalDiary.Entity.Information;
 import com.project.MedicalDiary.Repository.InformationRepository;
 import com.project.MedicalDiary.Service.Imp.InformationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,33 +18,41 @@ public class InformationServiceImp implements InformationService {
     public InformationServiceImp(InformationRepository informationRepository) {
         this.informationRepository = informationRepository;
     }
+
     @Override
     public List<Information> getAll() {
-        return informationRepository.getAll();
+        return informationRepository.findAll();
     }
 
     @Override
-    public List<Information> findByIDFamily(long idFamily) {
-        return informationRepository.findByIDFamily(idFamily);
+    public List<Information> findByFamily_IDFamily(Long idFamily) {
+        return informationRepository.findByFamily_IDFamily(idFamily);
     }
-
     @Override
     public Optional<Information> findByCCCD(String cccd) {
         return informationRepository.findByCCCD(cccd);
     }
 
     @Override
-    public Boolean createInformation(Information information) {
-        return informationRepository.createInformation(information);
-    }
-
-    @Override
-    public Boolean updateInformation(Information information) {
-        return informationRepository.updateInformation(information);
+    public Information createInformation(Information information) {
+        return informationRepository.save(information);
     }
 
     @Override
     public Boolean deleteInformation(Information information) {
-        return informationRepository.deleteInformation(information);
+        if (informationRepository.existsById(information.getCCCD())) {
+            informationRepository.delete(information);
+            return true; // Deletion successful
+        }
+        return false; // Information does not exist
+    }
+
+    @Override
+    public Boolean updateInformation(Information information) {
+        if (informationRepository.existsById(information.getCCCD())) {
+            informationRepository.save(information);
+            return true; // Update successful
+        }
+        return false; // Information does not exist
     }
 }

@@ -1,7 +1,8 @@
 package com.project.MedicalDiary.Controller;
 
-import com.project.MedicalDiary.Model.Receipt;
+import com.project.MedicalDiary.Entity.Receipt;
 import com.project.MedicalDiary.Repository.ReceiptRepository;
+import com.project.MedicalDiary.Service.ReceiptServiceImp;
 import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,7 +19,7 @@ import java.util.Map;
 public class ScheduleController {
 
     @Autowired
-    private ReceiptRepository rRe;
+    private ReceiptServiceImp rRe;
 
     @GetMapping("/schedule")
     public String reicept( Model model) {
@@ -35,11 +36,15 @@ public class ScheduleController {
         String groupId = request.get("groupId");
 
         // Gọi service để lấy thông tin receipt dựa trên groupId
-        Receipt receipt = rRe.getReceiptById(groupId);
+        //HUYNH QUOC TIEN
+//        Receipt receipt = rRe.getReceiptById(groupId).get();
+        Receipt receipt = rRe.getReceiptById(groupId).get();
 
         if (receipt != null) {
             // Tạo DTO để trả về dưới dạng JSON
-            Receipt receiptDTO = new Receipt(receipt.getIdPatient(),receipt.getIdDoctor(), receipt.getPlace(), receipt.getDate());
+//            HUYNH QUOC TIEN
+//            Receipt receiptDTO = new Receipt(receipt.getIdPatient(),receipt.getIdDoctor(), receipt.getPlace(), receipt.getDate());
+            Receipt receiptDTO = new Receipt(receipt.getPatient(),receipt.getDoctor(), receipt.getPlace(), receipt.getDate());
             return ResponseEntity.ok(receiptDTO); // Trả về thông tin Receipt dưới dạng JSON
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); // Trả về lỗi nếu không tìm thấy receipt

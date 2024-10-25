@@ -1,23 +1,28 @@
-package com.project.MedicalDiary.Model;
+package com.project.MedicalDiary.Entity;
 
+import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.List;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
+@Entity
+@Table(name = "account")
 public class Account implements UserDetails {
 
-    private Long ID_Family;
+    @Id
+    @Column(name = "ID_Family")
+    private Long IDFamily;
 
-    private String passWord;
+    @Column(name = "PassWord")
+    private String password; // Ensure this is named correctly
 
+    @Column(name = "Email", unique = true, nullable = false)
     private String email;
 
     @Override
@@ -27,11 +32,15 @@ public class Account implements UserDetails {
 
     @Override
     public String getPassword() {
-        return passWord;
+        return password;
     }
 
     @Override
     public String getUsername() {
         return email;
     }
+    // Liên kết với Family bằng khóa ngoại ID_Family
+    @ManyToOne
+    @JoinColumn(name = "ID_Family", insertable = false, updatable = false)
+    private Family family;
 }
