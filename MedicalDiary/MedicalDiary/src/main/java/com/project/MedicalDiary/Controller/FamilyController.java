@@ -43,7 +43,7 @@ public class FamilyController {
     public ResponseEntity<Information> getDetail(@RequestParam String cccd) {
         System.out.println("Received id: " + cccd); // Debugging log
         Optional<Information> informationOptional = informationService.findByCCCD(cccd);
-
+        System.out.println("Information : " + informationOptional.get());
         if (informationOptional.isPresent()) {
             return ResponseEntity.ok(informationOptional.get());
         } else {

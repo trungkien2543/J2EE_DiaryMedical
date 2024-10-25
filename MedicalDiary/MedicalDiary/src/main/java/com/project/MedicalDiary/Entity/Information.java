@@ -1,11 +1,13 @@
 package com.project.MedicalDiary.Entity;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
+@ToString(exclude = "family")
 @Entity
 @Table(name = "information")
 public class Information {
@@ -38,11 +40,9 @@ public class Information {
     @Column(name = "Medical_History")
     private String MedicalHistory;
 
-//    @Column(name = "ID_Family")
-//    private Long ID_Family;
-
-    @ManyToOne // Indicates the relationship type
-    @JoinColumn(name = "ID_Family", referencedColumnName = "ID_Family") // Specify foreign key column
+    @ManyToOne
+    @JoinColumn(name = "ID_Family", referencedColumnName = "ID_Family") // This links to ID_Family in Family
+    @JsonManagedReference
     private Family family;
 }
 

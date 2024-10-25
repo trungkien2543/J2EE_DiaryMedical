@@ -1,3 +1,4 @@
+
 $(document).on("click", ".family-detail", function () {
     let cccd = $(this).data("id");
     $("#titleModal").text("Xem chi tiết");
@@ -11,6 +12,7 @@ $(document).on("click", ".family-detail", function () {
         },
         dataType: "json",
         success: function (response) {
+            console.log(response);
             // Cập nhật giá trị cho các trường thông tin
             $("#CCCD").val(response.cccd);
             $("#CCCD").prop("disabled", true);
@@ -38,19 +40,19 @@ $(document).on("click", ".family-detail", function () {
             $("#Address").val(response.address); // Nếu bạn có trường này trong response
             $("#Address").prop("disabled",true);
 
-            $("#Medical_History").val(response.medical_history); // Nếu bạn có trường này trong response
+            $("#Medical_History").val(response.medicalHistory); // Nếu bạn có trường này trong response
             $("#Medical_History").prop("disabled",true);
             $.ajax({
                 type : "get",
                 url: "./family/getFamilyByID",
                 data: {
-                    IDFamily: response.IDFamily,
+                    iD_Family: response.family.idfamily,
                 },
                 dataType: "json",
                 success: function (res) {
-                    $("#IDFamily").val(response.IDFamily +" - " + res.name); // Nếu bạn có trường này trong response
+                    $("#IDFamily").val(response.family.idfamily +" - " + res.name); // Nếu bạn có trường này trong response
                     $("#IDFamily").prop("disabled",true);
-                    $("#idfml").val(response.IDFamily);
+                    $("#idfml").val(response.family.idfamily);
                     $("#namefml").val(res.name);
                 }
 
@@ -89,9 +91,9 @@ $(document).on("click",".family-add",function (){
     $("#titleModal").text("Add Family Member");
     $("#btn-saves").show();
     $("#btn-updates").hide();
-    let id = $("#idfml").val();
-    let name = $("#namefml").val();
-    $("#IDFamily").val(id + " - " + name);
+    let idFML = $("#idfml").val();
+    let nameFML = $("#namefml").val();
+    $("#IDFamily").val(idFML + " - " + nameFML);
     $("#IDFamily").prop("disabled",true);
 });
 
@@ -137,7 +139,7 @@ $(document).on("click",".family-edit",function (){
         type: "get",
         url: "./family/getDetail",
         data: {
-            CCCD: cccd,
+            cccd: cccd,
         },
         dataType: "json",
         success: function (response) {
@@ -168,19 +170,19 @@ $(document).on("click",".family-edit",function (){
             $("#Address").val(response.address); // Nếu bạn có trường này trong response
             $("#Address").prop("disabled",false);
 
-            $("#Medical_History").val(response.medical_history); // Nếu bạn có trường này trong response
+            $("#Medical_History").val(response.medicalHistory); // Nếu bạn có trường này trong response
             $("#Medical_History").prop("disabled",false);
             $.ajax({
                 type : "get",
                 url: "./family/getFamilyByID",
                 data: {
-                    IDFamily: response.IDFamily,
+                    iDFamily: response.family.idfamily,
                 },
                 dataType: "json",
                 success: function (res) {
-                    $("#IDFamily").val(response.IDFamily +" - " + res.name); // Nếu bạn có trường này trong response
+                    $("#IDFamily").val(response.family.idfamily +" - " + res.name); // Nếu bạn có trường này trong response
                     $("#IDFamily").prop("disabled",true);
-                    $("#idfml").val(response.IDFamily);
+                    $("#idfml").val(response.family.idfamily);
                     $("#namefml").val(res.name);
                 }
 
@@ -226,11 +228,4 @@ $(document).on("click","#btn-updates",function (e){
             console.error("Response Text:", jqXHR.responseText);
         }
     });
-});
-$(document).ready(function(){
-
-    $('#btn-test').on('click',function(){
-        notify('success', 'Message updated successfully', 'Update family member successfully.');
-    });
-
 });
