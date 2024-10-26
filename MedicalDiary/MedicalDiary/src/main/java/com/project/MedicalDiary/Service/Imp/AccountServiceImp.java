@@ -1,8 +1,8 @@
-package com.project.MedicalDiary.Service;
+package com.project.MedicalDiary.Service.Imp;
 
 import com.project.MedicalDiary.Entity.Account;
 import com.project.MedicalDiary.Repository.AccountRepository;
-import com.project.MedicalDiary.Service.Imp.AccountService;
+import com.project.MedicalDiary.Service.ImpInterface.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,7 +41,7 @@ public class AccountServiceImp implements AccountService {
     }
 
     @Override
-    public boolean deleteAccount(Long accountId) {
+    public boolean deleteAccount(String accountId) {
         if (accountRepository.existsById(accountId)) {
             accountRepository.deleteById(accountId);
             return true; // Deletion successful

@@ -19,7 +19,7 @@ import java.util.Collection;
 public class Account implements UserDetails {
 
     @Id
-    @Column(name = "Email", unique = true, nullable = false)
+    @Column(name = "Email", nullable = false)
     private String email;
 
     @Column(name = "ID_Family")
@@ -43,9 +43,18 @@ public class Account implements UserDetails {
     public String getUsername() {
         return email;
     }
+
+
     // Liên kết với Family bằng khóa ngoại ID_Family
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ID_Family", insertable = false, updatable = false)
     @JsonManagedReference
     private Family family;
+
+
+    public Account(String email, Long IDFamily, String password) {
+        this.email = email;
+        this.IDFamily = IDFamily;
+        this.password = password;
+    }
 }

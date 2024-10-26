@@ -16,7 +16,8 @@ import java.util.List;
 public class Family {
 
     @Id
-    @Column(name = "ID_Family")
+    @Column(name = "ID_Family" )
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Hoặc GenerationType.AUTO
     private Long IDFamily;
 
     @Column(name = "Name", nullable = false)
@@ -27,6 +28,10 @@ public class Family {
     @OneToOne(mappedBy = "family", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonBackReference
     private Account accounts;
+
+    public Family(String name) {
+        Name = name;
+    }
 
     // Liên kết ngược với Information
 //    @OneToMany(mappedBy = "family", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

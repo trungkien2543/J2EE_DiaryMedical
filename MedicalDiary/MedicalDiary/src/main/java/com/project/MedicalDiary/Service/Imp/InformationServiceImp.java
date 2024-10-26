@@ -1,8 +1,8 @@
-package com.project.MedicalDiary.Service;
+package com.project.MedicalDiary.Service.Imp;
 
 import com.project.MedicalDiary.Entity.Information;
 import com.project.MedicalDiary.Repository.InformationRepository;
-import com.project.MedicalDiary.Service.Imp.InformationService;
+import com.project.MedicalDiary.Service.ImpInterface.InformationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

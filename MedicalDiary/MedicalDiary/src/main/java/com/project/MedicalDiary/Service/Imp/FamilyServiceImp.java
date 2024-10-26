@@ -1,8 +1,8 @@
-package com.project.MedicalDiary.Service;
+package com.project.MedicalDiary.Service.Imp;
 
 import com.project.MedicalDiary.Entity.Family;
 import com.project.MedicalDiary.Repository.FamilyRepository;
-import com.project.MedicalDiary.Service.Imp.FamilyService;
+import com.project.MedicalDiary.Service.ImpInterface.FamilyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -52,4 +52,5 @@ public class FamilyServiceImp implements FamilyService {
         }
         return false; // Family does not exist, so deletion is not possible
     }
+
 }

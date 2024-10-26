@@ -1,8 +1,7 @@
 package com.project.MedicalDiary.Controller;
 
 import com.project.MedicalDiary.Entity.Receipt;
-import com.project.MedicalDiary.Repository.ReceiptRepository;
-import com.project.MedicalDiary.Service.ReceiptServiceImp;
+import com.project.MedicalDiary.Service.Imp.ReceiptServiceImp;
 import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

@@ -1,8 +1,8 @@
-package com.project.MedicalDiary.Service;
+package com.project.MedicalDiary.Service.Imp;
 
 import com.project.MedicalDiary.Entity.RoomDetail;
 import com.project.MedicalDiary.Repository.RoomDetailRepository;
-import com.project.MedicalDiary.Service.Imp.RoomDetailService;
+import com.project.MedicalDiary.Service.ImpInterface.RoomDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

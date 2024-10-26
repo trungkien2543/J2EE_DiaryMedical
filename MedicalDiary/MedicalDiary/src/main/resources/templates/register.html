@@ -217,6 +217,39 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script th:inline="javascript">
+
+
+    let errorMessage = /*[[${errorMessage}]]*/ null; // Lấy giá trị errorMessage từ server
+
+    let isError = errorMessage !== null;
+
+    if (isError) {
+        Swal.fire({
+            title: 'Error',
+            text: errorMessage, // Chèn nội dung errorMessage vào text
+            icon: 'error',
+            confirmButtonText: 'OK'
+        });
+    }
+
+    let isSuccess = /*[[${successMessage != null}]]*/ false;
+
+    if (isSuccess) {
+        Swal.fire({
+            title: 'Success',
+            text: 'The account has been successfully registered',
+            icon: 'success',
+            confirmButtonText: 'OK'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '/login'; // Chuyển hướng đến trang mong muốn
+            }
+        });
+    }
+
+
+
+
     // Lưu danh sách vào biến toàn cục để có thể truy cập từ file JS bên ngoài
     var membersList = /*[[${list}]]*/ [];
 
@@ -224,11 +257,14 @@
     // Danh sach nguoi dung se them
     const membersRegister = /*[[${familyMemberList}]]*/ [];
 
-    renderMembers(membersRegister);
 
     console.log(membersList)
 
     console.log(membersRegister)
+
+    renderMembers(membersRegister);
+
+
 </script>
 
 

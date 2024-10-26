@@ -1,13 +1,12 @@
-package com.project.MedicalDiary.Service;
+package com.project.MedicalDiary.Service.Imp;
 
 import com.project.MedicalDiary.Entity.Information;
 import com.project.MedicalDiary.Entity.Room;
 import com.project.MedicalDiary.Repository.RoomRepository;
-import com.project.MedicalDiary.Service.Imp.RoomService;
+import com.project.MedicalDiary.Service.ImpInterface.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

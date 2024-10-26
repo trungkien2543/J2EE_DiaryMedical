@@ -1,4 +1,4 @@
-package com.project.MedicalDiary.Service.Imp;
+package com.project.MedicalDiary.Service.ImpInterface;
 
 import com.project.MedicalDiary.Entity.Family;
 

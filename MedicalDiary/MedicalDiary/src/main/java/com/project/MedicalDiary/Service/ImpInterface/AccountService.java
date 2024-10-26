@@ -1,4 +1,4 @@
-package com.project.MedicalDiary.Service.Imp;
+package com.project.MedicalDiary.Service.ImpInterface;
 
 import com.project.MedicalDiary.Entity.Account;
 
@@ -12,6 +12,6 @@ public interface AccountService {
 //    Optional<Account> findByUsername(String username);
     Optional<Account> findByEmailAndPassword(String email, String password);
 //    Optional<Account> findByUsernameAndPassword(String username, String password);
-    boolean deleteAccount(Long accountId);
+ boolean deleteAccount(String accountId);
     Account updateAccount(Account account);
 }
