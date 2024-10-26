@@ -29,7 +29,7 @@ public class Family {
     private Account accounts;
 
     // Liên kết ngược với Information
-    @OneToMany(mappedBy = "family", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonBackReference  // This will serialize the list of Information objects
-    private List<Information> informations; // Update this to refer to the Information entity
+//    @OneToMany(mappedBy = "family", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    @JsonBackReference  // This will serialize the list of Information objects
+//    private List<Information> informations; // Update this to refer to the Information entity
 }

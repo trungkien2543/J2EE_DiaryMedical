@@ -1,5 +1,6 @@
 package com.project.MedicalDiary.Entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -40,9 +41,13 @@ public class Information {
     @Column(name = "Medical_History")
     private String MedicalHistory;
 
-    @ManyToOne
-    @JoinColumn(name = "ID_Family", referencedColumnName = "ID_Family") // This links to ID_Family in Family
-    @JsonManagedReference
-    private Family family;
+    @Column(name = "ID_Family")
+    private Long IDFamily;
+
+//    @ManyToOne(cascade = CascadeType.ALL)
+//    @JoinColumn(name = "ID_Family", referencedColumnName = "ID_Family") // This links to ID_Family in Family
+//    @JsonIgnore
+//    private Family family;
+
 }
 

@@ -7,6 +7,7 @@ import com.project.MedicalDiary.Service.Imp.FamilyService;
 import com.project.MedicalDiary.Service.Imp.InformationService;
 import lombok.*;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -41,9 +42,9 @@ public class FamilyController {
     @GetMapping("/getDetail")
     @ResponseBody
     public ResponseEntity<Information> getDetail(@RequestParam String cccd) {
-        System.out.println("Received id: " + cccd); // Debugging log
+        System.out.println("Received CCCD: " + cccd); // Debugging log
         Optional<Information> informationOptional = informationService.findByCCCD(cccd);
-        System.out.println("Information : " + informationOptional.get());
+        System.out.println("Information GETDETAIL: " + informationOptional.get());
         if (informationOptional.isPresent()) {
             return ResponseEntity.ok(informationOptional.get());
         } else {
@@ -53,7 +54,7 @@ public class FamilyController {
     @GetMapping("/getFamilyByID")
     @ResponseBody
     public ResponseEntity<Family> getFamilyByID(@RequestParam long iD_Family) {
-        System.out.println("Received id: " + iD_Family); // Debugging log
+        System.out.println("Received idFML: " + iD_Family); // Debugging log
         Optional<Family> familyOptional = familyService.findByID(iD_Family);
 
         if (familyOptional.isPresent()) {
@@ -62,12 +63,13 @@ public class FamilyController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
-//    @RequestMapping(value = "/add",method = {RequestMethod.POST,RequestMethod.PUT ,RequestMethod.GET})
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    @RequestMapping(value = "/add",method = {RequestMethod.POST,RequestMethod.PUT ,RequestMethod.GET})
+//    @RequestMapping(value = "/add", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<Information> createInformation(@RequestBody Information information) {
         // Save the family object to the database
         Information createdInformation = informationService.createInformation(information);
+        System.out.println("ADD Info : " + information); // Debugging log
 
         // Return a response with the created family and a status code
         return new ResponseEntity<>(createdInformation, HttpStatus.CREATED);

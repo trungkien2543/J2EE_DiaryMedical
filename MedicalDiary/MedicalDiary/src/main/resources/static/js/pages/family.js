@@ -46,13 +46,13 @@ $(document).on("click", ".family-detail", function () {
                 type : "get",
                 url: "./family/getFamilyByID",
                 data: {
-                    iD_Family: response.family.idfamily,
+                    iD_Family: response.idfamily,
                 },
                 dataType: "json",
                 success: function (res) {
-                    $("#IDFamily").val(response.family.idfamily +" - " + res.name); // Nếu bạn có trường này trong response
+                    $("#IDFamily").val(response.idfamily +" - " + res.name); // Nếu bạn có trường này trong response
                     $("#IDFamily").prop("disabled",true);
-                    $("#idfml").val(response.family.idfamily);
+                    $("#idfml").val(response.idfamily);
                     $("#namefml").val(res.name);
                 }
 
@@ -100,28 +100,35 @@ $(document).on("click",".family-add",function (){
 $(document).on("click","#btn-saves",function (e){
     e.preventDefault();
     const information = {
-        CCCD: $("#CCCD").val(),
-        Name: $("#HoTen").val(),
-        Gender: parseInt($("#Gender").val(), 10),
-        BHYT: $("#BHYT").val(),
-        Phone: $("#Phone").val(),
-        Job: $("#Job").val(),
-        Department: $("#Department").val(),
-        Address: $("#Address").val(),
-        MedicalHistory: $("#Medical_History").val(),
-        IDFamily: $("#idfml").val()
+        cccd: $("#CCCD").val(),
+        name: $("#HoTen").val(),
+        gender: parseInt($("#Gender").val(), 10),
+        nhyt: $("#BHYT").val(),
+        phone: $("#Phone").val(),
+        job: $("#Job").val(),
+        department: $("#Department").val(),
+        address: $("#Address").val(),
+        medicalHistory: $("#Medical_History").val(),
+        idfamily: parseInt($("#idfml").val(), 10),
+
+        // family : {
+        //     idfamily: parseInt($("#idfml").val(), 10),
+        //     name: $("#namefml").val()
+        // }
+        // iDFamily: parseInt($("#idfml").val(), 10)
+
     };
     console.log(information);
     $.ajax({
         type: "POST",
         url: `./family/add`,
         data: JSON.stringify(information), // Gửi dữ liệu dưới dạng JSON
-        contentType: "application/json", // Đảm bảo rằng bạn đã chỉ định đúng contentType
+        contentType: 'application/json', // Đảm bảo rằng bạn đã chỉ định đúng contentType
         dataType: "json", // Thêm header để server biết đây là JSON
         success: function (response) {
             console.log("Information created: :" + response);
-            notify('success', 'Message Add sucessfully', 'Add new family member successfully');
             window.location.href ="/family?add-success-member"
+            notify('success', 'Message Add sucessfully', 'Add new family member successfully');
             $("#modal-add-user").modal("hide");
         },
         error: function (jqXHR, textStatus, errorThrown) {
@@ -176,13 +183,13 @@ $(document).on("click",".family-edit",function (){
                 type : "get",
                 url: "./family/getFamilyByID",
                 data: {
-                    iDFamily: response.family.idfamily,
+                    iDFamily: response.idfamily,
                 },
                 dataType: "json",
                 success: function (res) {
-                    $("#IDFamily").val(response.family.idfamily +" - " + res.name); // Nếu bạn có trường này trong response
+                    $("#IDFamily").val(response.idfamily +" - " + res.name); // Nếu bạn có trường này trong response
                     $("#IDFamily").prop("disabled",true);
-                    $("#idfml").val(response.family.idfamily);
+                    $("#idfml").val(response.idfamily);
                     $("#namefml").val(res.name);
                 }
 
@@ -210,7 +217,7 @@ $(document).on("click","#btn-updates",function (e){
         department: $("#Department").val(),
         address: $("#Address").val(),
         medicalHistory: $("#Medical_History").val(),
-        IDFamily: $("#idfml").val()
+        idfamily: parseInt($("#idfml").val(), 10),
     };
     $.ajax({
         type: "post",
@@ -220,6 +227,7 @@ $(document).on("click","#btn-updates",function (e){
         dataType: "json",
         success: function (response) {
             console.log("response :" + response);
+            window.location.href ="/family?update-success-member"
             notify('success', 'Message updated successfully', 'Update family member successfully.');
             $("#modal-add-user").modal("hide");
         },

@@ -26,7 +26,7 @@ public class InformationServiceImp implements InformationService {
 
     @Override
     public List<Information> findByFamily_IDFamily(Long idFamily) {
-        return informationRepository.findByFamily_IDFamily(idFamily);
+        return informationRepository.findByIDFamily(idFamily);
     }
     @Override
     public Optional<Information> findByCCCD(String cccd) {

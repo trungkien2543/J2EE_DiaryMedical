@@ -9,6 +9,6 @@ import java.util.Optional;
 
 @Repository
 public interface InformationRepository extends JpaRepository<Information, String> {
-    List<Information> findByFamily_IDFamily(Long idFamily);
+    List<Information> findByIDFamily(Long idFamily);
     Optional<Information> findByCCCD(String cccd);
 }
