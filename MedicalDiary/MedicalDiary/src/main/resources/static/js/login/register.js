@@ -21,20 +21,27 @@ function hideForm() {
     document.querySelector('.modal-backdrop').style.display = 'none';
     document.body.classList.remove('modal-open');
 
-    // Xóa giá trị của các trường để nhập thành viên tiếp theo
-    document.getElementById('familyFormedit').reset();
+    resetForm();
 
 }
 
-// Danh sach nguoi dung se them
-const members = [];
+function resetForm() {
+    document.getElementById('CCCD').value = ''; // Reset CCCD
+    document.getElementById('HoTen').value = ''; // Reset Full Name
+    document.getElementById('Gender').selectedIndex = 0; // Reset Gender về Male (giá trị 1)
+    document.getElementById('BHYT').value = ''; // Reset Health Insurance
+    document.getElementById('Phone').value = ''; // Reset Phone
+    document.getElementById('Job').value = ''; // Reset Job
+    document.getElementById('Department').value = ''; // Reset Department
+    document.getElementById('Address').value = ''; // Reset Address
+    document.getElementById('Medical_History').value = ''; // Reset Medical History
+}
+
+
+
 
 
 let indexUser = 0;
-
-
-
-
 
 // Hàm thêm thành viên vào bảng
 function renderMembers(members) {
@@ -45,15 +52,42 @@ function renderMembers(members) {
         const row = document.createElement('tr');
 
         row.innerHTML = `
-            <td>${member.cccd}</td>
-            <td>${member.name}</td>
-            <td>${member.gender === '1' ? 'Nam' : 'Nữ'}</td>
-            <td>${member.healthInsurance}</td>
-            <td>${member.phone}</td>
-            <td>${member.job}</td>
-            <td>${member.department}</td>
-            <td>${member.address}</td>
-            <td>${member.medicalHistory}</td>
+            <td>
+                <div>${member.cccd}</div>
+                <input type="hidden" name="familyMembers[${index}].cccd" value="${member.cccd}" />
+            </td>
+            <td>
+                <div>${member.name}</div>
+                <input type="hidden" name="familyMembers[${index}].name" value="${member.name}" />
+            </td>
+            <td>
+                <div>${member.gender === '1' ? 'Nam' : 'Nữ'}</div>
+                <input type="hidden" name="familyMembers[${index}].gender" value="${member.gender}" />
+            </td>
+            <td>
+                <div>${member.healthInsurance}</div>
+                <input type="hidden" name="familyMembers[${index}].healthInsurance" value="${member.healthInsurance}" />
+            </td>
+            <td>
+                <div>${member.phone}</div>
+                <input type="hidden" name="familyMembers[${index}].phone" value="${member.phone}" />
+            </td>
+            <td>
+                <div>${member.job}</div>
+                <input type="hidden" name="familyMembers[${index}].job" value="${member.job}" />
+            </td>
+            <td>
+                <div>${member.department}</div>
+                <input type="hidden" name="familyMembers[${index}].department" value="${member.department}" />
+            </td>
+            <td>
+                <div>${member.address}</div>
+                <input type="hidden" name="familyMembers[${index}].address" value="${member.address}" />
+            </td>
+            <td>
+                <div>${member.medicalHistory}</div>
+                <input type="hidden" name="familyMembers[${index}].medicalHistory" value="${member.medicalHistory}" />
+            </td>
             <td>
                 <button data-id="${member.cccd}" class="btn btn-datatable btn-icon btn-transparent-dark me-2 px-1 family-edit" data-placement="top" title="Sửa" data-toggle="modal" data-target="#AddQuanTam">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
@@ -77,8 +111,7 @@ function renderMembers(members) {
             var cccd = this.getAttribute('data-id');
             console.log('Sửa với CCCD:', cccd);
             // Thực hiện các hành động cần thiết với cccd
-
-            editInfo(cccd)
+            editInfo(cccd);
         });
 
         // Gán sự kiện cho nút xóa
@@ -86,15 +119,9 @@ function renderMembers(members) {
             var cccd = this.getAttribute('data-id');
             console.log('Xóa với CCCD:', cccd);
             // Thực hiện các hành động cần thiết với cccd
-
-            deleteInfo(cccd)
-
+            deleteInfo(cccd);
         });
-
-        tbody.appendChild(row);
     });
-
-
 }
 
 
@@ -102,43 +129,22 @@ function renderMembers(members) {
 // Xu ly them thong tin nguoi dung tu form
 
 document.getElementById('btn-saves').addEventListener('click', function () {
-    const member = {
-        name: document.getElementById('HoTen').value,
-        cccd: document.getElementById('CCCD').value,
-        gender: document.getElementById('Gender').value,
-        healthInsurance: document.getElementById('BHYT').value,
-        phone: document.getElementById('Phone').value,
-        job: document.getElementById('Job').value,
-        department: document.getElementById('Department').value,
-        address: document.getElementById('Address').value,
-        medicalHistory: document.getElementById('Medical_History').value
-    };
 
-    for (let index = 0; index < membersList.length; index++) {
-        const memberInDB = membersList[index];
-        if (memberInDB.cccd == member.cccd) {
-            Swal.fire({
-                title: 'Error',
-                text: 'User information registered to another family',
-                icon: 'error',
-                confirmButtonText: 'OK',
-            }).then((result) => {
-                // Thoát khỏi hàm sau khi thông báo được hiển thị
-                return; // Kết thúc hàm
+    const member = GetandCheck()
 
-            });
-            return; // Ngừng thực hiện hàm nếu thông báo lỗi được hiển thị
-
-        }
+    if (member == null){
+        return;
     }
 
-    members.push(member);
+
+    membersRegister.push(member);
 
     // Hiển thị danh sách đã thêm
-    renderMembers(members);
+    renderMembers(membersRegister);
 
-    // Xóa giá trị của các trường để nhập thành viên tiếp theo
-    document.getElementById('familyFormedit').reset();
+    resetForm();
+
+    // console.log(members)
 
     hideForm();
 });
@@ -155,38 +161,28 @@ document.getElementById('btn-updates').addEventListener('click', function () {
         cancelButtonText: 'Cancel'
     }).then((result) => {
         if (result.isConfirmed) {
-            // Nếu người dùng nhấn OK, thực hiện cập nhật thông tin
-            const member = {
-                name: document.getElementById('HoTen').value,
-                cccd: document.getElementById('CCCD').value,
-                gender: document.getElementById('Gender').value,
-                healthInsurance: document.getElementById('BHYT').value,
-                phone: document.getElementById('Phone').value,
-                job: document.getElementById('Job').value,
-                department: document.getElementById('Department').value,
-                address: document.getElementById('Address').value,
-                medicalHistory: document.getElementById('Medical_History').value
-            };
 
-            members[indexUser] = member;
+            const member = GetandCheck()
+
+
+            if (member == null){
+                return;
+            }
+
+            membersRegister[indexUser] = member;
 
             // Hiển thị danh sách đã thêm
-            renderMembers(members);
+            renderMembers(membersRegister);
 
-            // Xóa giá trị của các trường để nhập thành viên tiếp theo
-            document.getElementById('familyFormedit').reset();
+            resetForm();
 
             hideForm();
-        } else {
-            // Nếu người dùng nhấn Cancel, không làm gì cả
-            console.log('Action canceled by user');
         }
     });
 
 
 
 });
-
 
 // Xu ly sua thong tin
 
@@ -241,31 +237,83 @@ function deleteInfo(id){
             return true
         }
     }
+}
 
 
+// Tich hop code ngan gon
+function GetandCheck() {
+    const member = {
+        cccd: document.getElementById('CCCD').value,
+        name: document.getElementById('HoTen').value,
+        gender: document.getElementById('Gender').value,
+        healthInsurance: document.getElementById('BHYT').value,
+        phone: document.getElementById('Phone').value,
+        job: document.getElementById('Job').value,
+        department: document.getElementById('Department').value,
+        address: document.getElementById('Address').value,
+        medicalHistory: document.getElementById('Medical_History').value
+    };
 
+    // Kiểm tra các trường có bị bỏ trống hay không
+    for (let key in member) {
+        if (!member[key]) {
+            showError(`Please fill out the ${key} field`);
+            return null;
+        }
+    }
+
+    // Kiểm tra độ dài CCCD và số điện thoại
+    if (member.cccd.length !== 12) {
+        showError('CCCD must be 12 digits');
+        return null;
+    }
+
+    if (member.phone.length !== 10) {
+        showError('Phone number must be 10 digits');
+        return null;
+    }
+
+    // Kiểm tra trùng lặp trong danh sách
+    if (checkDuplicate(member, membersList) || checkDuplicate(member, membersRegister)) {
+        return null;
+    }
+
+    return member;
+}
+
+// Hàm hiển thị thông báo lỗi
+function showError(message) {
+    Swal.fire({
+        title: 'Error',
+        text: message,
+        icon: 'error',
+        confirmButtonText: 'OK',
+    });
+}
+
+// Hàm kiểm tra trùng lặp
+function checkDuplicate(member, list) {
+    for (let index = 0; index < list.length; index++) {
+        const memberInList = list[index];
+
+        if (memberInList.cccd === member.cccd) {
+            showError('CCCD has already been used');
+            return true;
+        }
+
+        if (memberInList.phone === member.phone) {
+            showError('Phone number has already been used');
+            return true;
+        }
+    }
+    return false;
 }
 
 
 
+// Kiem email, mat khau truoc khi dang ky
 
 
-document.getElementById('submitBtn').addEventListener('click', function () {
-    fetch('/api/saveFamilyMembers', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(members)
-    })
-        .then(response => response.json())
-        .then(result => {
-            console.log(result);
-            // Xóa danh sách sau khi gửi thành công
-            members.length = 0; // Xóa mảng members
-            document.getElementById('membersList').innerHTML = ''; // Xóa danh sách hiển thị
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
-});
+
+
+

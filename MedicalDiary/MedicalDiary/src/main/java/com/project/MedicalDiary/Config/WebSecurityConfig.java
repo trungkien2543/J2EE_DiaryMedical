@@ -18,12 +18,10 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class WebSecurityConfig {
 
-    private final AccountRepository accountRepository; // Add this field
-
     @Autowired
-    public WebSecurityConfig(AccountRepository accountRepository) { // Constructor injection
-        this.accountRepository = accountRepository;
-    }
+    private AccountRepository accountRepository; // Add this field
+
+
     // Inject the custom UserDetailsService
     @Bean
     public UserDetailsService userDetailsService() {

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Random;
 
 @Controller
@@ -26,6 +27,8 @@ public class LoginController {
 
 
     private Account account = null;
+
+    private ArrayList<Information> familyMembers = new ArrayList<>();
 
     @Autowired
     private AccountServiceImp accountServiceImp;
@@ -117,6 +120,8 @@ public class LoginController {
 
     // Xu ly phan dang ky tai khoan
 
+    // Xu ly phan dang ky tai khoan
+
     @RequestMapping(value = "/register", method = RequestMethod.GET)
     public String LoadRegister(Model model) {
 
@@ -130,10 +135,50 @@ public class LoginController {
             System.out.println("Data in list: " + temp);
         }
 
+
+
         model.addAttribute("list", temp);
+
+        model.addAttribute("familyMemberList",familyMembers);
 
         return "register.html";
 
+    }
+
+    @RequestMapping(value = "/register", method = RequestMethod.POST)
+    public String register(@RequestParam Map<String, String> allParams, @RequestParam String familyName,
+                           @RequestParam String email,
+                           @RequestParam String password,
+                           @RequestParam String repeatPassword) {
+
+
+        // Assuming you know the keys pattern
+        int index = 0;
+        while (allParams.containsKey("familyMembers[" + index + "].cccd")) {
+            Information member = new Information();
+            member.setCCCD(allParams.get("familyMembers[" + index + "].cccd"));
+            member.setName(allParams.get("familyMembers[" + index + "].name"));
+            member.setGender(Boolean.valueOf(allParams.get("familyMembers[" + index + "].gender")));
+            member.setBHYT(allParams.get("familyMembers[" + index + "].healthInsurance"));
+            member.setPhone(allParams.get("familyMembers[" + index + "].phone"));
+            member.setJob(allParams.get("familyMembers[" + index + "].job"));
+            member.setDepartment(allParams.get("familyMembers[" + index + "].department"));
+            member.setAddress(allParams.get("familyMembers[" + index + "].address"));
+            member.setMedicalHistory(allParams.get("familyMembers[" + index + "].medicalHistory"));
+
+
+
+
+            familyMembers.add(member);
+            index++;
+        }
+
+        // Now you can process the familyMembers list as needed
+        System.out.println(familyMembers);
+
+        System.out.println(email + " " + password + " " + repeatPassword + " " + familyName);
+
+        return "redirect:/register";
     }
 
 
