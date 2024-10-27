@@ -41,7 +41,7 @@ function resetForm() {
 
 
 
-let indexUser = 0;
+let indexUser = -1;
 
 // Hàm thêm thành viên vào bảng
 function renderMembers(members) {
@@ -66,7 +66,7 @@ function renderMembers(members) {
             </td>
             <td>
                 <div>${member.bhyt}</div>
-                <input type="hidden" name="familyMembers[${index}].healthInsurance" value="${member.bhyt}" />
+                <input type="hidden" name="familyMembers[${index}].bhyt" value="${member.bhyt}" />
             </td>
             <td>
                 <div>${member.phone}</div>
@@ -137,6 +137,8 @@ document.getElementById('btn-saves').addEventListener('click', function () {
     }
 
 
+
+
     membersRegister.push(member);
 
     // Hiển thị danh sách đã thêm
@@ -162,6 +164,9 @@ document.getElementById('btn-updates').addEventListener('click', function () {
     }).then((result) => {
         if (result.isConfirmed) {
 
+            membersRegister.splice(indexUser,1)
+
+
             const member = GetandCheck()
 
 
@@ -169,7 +174,7 @@ document.getElementById('btn-updates').addEventListener('click', function () {
                 return;
             }
 
-            membersRegister[indexUser] = member;
+            membersRegister.push(member);
 
             // Hiển thị danh sách đã thêm
             renderMembers(membersRegister);
@@ -177,6 +182,8 @@ document.getElementById('btn-updates').addEventListener('click', function () {
             resetForm();
 
             hideForm();
+
+            indexUser = -1;
         }
     });
 
@@ -195,7 +202,7 @@ function editInfo (id){
             document.getElementById('CCCD').value = member.cccd
             document.getElementById('HoTen').value = member.name
             document.getElementById('Gender').value = member.gender
-            document.getElementById('BHYT').value = member.healthInsurance
+            document.getElementById('BHYT').value = member.bhyt
             document.getElementById('Phone').value = member.phone
             document.getElementById('Job').value = member.job
             document.getElementById('Department').value = member.department
@@ -225,11 +232,13 @@ function deleteInfo(id){
                 cancelButtonText: 'Cancel'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    members.splice(index,1)
+                    membersRegister.splice(index,1)
 
                 }
 
-                renderMembers(members)
+                renderMembers(membersRegister)
+
+                indexUser = -1;
 
             });
 
@@ -246,7 +255,7 @@ function GetandCheck() {
         cccd: document.getElementById('CCCD').value,
         name: document.getElementById('HoTen').value,
         gender: document.getElementById('Gender').value,
-        healthInsurance: document.getElementById('BHYT').value,
+        bhyt: document.getElementById('BHYT').value,
         phone: document.getElementById('Phone').value,
         job: document.getElementById('Job').value,
         department: document.getElementById('Department').value,
@@ -277,6 +286,7 @@ function GetandCheck() {
     if (checkDuplicate(member, membersList) || checkDuplicate(member, membersRegister)) {
         return null;
     }
+
 
     return member;
 }

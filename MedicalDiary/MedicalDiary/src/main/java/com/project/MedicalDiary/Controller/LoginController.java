@@ -165,6 +165,10 @@ public class LoginController {
                            @RequestParam String repeatPassword, Model model) {
 
 
+        // reset family members
+        familyMembers = new ArrayList<>();
+
+
         // Assuming you know the keys pattern
         int index = 0;
         while (allParams.containsKey("familyMembers[" + index + "].cccd")) {
@@ -172,7 +176,7 @@ public class LoginController {
             member.setCCCD(allParams.get("familyMembers[" + index + "].cccd"));
             member.setName(allParams.get("familyMembers[" + index + "].name"));
             member.setGender(Boolean.valueOf(allParams.get("familyMembers[" + index + "].gender")));
-            member.setBHYT(allParams.get("familyMembers[" + index + "].healthInsurance"));
+            member.setBHYT(allParams.get("familyMembers[" + index + "].bhyt"));
             member.setPhone(allParams.get("familyMembers[" + index + "].phone"));
             member.setJob(allParams.get("familyMembers[" + index + "].job"));
             member.setDepartment(allParams.get("familyMembers[" + index + "].department"));
@@ -198,6 +202,9 @@ public class LoginController {
 
         if(accountServiceImp.findByEmail(email).isPresent()) {
             model.addAttribute("errorMessage", "Email that was used to sign up for another account");
+
+            model.addAttribute("familyMemberList",familyMembers);
+            return "/register";
         }
 
         // Tạo gia đình mới
@@ -207,8 +214,18 @@ public class LoginController {
         // Tạo tài khoản mới
         Account accountNew = accountServiceImp.createAccount(new Account(email,familyNew.getIDFamily(),passwordEncoder.encode(password)));
 
+        //Thêm thanh viên mới
+
+        for (Information member: familyMembers ) {
+            member.setIDFamily(familyNew.getIDFamily());
+            informationServiceImp.createInformation(member);
+        }
+
 
         model.addAttribute("familyMemberList",familyMembers);
+
+
+        model.addAttribute("successMessage", "You can use this account for login");
 
 
         return "/register";
