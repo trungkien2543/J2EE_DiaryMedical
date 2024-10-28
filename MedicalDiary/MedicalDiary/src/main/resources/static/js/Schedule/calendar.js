@@ -120,4 +120,22 @@ document.addEventListener('DOMContentLoaded', function () {
         });
         miniCalendar.render();
     }
+
+    // Ẩn/Hiện danh sách checkbox khi nhấn vào mũi tên
+            var toggleArrow = document.getElementById('toggleArrow');
+            var checkboxContainer = document.getElementById('checkboxContainer');
+            toggleArrow.addEventListener('click', function() {
+                checkboxContainer.classList.toggle('hidden');
+                toggleArrow.classList.toggle('collapsed');
+            });
 });
+
+
+function showAlert(button) {
+    var label = button.parentNode.textContent.trim();
+    document.getElementById("alertName").innerText = label;
+    document.getElementById("customAlert").style.display = "block";
+}
+function closeAlert() {
+    document.getElementById("customAlert").style.display = "none";
+}

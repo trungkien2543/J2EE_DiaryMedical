@@ -27,6 +27,7 @@ public class WebSecurityConfig {
      *
      * */
 
+
     // Use BCrypt password encoder
 
     @Bean
@@ -39,11 +40,13 @@ public class WebSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((requests) -> requests
+
                         .requestMatchers("/","/home", "/css/**", "/js/**", "/img/**","/scss/**","/vendor/**").permitAll()
                         .requestMatchers("/forgot_password").permitAll()
                         .requestMatchers("/reset_password").permitAll()
                         .requestMatchers("/register").permitAll()
                         .anyRequest().authenticated()
+
                 )
                 .formLogin((form) -> form
                         .loginPage("/login")
@@ -56,6 +59,7 @@ public class WebSecurityConfig {
                         .rememberMeParameter("remember-me")  // Tên tham số của checkbox "Remember Me"
                         .userDetailsService(userDetailsService())  // Thêm UserDetailsService cho Remember Me
                 );
+
         return http.build();
     }
 

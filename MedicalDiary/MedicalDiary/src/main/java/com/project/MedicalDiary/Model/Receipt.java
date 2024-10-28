@@ -31,8 +31,6 @@ public class Receipt {
 
     private String urlResult;
 
-    private Long idBill;
-
     private String remind;
 
     private java.time.LocalDateTime dateVisit;

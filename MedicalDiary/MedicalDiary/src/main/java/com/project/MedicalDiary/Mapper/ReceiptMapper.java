@@ -20,8 +20,7 @@ public class ReceiptMapper implements RowMapper<Receipt> {
                 rs.getString("Reason"),               // Reason
                 rs.getString("Diagnosis"),            // Diagnosis
                 rs.getString("Treat"),                // Treat
-                rs.getString("Url_Result"),           // Url_Result
-                rs.getLong("ID_Bill"),                // ID_Bill
+                rs.getString("Url_Result"),           // Url_Result// ID_Bill
                 rs.getString("Remind"),               // Remind
                 rs.getObject("Date_Visit", java.time.LocalDateTime.class), // Date_Visit
                 rs.getInt("Blood_Pressure"),          // Blood_Pressure

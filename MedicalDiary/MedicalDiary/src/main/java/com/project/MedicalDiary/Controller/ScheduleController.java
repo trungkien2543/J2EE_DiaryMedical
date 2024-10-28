@@ -13,11 +13,13 @@ import org.springframework.web.bind.annotation.*;
 
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
+
 public class ScheduleController {
 
     @Autowired
@@ -50,24 +52,12 @@ public class ScheduleController {
         }
     }
 
-    @PostMapping("/getRoomCode")
-    public ResponseEntity<?> handleCalendarInput(@RequestBody Map<String, String> requestData) {
-        System.out.println("tester");
-        String calendarName = requestData.get("calendarName");
-        String inputData = requestData.get("inputData");
+    @PostMapping("/schedule")
+    public String submitPin(@RequestParam("pin") String pin, Model model) {
+        System.out.println("pin: "+pin);
 
-        // Test print statements to ensure data is received correctly.
-        System.out.println("Calendar: " + calendarName + ", Input: " + inputData);
-
-        // If inputData is empty or null, return a bad request
-        if (inputData == null || inputData.trim().isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Collections.singletonMap("message", "Dữ liệu trống"));
-        }
-        // Process the data and return a success message
-        return ResponseEntity.ok(Collections.singletonMap("message", "Dữ liệu đã được xử lý thành công"));
+        return "redirect:/schedule";
     }
-
 
 
 }
