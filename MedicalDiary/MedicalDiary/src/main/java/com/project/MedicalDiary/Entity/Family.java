@@ -3,6 +3,7 @@ package com.project.MedicalDiary.Entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import lombok.*;
 
 import java.util.List;
@@ -16,8 +17,9 @@ import java.util.List;
 public class Family {
 
     @Id
-    @Column(name = "ID_Family" )
+    @Column(name = "ID_Family")
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Hoặc GenerationType.AUTO
+    @NotNull(message = "CCCD cannot be null")
     private Long IDFamily;
 
     @Column(name = "Name", nullable = false)

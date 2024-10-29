@@ -29,6 +29,11 @@ public class RoomDetailServiceImp implements RoomDetailService {
     }
 
     @Override
+    public List<RoomDetail> getRoomDetailsByIDisFollowed(String id) {
+        return roomDetailRepository.findByIDisFollowed(id);
+    }
+
+    @Override
     public Boolean deleteRoomDetail(RoomDetail roomDetail) {
         if (roomDetailRepository.existsById(Long.valueOf(roomDetail.getIDRoom()))) {
             roomDetailRepository.delete(roomDetail);

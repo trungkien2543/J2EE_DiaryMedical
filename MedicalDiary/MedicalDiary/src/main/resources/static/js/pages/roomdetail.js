@@ -1,12 +1,11 @@
-
-$(document).on("click", ".family-detail", function () {
+$(document).on("click", ".room-detail-element", function () {
     let cccd = $(this).data("id");
-    $("#titleModal").text("Xem chi tiết");
+    $("#titleModal").text("View member details");
     $("#btn-saves").hide();
     $("#btn-updates").hide();
     $.ajax({
         type: "get",
-        url: "./family/getDetail",
+        url: "./roomdetail/getDetail",
         data: {
             cccd: cccd,
         },
@@ -69,66 +68,122 @@ $(document).on("click", ".family-detail", function () {
 
 });
 function clearInputFields() {
-        // Clear input fields and enable them
-        $("#CCCD").val("").prop("disabled", false);
-        $("#HoTen").val("").prop("disabled", false);
+    // Clear input fields and enable them
+    $("#CCCD").val("").prop("disabled", false);
+    $("#HoTen").val("").prop("disabled", true);
 
-        // Reset Gender field to default (e.g., first option) and enable it
-        $("#Gender").val("").prop("disabled", false).change(); // Trigger change if needed
+    // Reset Gender field to default (e.g., first option) and enable it
+    $("#Gender").val("").prop("disabled", true).change(); // Trigger change if needed
 
-        // Clear and enable other input fields
-        $("#BHYT").val("").prop("disabled", false); // If you have this field
-        $("#Phone").val("").prop("disabled", false); // If you have this field
-        $("#Job").val("").prop("disabled", false); // If you have this field
-        $("#Department").val("").prop("disabled", false); // If you have this field
-        $("#Address").val("").prop("disabled", false); // If you have this field
-        $("#Medical_History").val("").prop("disabled", false); // If you have this field
-        $("#IDFamily").val("").prop("disabled", false); // If you have this field
+    // Clear and enable other input fields
+    $("#BHYT").val("").prop("disabled", true); // If you have this field
+    $("#Phone").val("").prop("disabled", true); // If you have this field
+    $("#Job").val("").prop("disabled", true); // If you have this field
+    $("#Department").val("").prop("disabled", true); // If you have this field
+    $("#Address").val("").prop("disabled", true); // If you have this field
+    $("#Medical_History").val("").prop("disabled", true); // If you have this field
+    $("#IDFamily").val("").prop("disabled", true); // If you have this field
+    $("#idfml").val("");
+    $("#namefml").val("");
+    $("#IDFamily").val("").prop("disabled",true);
 }
 
-$(document).on("click",".family-add",function (){
+$(document).on("click",".room-detail-add",function (){
     clearInputFields();
-    $("#titleModal").text("Add Family Member");
+    $("#CCCD").attr("placeholder", "Enter your CCCD");
+    $("#titleModal").text("Add New People Interested");
     $("#btn-saves").show();
     $("#btn-updates").hide();
-    let idFML = $("#idfml").val();
-    let nameFML = $("#namefml").val();
-    $("#IDFamily").val(idFML + " - " + nameFML);
-    $("#IDFamily").prop("disabled",true);
 });
+$("#CCCD").on("keydown", function(event) {
+    if (event.key === "Enter" || event.keyCode === 13) {
+        event.preventDefault(); // Prevent the default action if needed
+        $.ajax({
+            type: "get",
+            url: "./roomdetail/getDetail",
+            data: {
+                cccd: $("#CCCD").val(),
+            },
+            dataType: "json",
+            success: function (response) {
+                console.log(response);
+                // Cập nhật giá trị cho các trường thông tin
+                $("#CCCD").val(response.cccd);
+                $("#HoTen").val(response.name);
+                $("#HoTen").prop("disabled", true);
+                // Cập nhật giới tính trong select
+                if (response.gender === 1) {
+                    $("#Gender").val(1); // Nam
+                } else {
+                    $("#Gender").val(0); // Nữ
+                }
+                $("#Gender").change();
+                $("#Gender").prop("disabled", true);
+                // Cập nhật các thông tin khác
+                $("#BHYT").val(response.bhyt); // Nếu bạn có trường này trong response
+                $("#BHYT").prop("disabled",true);
+                $("#Phone").val(response.phone); // Nếu bạn có trường này trong response
+                $("#Phone").prop("disabled",true);
+                $("#Job").val(response.job); // Nếu bạn có trường này trong response
+                $("#Job").prop("disabled",true);
 
+                $("#Department").val(response.department); // Nếu bạn có trường này trong response
+                $("#Department").prop("disabled",true);
+
+                $("#Address").val(response.address); // Nếu bạn có trường này trong response
+                $("#Address").prop("disabled",true);
+
+                $("#Medical_History").val(response.medicalHistory); // Nếu bạn có trường này trong response
+                $("#Medical_History").prop("disabled",true);
+                $.ajax({
+                    type : "get",
+                    url: "./family/getFamilyByID",
+                    data: {
+                        iD_Family: response.idfamily,
+                    },
+                    dataType: "json",
+                    success: function (res) {
+                        $("#IDFamily").val(response.idfamily +" - " + res.name); // Nếu bạn có trường này trong response
+                        $("#IDFamily").prop("disabled",true);
+                        $("#idfml").val(response.idfamily);
+                        $("#namefml").val(res.name);
+                    }
+
+                });
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.error("AJAX Error:", textStatus, errorThrown);
+                console.error("Response Text:", jqXHR.responseText);
+            }
+        });
+
+    }
+});
 $(document).on("click","#btn-saves",function (e){
     e.preventDefault();
     const information = {
         cccd: $("#CCCD").val(),
         name: $("#HoTen").val(),
         gender: parseInt($("#Gender").val(), 10),
-        nhyt: $("#BHYT").val(),
+        bhyt: $("#BHYT").val(),
         phone: $("#Phone").val(),
         job: $("#Job").val(),
         department: $("#Department").val(),
         address: $("#Address").val(),
         medicalHistory: $("#Medical_History").val(),
         idfamily: parseInt($("#idfml").val(), 10),
-
-        // family : {
-        //     idfamily: parseInt($("#idfml").val(), 10),
-        //     name: $("#namefml").val()
-        // }
-        // iDFamily: parseInt($("#idfml").val(), 10)
-
     };
     console.log(information);
     $.ajax({
         type: "POST",
-        url: `./family/add`,
+        url: `./roomdetail/add`,
         data: JSON.stringify(information), // Gửi dữ liệu dưới dạng JSON
         contentType: 'application/json', // Đảm bảo rằng bạn đã chỉ định đúng contentType
         dataType: "json", // Thêm header để server biết đây là JSON
         success: function (response) {
             console.log("Information created: :" + response);
             // window.location.href ="/family?add-success-member"
-            $("#modal-add-user").modal("hide");
+            $("#AddQuanTam").modal("hide");
             notify('success', 'Message Add sucessfully', 'Add new family member successfully');
 
         },
@@ -138,14 +193,14 @@ $(document).on("click","#btn-saves",function (e){
         }
     });
 });
-$(document).on("click",".family-edit",function (){
+$(document).on("click",".room-edit-element",function (){
     let cccd = $(this).data("id");
     $("#titleModal").text("Update detail");
     $("#btn-saves").hide();
     $("#btn-updates").show();
     $.ajax({
         type: "get",
-        url: "./family/getDetail",
+        url: "./roomdetail/getDetail",
         data: {
             cccd: cccd,
         },
@@ -222,14 +277,14 @@ $(document).on("click","#btn-updates",function (e){
     };
     $.ajax({
         type: "post",
-        url: "./family/update",
+        url: "./room/update",
         data: JSON.stringify(information), // Gửi dữ liệu dưới dạng JSON
         contentType: "application/json",
         dataType: "json",
         success: function (response) {
             console.log("response :" + response);
             // window.location.href ="/family?update-success-member"
-            $("#AddQuanTam").modal("hide");
+            $("#modal-add-user").modal("hide");
             notify('success', 'Message updated successfully', 'Update family member successfully.');
         },
         error: function (jqXHR, textStatus, errorThrown) {
@@ -238,7 +293,8 @@ $(document).on("click","#btn-updates",function (e){
         }
     });
 });
-$(document).on("click", ".family-delete", function (e) {
+
+$(document).on("click", ".room-delete-element", function (e) {
     e.preventDefault(); // Prevent the default button behavior
     const familyId = $(this).data("id"); // Get the family ID from data attribute
 
@@ -255,7 +311,7 @@ $(document).on("click", ".family-delete", function (e) {
             // Send the delete request to the server
             $.ajax({
                 type: "DELETE",
-                url: `./family/${familyId}`, // Adjust the URL to match your API endpoint
+                url: `./roomdetail/${familyId}`, // Adjust the URL to match your API endpoint
                 success: function (response) {
                     // Handle successful deletion
                     Swal.fire({

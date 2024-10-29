@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class RoomServiceImp implements RoomService {
@@ -67,5 +68,10 @@ public class RoomServiceImp implements RoomService {
         }
 
         return mapping;
+    }
+    @Override
+    public Boolean checkRoom(String IDRoom, String PIN) {
+        Optional<Room> room = roomRepository.findByIDRoomAndPIN(IDRoom, PIN);
+        return room.isPresent();
     }
 }

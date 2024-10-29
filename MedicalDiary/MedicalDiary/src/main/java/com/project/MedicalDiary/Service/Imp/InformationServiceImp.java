@@ -39,9 +39,10 @@ public class InformationServiceImp implements InformationService {
     }
 
     @Override
-    public Boolean deleteInformation(Information information) {
-        if (informationRepository.existsById(information.getCCCD())) {
-            informationRepository.delete(information);
+    public Boolean deleteInformation(String cccd) {
+        if (informationRepository.existsById(cccd)) {
+            informationRepository.deleteById(cccd);
+//            informationRepository.delete(cccd);
             return true; // Deletion successful
         }
         return false; // Information does not exist

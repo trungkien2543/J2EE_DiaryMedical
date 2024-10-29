@@ -11,5 +11,5 @@ public interface InformationService {
     Optional<Information> findByCCCD(String cccd); // This method looks correct
     Information createInformation(Information information);
     Boolean updateInformation(Information information);
-    Boolean deleteInformation(Information information);
+    Boolean deleteInformation(String id);
 }

@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface RoomDetailRepository extends JpaRepository<RoomDetail, Long> {
     List<RoomDetail> findByIDRoom(String idRoom);
+    List<RoomDetail> findByIDisFollowed(String idRoom);
 }

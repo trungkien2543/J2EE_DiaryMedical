@@ -7,6 +7,7 @@ import com.project.MedicalDiary.Service.CustomUserDetails;
 import com.project.MedicalDiary.Service.ImpInterface.InformationService;
 import com.project.MedicalDiary.Service.ImpInterface.RoomDetailService;
 import com.project.MedicalDiary.Service.ImpInterface.RoomService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
@@ -30,8 +32,9 @@ public class RoomController {
     private InformationService informationService;
     @Autowired
     private RoomDetailService roomDetailService;
+
     @GetMapping("")
-    public String room(Authentication authentication,Model model) {
+    public String room(Authentication authentication, Model model) {
 
 
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
@@ -49,7 +52,7 @@ public class RoomController {
         }
 //        Iterable<Room> listRoom = roomService.getRoomByIDFamily(idFamily);
         List<Room> listRoom = roomService.getAll();
-        Iterable<Information> listInfoOfFml =informationService.findByFamily_IDFamily(idFamily);
+        Iterable<Information> listInfoOfFml = informationService.findByFamily_IDFamily(idFamily);
         Map<Information, Room> memberRoomMap = roomService.mapRoomsToMembers(listInfoOfFml, listRoom);
 
         model.addAttribute("message", "Rooms");
@@ -60,6 +63,7 @@ public class RoomController {
 
         return "pages/fragments/rooms";
     }
+
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<Room> createRoom(@RequestBody Room room) {
@@ -68,5 +72,23 @@ public class RoomController {
 
         // Return a response with the created family and a status code
         return new ResponseEntity<>(createdRoom, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/checkRoom")
+    @ResponseBody
+    public ResponseEntity<Boolean> checkRoom(
+            @RequestParam("IDRoom") String IDRoom,
+            @RequestParam("PIN") String PIN,
+            HttpSession session) {
+
+        boolean isPinValid  = roomService.checkRoom(IDRoom, PIN);
+
+        if (isPinValid) {
+            // Save IDRoom to session
+            session.setAttribute("IDRoom", IDRoom);
+            return ResponseEntity.ok(true);
+        } else {
+            return ResponseEntity.ok(false);
+        }
     }
 }
