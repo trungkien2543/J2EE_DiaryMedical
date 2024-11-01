@@ -95,8 +95,13 @@ public ResponseEntity<Information> createInformation(@RequestBody InformationReq
 
     @RequestMapping(value = "update",method = {RequestMethod.POST,RequestMethod.PUT ,RequestMethod.GET})
     @ResponseBody
-    public ResponseEntity<Boolean> updateFamily(@RequestBody Information information) {
+    public ResponseEntity<Boolean> updateFamily(@RequestBody InformationRequestDTO request) {
+        Information information = request.getInformation();
+        Family family = request.getFamily();
+        // Set the family object in information
+        information.setFamily(family);
         boolean updateFamily = informationService.updateInformation(information);
+        System.out.println("Update Info : " + information); // Debugging log
 
         return new ResponseEntity<>(updateFamily, HttpStatus.CREATED);
     }

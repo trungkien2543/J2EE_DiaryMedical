@@ -74,4 +74,9 @@ public class RoomServiceImp implements RoomService {
         Optional<Room> room = roomRepository.findByIDRoomAndPIN(IDRoom, PIN);
         return room.isPresent();
     }
+
+    @Override
+    public Room getRoomByID(String IDRoom) {
+        return roomRepository.findRoomByIDRoom(IDRoom);
+    }
 }

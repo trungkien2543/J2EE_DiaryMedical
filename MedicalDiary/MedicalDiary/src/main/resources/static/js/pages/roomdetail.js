@@ -41,22 +41,11 @@ $(document).on("click", ".room-detail-element", function () {
 
             $("#Medical_History").val(response.medicalHistory); // Nếu bạn có trường này trong response
             $("#Medical_History").prop("disabled",true);
-            $.ajax({
-                type : "get",
-                url: "./family/getFamilyByID",
-                data: {
-                    iD_Family: response.idfamily,
-                },
-                dataType: "json",
-                success: function (res) {
-                    $("#IDFamily").val(response.idfamily +" - " + res.name); // Nếu bạn có trường này trong response
-                    $("#IDFamily").prop("disabled",true);
-                    $("#idfml").val(response.idfamily);
-                    $("#namefml").val(res.name);
-                }
 
-            });
-
+            $("#IDFamily").val(response.family.idfamily +" - " + response.family.name); // Nếu bạn có trường này trong response
+            $("#IDFamily").prop("disabled",true);
+            $("#idfml").val(response.family.idfamily);
+            $("#namefml").val(response.family.name);
             // Hiển thị modal
             $("#AddQuanTam").modal("show");
         },
@@ -135,22 +124,12 @@ $("#CCCD").on("keydown", function(event) {
 
                 $("#Medical_History").val(response.medicalHistory); // Nếu bạn có trường này trong response
                 $("#Medical_History").prop("disabled",true);
-                $.ajax({
-                    type : "get",
-                    url: "./family/getFamilyByID",
-                    data: {
-                        iD_Family: response.idfamily,
-                    },
-                    dataType: "json",
-                    success: function (res) {
-                        $("#IDFamily").val(response.idfamily +" - " + res.name); // Nếu bạn có trường này trong response
-                        $("#IDFamily").prop("disabled",true);
-                        $("#idfml").val(response.idfamily);
-                        $("#namefml").val(res.name);
-                    }
 
-                });
-            },
+                $("#IDFamily").val(response.family.idfamily +" - " + response.family.name); // Nếu bạn có trường này trong response
+                $("#IDFamily").prop("disabled",true);
+                $("#idfml").val(response.family.idfamily);
+                $("#namefml").val(response.family.name);
+                },
             error: function (jqXHR, textStatus, errorThrown) {
                 console.error("AJAX Error:", textStatus, errorThrown);
                 console.error("Response Text:", jqXHR.responseText);
@@ -162,16 +141,21 @@ $("#CCCD").on("keydown", function(event) {
 $(document).on("click","#btn-saves",function (e){
     e.preventDefault();
     const information = {
-        cccd: $("#CCCD").val(),
-        name: $("#HoTen").val(),
-        gender: parseInt($("#Gender").val(), 10),
-        bhyt: $("#BHYT").val(),
-        phone: $("#Phone").val(),
-        job: $("#Job").val(),
-        department: $("#Department").val(),
-        address: $("#Address").val(),
-        medicalHistory: $("#Medical_History").val(),
-        idfamily: parseInt($("#idfml").val(), 10),
+        "information" : {
+            cccd: $("#CCCD").val(),
+            name: $("#HoTen").val(),
+            gender: parseInt($("#Gender").val(), 10),
+            bhyt: $("#BHYT").val(),
+            phone: $("#Phone").val(),
+            job: $("#Job").val(),
+            department: $("#Department").val(),
+            address: $("#Address").val(),
+            medicalHistory: $("#Medical_History").val(),
+        },
+        "family" :{
+            idfamily: parseInt($("#idfml").val(), 10),
+            name: $("#namefml").val()
+        }
     };
     console.log(information);
     $.ajax({
@@ -275,16 +259,21 @@ $(document).on("click",".room-edit-element",function (){
 $(document).on("click","#btn-updates",function (e){
     e.preventDefault();
     const information = {
-        cccd: $("#CCCD").val(),
-        name: $("#HoTen").val(),
-        gender: parseInt($("#Gender").val(), 10),
-        bhyt: $("#BHYT").val(),
-        phone: $("#Phone").val(),
-        job: $("#Job").val(),
-        department: $("#Department").val(),
-        address: $("#Address").val(),
-        medicalHistory: $("#Medical_History").val(),
-        idfamily: parseInt($("#idfml").val(), 10),
+        "information" : {
+            cccd: $("#CCCD").val(),
+            name: $("#HoTen").val(),
+            gender: parseInt($("#Gender").val(), 10),
+            bhyt: $("#BHYT").val(),
+            phone: $("#Phone").val(),
+            job: $("#Job").val(),
+            department: $("#Department").val(),
+            address: $("#Address").val(),
+            medicalHistory: $("#Medical_History").val(),
+        },
+        "family" :{
+            idfamily: parseInt($("#idfml").val(), 10),
+            name: $("#namefml").val()
+        }
     };
     $.ajax({
         type: "post",

@@ -1,14 +1,13 @@
 package com.project.MedicalDiary.Controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.project.MedicalDiary.Entity.Family;
-import com.project.MedicalDiary.Entity.Information;
-import com.project.MedicalDiary.Entity.Room;
-import com.project.MedicalDiary.Entity.RoomDetail;
+import com.project.MedicalDiary.DTORequest.InformationRequestDTO;
+import com.project.MedicalDiary.Entity.*;
 import com.project.MedicalDiary.Service.CustomUserDetails;
 import com.project.MedicalDiary.Service.ImpInterface.FamilyService;
 import com.project.MedicalDiary.Service.ImpInterface.InformationService;
 import com.project.MedicalDiary.Service.ImpInterface.RoomDetailService;
+import com.project.MedicalDiary.Service.ImpInterface.RoomService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.Console;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -31,12 +31,13 @@ public class RoomDetailController {
     private final InformationService informationService;
     private final FamilyService familyService;
     private final RoomDetailService roomDetailService;
+    private final RoomService roomService;
 
 
     @GetMapping("")
     public String roomDetail(Authentication authentication, Model model, HttpSession session) {
         String roomId = (String) session.getAttribute("IDRoom");
-
+        System.out.println(roomId);
         List<RoomDetail> roomDetails =  roomDetailService.getAllRoomDetailsByRoomID(roomId);
         Information info = informationService.findByCCCD(roomId).get();
         List<Information> list = new ArrayList<>();
@@ -81,14 +82,21 @@ public class RoomDetailController {
     }
     @RequestMapping(value = "/add",method = {RequestMethod.POST,RequestMethod.PUT ,RequestMethod.GET})
     @ResponseBody
-    public ResponseEntity<RoomDetail> createRoomDetail(@RequestBody Information information, HttpSession session) {
+    public ResponseEntity<RoomDetail> createRoomDetail(@RequestBody InformationRequestDTO request, HttpSession session) {
         String roomId = (String) session.getAttribute("IDRoom");
-        // Save the family object to the database
-//        Information createdInformation = informationService.createInformation(information);
+
+        Information information = request.getInformation();
+        Family family = request.getFamily();
+        // Set the family object in information
+        information.setFamily(family);
+
         RoomDetail roomDetail = new RoomDetail();
-        Room roomtemp = new Room();
-        roomtemp.setIDRoom(roomId);
-        roomDetail.setRoom(roomtemp);  // Assuming this is how you set roomId
+        RoomDetailId roomDetailId = new RoomDetailId();
+        roomDetailId.setIDRoom(roomId);  // Set ID_Room part of the composite key
+        roomDetailId.setIDisFollowed(information.getCCCD()); // Assuming CCCD maps to ID_IsFollowed
+        roomDetail.setID(roomDetailId);
+        Room roomtemp = roomService.getRoomByID(roomId);
+        roomDetail.setRoom(roomtemp);
         roomDetail.setIsFollowed(information);
         System.out.println( "Room Detail : " + roomDetail);
         RoomDetail createdRoomDetail = roomDetailService.createRoomDetail(roomDetail);
