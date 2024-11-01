@@ -13,4 +13,7 @@ public interface RoomDetailService {
     Boolean deleteRoomDetail(RoomDetail roomDetail);
     RoomDetail  updateRoomDetail(RoomDetail roomDetail);
     List<RoomDetail> getAllRoomDetailsByRoomID(String idRoom);
+
+    void updateStatus(String idRoom, String idIsFollowed, int Status);
+//    List<RoomDetail> getPendingRequests(String idRoom, int Status);
 }

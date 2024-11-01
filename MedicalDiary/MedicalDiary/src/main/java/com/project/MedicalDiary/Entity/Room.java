@@ -20,6 +20,4 @@ public class Room {
     @Column(name = "PIN", nullable = false)
     private String PIN;
 
-    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<RoomDetail> roomDetails;
 }

@@ -217,7 +217,7 @@ public class LoginController {
         //Thêm thanh viên mới
 
         for (Information member: familyMembers ) {
-            member.setIDFamily(familyNew.getIDFamily());
+//            member.setIDFamily(familyNew.getIDFamily());
             informationServiceImp.createInformation(member);
         }
 

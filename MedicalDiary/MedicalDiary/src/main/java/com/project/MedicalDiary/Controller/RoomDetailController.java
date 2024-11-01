@@ -41,7 +41,7 @@ public class RoomDetailController {
         Information info = informationService.findByCCCD(roomId).get();
         List<Information> list = new ArrayList<>();
         for (RoomDetail roomDetail : roomDetails) {
-            Optional<Information> obj =informationService.findByCCCD(roomDetail.getIDisFollowed());
+            Optional<Information> obj =informationService.findByCCCD(roomDetail.getIsFollowed().getCCCD());
             //Add to list
             // Check if the Information object is present, then add it to the list
             obj.ifPresent(list::add);
@@ -52,6 +52,7 @@ public class RoomDetailController {
         model.addAttribute("message", "Room Detail");
         model.addAttribute("idFamily", "N/A");
         model.addAttribute("nameFamily", "Unknown Family");
+        model.addAttribute("currentUrl", "/roomdetail");
         return "pages/fragments/RoomDetail";
     }
     @GetMapping("/getDetail")
@@ -85,8 +86,10 @@ public class RoomDetailController {
         // Save the family object to the database
 //        Information createdInformation = informationService.createInformation(information);
         RoomDetail roomDetail = new RoomDetail();
-        roomDetail.setIDRoom(roomId);  // Assuming this is how you set roomId
-        roomDetail.setIDisFollowed(information.getCCCD());
+        Room roomtemp = new Room();
+        roomtemp.setIDRoom(roomId);
+        roomDetail.setRoom(roomtemp);  // Assuming this is how you set roomId
+        roomDetail.setIsFollowed(information);
         System.out.println( "Room Detail : " + roomDetail);
         RoomDetail createdRoomDetail = roomDetailService.createRoomDetail(roomDetail);
         System.out.println("ADD Info : " + information); // Debugging log
@@ -105,11 +108,52 @@ public class RoomDetailController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteInf(@PathVariable String id) {
         try {
-            informationService.deleteInformation(id);
+            informationService.updateIDFamilyToNull(id);
             return ResponseEntity.ok().body("Family member deleted successfully.");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete family member.");
         }
     }
+    // New methods for accepting and canceling requests
+    @PostMapping("/acceptRequest")
+    @ResponseBody
+    public ResponseEntity<String> acceptRequest(@RequestBody String idIsFollowed,HttpSession session) {
+        String roomId = (String) session.getAttribute("IDRoom");
+
+        try {
+            roomDetailService.updateStatus(roomId, idIsFollowed, 1); // 1 for accepted
+            return ResponseEntity.ok("Request accepted successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to accept request.");
+        }
+    }
+
+    @PostMapping("/cancelRequest")
+    @ResponseBody
+    public ResponseEntity<String> cancelRequest(@RequestBody String idIsFollowed,HttpSession session) {
+        String roomId = (String) session.getAttribute("IDRoom");
+
+        try {
+            roomDetailService.updateStatus(roomId, idIsFollowed, -1); // -1 for canceled
+            return ResponseEntity.ok("Request canceled successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to cancel request.");
+        }
+    }
+//    @GetMapping("/pendingRequest")
+//    @ResponseBody
+//    public ResponseEntity<List<RoomDetail>> pendingRequest(HttpSession session) {
+//        String idRoom = (String) session.getAttribute("IDRoom");
+//
+//        // Fetch the list of RoomDetail entries with Status = 0 and the specified IDRoom
+//        List<RoomDetail> pendingRequests = roomDetailService.getPendingRequests(idRoom, 0);
+//
+//        if (pendingRequests.isEmpty()) {
+//            return ResponseEntity.noContent().build(); // Return 204 No Content if no requests are found
+//        }
+//
+//        return ResponseEntity.ok(pendingRequests);
+//    }
+
 
 }

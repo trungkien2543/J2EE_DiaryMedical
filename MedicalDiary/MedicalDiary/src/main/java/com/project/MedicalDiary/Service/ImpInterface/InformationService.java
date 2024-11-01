@@ -12,4 +12,5 @@ public interface InformationService {
     Information createInformation(Information information);
     Boolean updateInformation(Information information);
     Boolean deleteInformation(String id);
+    Boolean updateIDFamilyToNull(String id);
 }

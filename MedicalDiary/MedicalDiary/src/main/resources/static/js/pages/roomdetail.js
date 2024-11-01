@@ -184,7 +184,18 @@ $(document).on("click","#btn-saves",function (e){
             console.log("Information created: :" + response);
             // window.location.href ="/family?add-success-member"
             $("#AddQuanTam").modal("hide");
-            notify('success', 'Message Add sucessfully', 'Add new family member successfully');
+            // notify('success', 'Message Add sucessfully', 'Add new family member successfully');
+            Swal.fire({
+                title: 'Follow Request Sent',
+                text: 'A follow request was successfully sent to the follower.',
+                icon: 'success',
+                confirmButtonText: 'Okay'
+            }).then((result) => {
+                // Redirect after the SweetAlert2 confirmation is closed
+                if (result.isConfirmed) {
+                    window.location.href = "/roomdetail";
+                }
+            });
 
         },
         error: function (jqXHR, textStatus, errorThrown) {
@@ -286,6 +297,17 @@ $(document).on("click","#btn-updates",function (e){
             // window.location.href ="/family?update-success-member"
             $("#modal-add-user").modal("hide");
             notify('success', 'Message updated successfully', 'Update family member successfully.');
+            Swal.fire({
+                title: 'Success!',
+                text: 'Update successfully',
+                icon: 'success',
+                confirmButtonText: 'Okay'
+            }).then((result) => {
+                // Redirect after the SweetAlert2 confirmation is closed
+                if (result.isConfirmed) {
+                    window.location.href = "/roomdetail";
+                }
+            });
         },
         error: function (jqXHR, textStatus, errorThrown) {
             console.error("AJAX Error:", textStatus, errorThrown);
@@ -338,3 +360,45 @@ $(document).on("click", ".room-delete-element", function (e) {
         }
     });
 });
+
+function acceptRequest(idRoom) {
+    $.ajax({
+        url: '/roomdetail/acceptRequest',
+        type: 'POST',
+        contentType: 'application/json',
+        data: {
+            "idRoom": idRoom,
+            "idIsFollowed": "someIdIsFollowed"
+        }
+        ,
+        success: function(data) {
+            notify('success', 'Request Accepted', data);
+            // Update the UI accordingly
+        },
+        error: function(xhr, status, error) {
+            console.error('Error:', error);
+            notify('error', 'Error', 'An error occurred while accepting the request.');
+        }
+    });
+}
+
+function cancelRequest(idRoom) {
+    $.ajax({
+        url: '/roomdetail/cancelRequest',
+        type: 'POST',
+        contentType: 'application/json',
+        data: {
+            "idRoom": "someRoomId",
+            "idIsFollowed": "someIdIsFollowed"
+        }
+        ,
+        success: function(data) {
+            notify('success', 'Request Canceled', data);
+            // Update the UI accordingly
+        },
+        error: function(xhr, status, error) {
+            console.error('Error:', error);
+            notify('error', 'Error', 'An error occurred while canceling the request.');
+        }
+    });
+}

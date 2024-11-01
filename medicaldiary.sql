@@ -175,7 +175,6 @@ ALTER TABLE `room`
 --
 ALTER TABLE `room_detail`
   ADD PRIMARY KEY (`ID_Room`,`ID_IsFollowed`),
-  ADD UNIQUE KEY `ID_Room` (`ID_Room`),
   ADD KEY `ID_IsFollowed` (`ID_IsFollowed`);
 
 --

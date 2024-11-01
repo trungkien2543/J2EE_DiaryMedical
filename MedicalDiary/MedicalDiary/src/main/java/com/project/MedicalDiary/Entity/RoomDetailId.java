@@ -1,13 +1,27 @@
 package com.project.MedicalDiary.Entity;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
 import java.io.Serializable;
 import java.util.Objects;
 
+@Embeddable
 public class RoomDetailId implements Serializable {
+//
+//    private String IDRoom; // Match field name in RoomDetail
+//    private String IDisFollowed; // Match field name in RoomDetail
+    @Size(max = 255)
+    @NotNull
+    @Column(name = "ID_Room", nullable = false)
+    private String IDRoom;
 
-    private String IDRoom; // Match field name in RoomDetail
-    private String IDisFollowed; // Match field name in RoomDetail
-
+    @Size(max = 255)
+    @NotNull
+    @Column(name = "ID_IsFollowed", nullable = false)
+    private String IDisFollowed;
     // Default constructor
     public RoomDetailId() {}
 

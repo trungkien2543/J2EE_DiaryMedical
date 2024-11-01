@@ -30,12 +30,12 @@ public class RoomDetailServiceImp implements RoomDetailService {
 
     @Override
     public List<RoomDetail> getRoomDetailsByIDisFollowed(String id) {
-        return roomDetailRepository.findByIDisFollowed(id);
+        return roomDetailRepository.findByisFollowed_CCCD(id);
     }
 
     @Override
     public Boolean deleteRoomDetail(RoomDetail roomDetail) {
-        if (roomDetailRepository.existsById(Long.valueOf(roomDetail.getIDRoom()))) {
+        if (roomDetailRepository.existsById(roomDetail.getRoom().getIDRoom())) {
             roomDetailRepository.delete(roomDetail);
             return true; // Deletion successful
         }
@@ -49,6 +49,19 @@ public class RoomDetailServiceImp implements RoomDetailService {
 
     @Override
     public List<RoomDetail> getAllRoomDetailsByRoomID(String idRoom) {
-        return roomDetailRepository.findByIDRoom(idRoom);
+        return roomDetailRepository.findByRoom_IDRoom(idRoom);
     }
+
+    @Override
+    public void updateStatus(String idRoom, String idIsFollowed, int Status) {
+        int updatedCount = roomDetailRepository.updateStatus(idRoom, Status, idIsFollowed);
+        if (updatedCount == 0) {
+            throw new RuntimeException("No RoomDetail found with given parameters");
+        }
+    }
+//    @Override
+//    public List<RoomDetail> getPendingRequests(String idRoom, int Status) {
+//        return roomDetailRepository.findByIDRoomAndStatus(idRoom, Status);
+//    }
+
 }

@@ -42,22 +42,25 @@ $(document).on("click", ".family-detail", function () {
 
             $("#Medical_History").val(response.medicalHistory); // Nếu bạn có trường này trong response
             $("#Medical_History").prop("disabled",true);
-            $.ajax({
-                type : "get",
-                url: "./family/getFamilyByID",
-                data: {
-                    iD_Family: response.idfamily,
-                },
-                dataType: "json",
-                success: function (res) {
-                    $("#IDFamily").val(response.idfamily +" - " + res.name); // Nếu bạn có trường này trong response
-                    $("#IDFamily").prop("disabled",true);
-                    $("#idfml").val(response.idfamily);
-                    $("#namefml").val(res.name);
-                }
-
-            });
-
+            // $.ajax({
+            //     type : "get",
+            //     url: "./family/getFamilyByID",
+            //     data: {
+            //         iD_Family: response.idfamily,
+            //     },
+            //     dataType: "json",
+            //     success: function (res) {
+            //         $("#IDFamily").val(response.idfamily +" - " + res.name); // Nếu bạn có trường này trong response
+            //         $("#IDFamily").prop("disabled",true);
+            //         $("#idfml").val(response.idfamily);
+            //         $("#namefml").val(res.name);
+            //     }
+            //
+            // });
+            $("#IDFamily").val(response.family.idfamily +" - " + response.family.name); // Nếu bạn có trường này trong response
+            $("#IDFamily").prop("disabled",true);
+            $("#idfml").val(response.family.idfamily);
+            $("#namefml").val(respone.family.name);
             // Hiển thị modal
             $("#AddQuanTam").modal("show");
         },
@@ -99,32 +102,52 @@ $(document).on("click",".family-add",function (){
 
 $(document).on("click","#btn-saves",function (e){
     e.preventDefault();
-    const information = {
-        cccd: $("#CCCD").val(),
-        name: $("#HoTen").val(),
-        gender: parseInt($("#Gender").val(), 10),
-        nhyt: $("#BHYT").val(),
-        phone: $("#Phone").val(),
-        job: $("#Job").val(),
-        department: $("#Department").val(),
-        address: $("#Address").val(),
-        medicalHistory: $("#Medical_History").val(),
+    // const information = {
+    //     cccd: $("#CCCD").val(),
+    //     name: $("#HoTen").val(),
+    //     gender: parseInt($("#Gender").val(), 10),
+    //     bhyt: $("#BHYT").val(),
+    //     phone: $("#Phone").val(),
+    //     job: $("#Job").val(),
+    //     department: $("#Department").val(),
+    //     address: $("#Address").val(),
+    //     medicalHistory: $("#Medical_History").val(),
+    //     // idfamily: parseInt($("#idfml").val(), 10),
+    //
+    //     // family : {
+    //     //     idfamily: parseInt($("#idfml").val(), 10),
+    //     //     name: $("#namefml").val()
+    //     // }
+    //
+    // };
+    const family = {
         idfamily: parseInt($("#idfml").val(), 10),
-
-        // family : {
-        //     idfamily: parseInt($("#idfml").val(), 10),
-        //     name: $("#namefml").val()
-        // }
-        // iDFamily: parseInt($("#idfml").val(), 10)
-
+        name: $("#namefml").val()
+    };
+    const information = {
+        "information" : {
+            cccd: $("#CCCD").val(),
+            name: $("#HoTen").val(),
+            gender: parseInt($("#Gender").val(), 10),
+            bhyt: $("#BHYT").val(),
+            phone: $("#Phone").val(),
+            job: $("#Job").val(),
+            department: $("#Department").val(),
+            address: $("#Address").val(),
+            medicalHistory: $("#Medical_History").val(),
+        },
+        "family" :{
+            idfamily: parseInt($("#idfml").val(), 10),
+            name: $("#namefml").val()
+        }
     };
     console.log(information);
     $.ajax({
         type: "POST",
         url: `./family/add`,
-        data: JSON.stringify(information), // Gửi dữ liệu dưới dạng JSON
         contentType: 'application/json', // Đảm bảo rằng bạn đã chỉ định đúng contentType
         dataType: "json", // Thêm header để server biết đây là JSON
+        data: JSON.stringify(information), // Gửi dữ liệu dưới dạng JSON
         success: function (response) {
             console.log("Information created: :" + response);
             // window.location.href ="/family?add-success-member"
@@ -254,7 +277,7 @@ $(document).on("click", ".family-delete", function (e) {
         if (result.isConfirmed) {
             // Send the delete request to the server
             $.ajax({
-                type: "DELETE",
+                type: "PUT",
                 url: `./family/${familyId}`, // Adjust the URL to match your API endpoint
                 success: function (response) {
                     // Handle successful deletion

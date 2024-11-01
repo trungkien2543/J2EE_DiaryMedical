@@ -3,6 +3,7 @@ package com.project.MedicalDiary.Entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,12 +23,16 @@ public class Account implements UserDetails {
     @Column(name = "Email", nullable = false)
     private String email;
 
-    @Column(name = "ID_Family")
-    private Long IDFamily;
+//    @Column(name = "ID_Family")
+//    private Long IDFamily;
 
     @Column(name = "PassWord")
     private String password; // Ensure this is named correctly
 
+    @NotNull
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "ID_Family", nullable = false)
+    private Family family;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -45,16 +50,16 @@ public class Account implements UserDetails {
     }
 
 
-    // Liên kết với Family bằng khóa ngoại ID_Family
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "ID_Family", insertable = false, updatable = false)
-    @JsonManagedReference
-    private Family family;
+//    // Liên kết với Family bằng khóa ngoại ID_Family
+//    @OneToOne(fetch = FetchType.EAGER)
+//    @JoinColumn(name = "ID_Family", insertable = false, updatable = false)
+//    @JsonManagedReference
+//    private Family family;
 
 
     public Account(String email, Long IDFamily, String password) {
         this.email = email;
-        this.IDFamily = IDFamily;
+        this.family.setIDFamily(IDFamily);
         this.password = password;
     }
 }

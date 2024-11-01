@@ -1,5 +1,6 @@
 package com.project.MedicalDiary.Controller;
 
+import com.project.MedicalDiary.DTORequest.InformationRequestDTO;
 import com.project.MedicalDiary.Entity.Family;
 import com.project.MedicalDiary.Entity.Information;
 import com.project.MedicalDiary.Service.CustomUserDetails;
@@ -7,6 +8,7 @@ import com.project.MedicalDiary.Service.ImpInterface.FamilyService;
 import com.project.MedicalDiary.Service.ImpInterface.InformationService;
 import lombok.*;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -62,16 +64,34 @@ public class FamilyController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
-    @RequestMapping(value = "/add",method = {RequestMethod.POST,RequestMethod.PUT ,RequestMethod.GET})
-    @ResponseBody
-    public ResponseEntity<Information> createInformation(@RequestBody Information information) {
-        // Save the family object to the database
-        Information createdInformation = informationService.createInformation(information);
-        System.out.println("ADD Info : " + information); // Debugging log
+//    @RequestMapping(value = "/add",method = {RequestMethod.POST,RequestMethod.PUT ,RequestMethod.GET})
+//    @ResponseBody
+//    public ResponseEntity<Information> createInformation(@RequestBody Information information) {
+//        // Save the family object to the database
+//        Information createdInformation = informationService.createInformation(information);
+//        System.out.println("ADD Info : " + information); // Debugging log
+//
+//        // Return a response with the created family and a status code
+//        return new ResponseEntity<>(createdInformation, HttpStatus.CREATED);
+//    }
+@RequestMapping(value = "/add", method = {RequestMethod.POST, RequestMethod.PUT, RequestMethod.GET}
+        , consumes = MediaType.APPLICATION_JSON_VALUE)
+@ResponseBody
+public ResponseEntity<Information> createInformation(@RequestBody InformationRequestDTO request) {
+    Information information = request.getInformation();
+    Family family = request.getFamily();
 
-        // Return a response with the created family and a status code
-        return new ResponseEntity<>(createdInformation, HttpStatus.CREATED);
-    }
+    // Set the family object in information
+    information.setFamily(family);
+
+    // Save the information object with the family data to the database
+    Information createdInformation = informationService.createInformation(information);
+    System.out.println("ADD Info : " + information); // Debugging log
+
+    // Return a response with the created information and a status code
+    return new ResponseEntity<>(createdInformation, HttpStatus.CREATED);
+}
+
 
     @RequestMapping(value = "update",method = {RequestMethod.POST,RequestMethod.PUT ,RequestMethod.GET})
     @ResponseBody
@@ -80,10 +100,12 @@ public class FamilyController {
 
         return new ResponseEntity<>(updateFamily, HttpStatus.CREATED);
     }
-    @DeleteMapping("/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<?> deleteFamily(@PathVariable String id) {
         try {
-            informationService.deleteInformation(id);
+//            informationService.deleteInformation(id);
+            // Set IDFamily to null before deleting the information
+            informationService.updateIDFamilyToNull(id);
             return ResponseEntity.ok().body("Family member deleted successfully.");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete family member.");
