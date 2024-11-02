@@ -19,7 +19,7 @@ public class Family {
 
     @Id
     @Column(name = "ID_Family")
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Hoặc GenerationType.AUTO
+    @GeneratedValue(strategy = GenerationType.AUTO) // Hoặc GenerationType.AUTO
     @NotNull(message = "CCCD cannot be null")
     private Long IDFamily;
 

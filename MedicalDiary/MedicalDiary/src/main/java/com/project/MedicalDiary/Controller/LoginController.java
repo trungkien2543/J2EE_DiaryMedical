@@ -212,12 +212,12 @@ public class LoginController {
 
 
         // Tạo tài khoản mới
-        Account accountNew = accountServiceImp.createAccount(new Account(email,familyNew.getIDFamily(),passwordEncoder.encode(password)));
+        Account accountNew = accountServiceImp.createAccount(new Account(email,familyNew,passwordEncoder.encode(password)));
 
         //Thêm thanh viên mới
 
         for (Information member: familyMembers ) {
-//            member.setIDFamily(familyNew.getIDFamily());
+            member.setFamily(familyNew);
             informationServiceImp.createInformation(member);
         }
 

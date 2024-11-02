@@ -57,9 +57,9 @@ public class Account implements UserDetails {
 //    private Family family;
 
 
-    public Account(String email, Long IDFamily, String password) {
+    public Account(String email, Family family, String password) {
         this.email = email;
-        this.family.setIDFamily(IDFamily);
+        this.family = family;
         this.password = password;
     }
 }

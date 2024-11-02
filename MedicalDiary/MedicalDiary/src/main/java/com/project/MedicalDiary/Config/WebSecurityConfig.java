@@ -3,6 +3,7 @@ package com.project.MedicalDiary.Config;
 
 import com.project.MedicalDiary.Repository.AccountRepository;
 import com.project.MedicalDiary.Service.CustomUserDetailsService;
+import com.project.MedicalDiary.Service.Imp.AccountServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,7 +20,7 @@ import org.springframework.security.web.SecurityFilterChain;
 public class WebSecurityConfig {
 
     @Autowired
-    private AccountRepository accountRepository; // Add this field
+    private AccountServiceImp accountRepository; // Add this field
 
 
     // Inject the custom UserDetailsService

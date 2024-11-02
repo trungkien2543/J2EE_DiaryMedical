@@ -16,7 +16,6 @@ public class AccountServiceImp implements AccountService {
     @Autowired
     private final AccountRepository accountRepository;
 
-    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Autowired

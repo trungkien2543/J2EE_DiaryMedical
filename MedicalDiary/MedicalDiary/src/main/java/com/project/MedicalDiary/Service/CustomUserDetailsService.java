@@ -2,6 +2,7 @@ package com.project.MedicalDiary.Service;
 
 import com.project.MedicalDiary.Entity.Account;
 import com.project.MedicalDiary.Repository.AccountRepository;
+import com.project.MedicalDiary.Service.Imp.AccountServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -11,11 +12,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final AccountRepository accountRepository;
+    private final AccountServiceImp accountServiceImp;
 
     @Autowired
-    public CustomUserDetailsService(AccountRepository accountRepository) {
-        this.accountRepository = accountRepository;
+    public CustomUserDetailsService(AccountServiceImp accountRepository) {
+        this.accountServiceImp = accountRepository;
     }
 
 //    @Override
@@ -44,14 +45,14 @@ public class CustomUserDetailsService implements UserDetailsService {
 //                .roles("USER") // Adjust roles as needed
 //                .build();
 //    }
-@Override
-public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-    Account account = accountRepository.findByEmail(email)
-            .orElseThrow(() -> new UsernameNotFoundException("User not found: " + email));
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        Account account = accountServiceImp.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + email));
 
-    // Wrap the Account in CustomUserDetails and return it
-    return new CustomUserDetails(account);
-}
+        // Wrap the Account in CustomUserDetails and return it
+        return new CustomUserDetails(account);
+    }
 
 
 
