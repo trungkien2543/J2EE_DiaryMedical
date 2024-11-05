@@ -1,4 +1,4 @@
-function clearInputFields(){
+                                                                                                            function clearInputFields(){
     $('#inputGroupSelect').prop('selectedIndex',0);
     $('#idPinOld').val("");
     $('#idPin').val("");
@@ -46,7 +46,6 @@ $(document).on('click','.edit-room',function (){
 $(document).on('click','.join-room',function (){
     let name = $(this).data("name");
     $('#btn-join-room').data("id", $(this).data("id"));
-    // $('#btn-join-room').data("id", cccd);
     InputFirldsJoin(name);
     $('#btn-save-room, #btn-update-room').hide();
     $('#btn-join-room').show();

@@ -3,6 +3,7 @@ package com.project.MedicalDiary.Entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -21,11 +22,13 @@ public class Account implements UserDetails {
 
     @Id
     @Column(name = "Email", nullable = false)
+    @NotNull(message = "Please enter your email")
+    @Email(message = "Please enter your email in the correct format.")
     private String email;
 
 //    @Column(name = "ID_Family")
 //    private Long IDFamily;
-
+    @NotNull(message = "Please enter your password")
     @Column(name = "PassWord")
     private String password; // Ensure this is named correctly
 

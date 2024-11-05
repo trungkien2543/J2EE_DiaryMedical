@@ -23,4 +23,11 @@ public interface InformationRepository extends JpaRepository<Information, String
     @Transactional
     @Query("UPDATE Information i SET i.family.IDFamily = :idFamily WHERE i.CCCD = :cccd")
     void updateIDFamilyToValue(String cccd, Long idFamily);
+    //Repository check Information exist by CCCD and IDFamily != null
+    Boolean existsByCCCDAndFamily_IDFamilyNotNull(String cccd);
+    //Repository check Information exist by CCCD and IDFamily == null
+    Boolean existsByCCCDAndFamily_IDFamilyNull(String cccd);
+
+    Boolean existsByCCCD(String cccd);
+
 }

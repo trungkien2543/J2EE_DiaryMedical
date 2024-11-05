@@ -350,44 +350,95 @@ $(document).on("click", ".room-delete-element", function (e) {
     });
 });
 
-function acceptRequest(idRoom) {
+function acceptRequest(button) {
+    const idRoom = button.getAttribute("data-houseowner-cccd");
+    const idIsFollowed = button.getAttribute("data-isfollowed-cccd");
+    var roomDetailId = {
+        idroom: "000000000016",
+        idisFollowed: "000000000001"
+    };
+    console.log(roomDetailId );
     $.ajax({
-        url: '/roomdetail/acceptRequest',
-        type: 'POST',
+        url: '/roomdetail/getRoomDetailByID', // The endpoint URL
+        type: 'post',
         contentType: 'application/json',
-        data: {
-            "idRoom": idRoom,
-            "idIsFollowed": "someIdIsFollowed"
-        }
-        ,
-        success: function(data) {
-            notify('success', 'Request Accepted', data);
-            // Update the UI accordingly
+        data: JSON.stringify(roomDetailId),
+        success: function(response) {
+            // Handle success - you can display the room details or process the response
+            console.log('Room Detail:', response);
+            let cccd =response.id.idroom;
+            console.log('Room Detail CCCCD:', cccd);
+
+            $.ajax({
+                url: '/roomdetail/acceptRequest',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(response),
+                success: function(data) {
+                    notify('success', 'Request Accepted', data);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', error);
+                    notify('error', 'Error', 'An error occurred while accepting the request.');
+                }
+            });
         },
         error: function(xhr, status, error) {
-            console.error('Error:', error);
-            notify('error', 'Error', 'An error occurred while accepting the request.');
+            // Handle error - for example, show an error message
+            console.error('Error fetching room detail:', error);
+
         }
     });
+
 }
 
-function cancelRequest(idRoom) {
-    $.ajax({
-        url: '/roomdetail/cancelRequest',
-        type: 'POST',
-        contentType: 'application/json',
-        data: {
-            "idRoom": "someRoomId",
-            "idIsFollowed": "someIdIsFollowed"
-        }
-        ,
-        success: function(data) {
-            notify('success', 'Request Canceled', data);
-            // Update the UI accordingly
-        },
-        error: function(xhr, status, error) {
-            console.error('Error:', error);
-            notify('error', 'Error', 'An error occurred while canceling the request.');
-        }
-    });
+function cancelRequest(item) {
+    const itemId = button.getAttribute("data-item-id");
+    console.log("Accept request for item:", itemId);
+    // let roomDetail = item;
+    // roomDetail.status = 1;
+    // $.ajax({
+    //     url: '/roomdetail/cancelRequest',
+    //     type: 'POST',
+    //     contentType: 'application/json',
+    //     data: JSON.stringify(roomDetail)
+    //     ,
+    //     success: function(data) {
+    //         notify('success', 'Request Canceled', data);
+    //         // Update the UI accordingly
+    //     },
+    //     error: function(xhr, status, error) {
+    //         console.error('Error:', error);
+    //         notify('error', 'Error', 'An error occurred while canceling the request.');
+    //     }
+    // });
 }
+
+// const messengerDetail = {
+//     "room": {
+//         "idroom": "000000000016",
+//         "pin": "123",
+//         "hibernateLazyInitializer": {}
+//     },
+//     "isFollowed": {
+//         "family": {
+//             "name": "Gia đình 3",
+//             "idfamily": 3
+//         },
+//         "name": "Le Van C",
+//         "address": "789 Boulevard, City",
+//         "bhyt": "BHYT003",
+//         "phone": "0112233445",
+//         "cccd": "000000000003",
+//         "gender": true,
+//         "job": "Doctor",
+//         "medicalHistory": "Asthma",
+//         "department": "Health",
+//         "hibernateLazyInitializer": {}
+//     },
+//     "status": 0,
+//     "id": {
+//         "idroom": "000000000016",
+//         "idisFollowed": "000000000003"
+//     }
+// };

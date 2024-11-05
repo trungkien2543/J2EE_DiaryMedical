@@ -1,11 +1,12 @@
 package com.project.MedicalDiary.Controller;
 
-import com.project.MedicalDiary.DTORequest.InformationRequestDTO;
+import com.project.MedicalDiary.DTO.InformationRequestDTO;
 import com.project.MedicalDiary.Entity.Family;
 import com.project.MedicalDiary.Entity.Information;
 import com.project.MedicalDiary.Service.CustomUserDetails;
 import com.project.MedicalDiary.Service.ImpInterface.FamilyService;
 import com.project.MedicalDiary.Service.ImpInterface.InformationService;
+import jakarta.validation.Valid;
 import lombok.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -77,7 +78,7 @@ public class FamilyController {
 @RequestMapping(value = "/add", method = {RequestMethod.POST, RequestMethod.PUT, RequestMethod.GET}
         , consumes = MediaType.APPLICATION_JSON_VALUE)
 @ResponseBody
-public ResponseEntity<Information> createInformation(@RequestBody InformationRequestDTO request) {
+public ResponseEntity<Information> createInformation(@RequestBody @Valid InformationRequestDTO request) {
     Information information = request.getInformation();
     Family family = request.getFamily();
 
@@ -91,8 +92,6 @@ public ResponseEntity<Information> createInformation(@RequestBody InformationReq
     // Return a response with the created information and a status code
     return new ResponseEntity<>(createdInformation, HttpStatus.CREATED);
 }
-
-
     @RequestMapping(value = "update",method = {RequestMethod.POST,RequestMethod.PUT ,RequestMethod.GET})
     @ResponseBody
     public ResponseEntity<Boolean> updateFamily(@RequestBody InformationRequestDTO request) {
@@ -116,5 +115,27 @@ public ResponseEntity<Information> createInformation(@RequestBody InformationReq
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete family member.");
         }
     }
-
+    //Write rest api to check information exist by CCCD and IDFamily != null
+    @GetMapping("/existsByCCCDAndFamily_IDFamilyNotNull")
+    @ResponseBody
+    public ResponseEntity<Boolean> existsByCCCDAndFamily_IDFamilyNotNull(@RequestParam String cccd) {
+        System.out.println("Received CCCD: " + cccd); // Debugging log
+        boolean exists = informationService.existsByCCCDAndFamily_IDFamilyNotNull(cccd);
+        return ResponseEntity.ok(exists);
+    }
+    //Write rest api to check information exist by CCCD and IDFamily == null
+    @GetMapping("/existsByCCCDAndFamily_IDFamilyNull")
+    @ResponseBody
+    public ResponseEntity<Boolean> existsByCCCDAndFamily_IDFamilyNull(@RequestParam String cccd) {
+        System.out.println("Received CCCD: " + cccd); // Debugging log
+        boolean exists = informationService.existsByCCCDAndFamily_IDFamilyNull(cccd);
+        return ResponseEntity.ok(exists);
+    }
+    @GetMapping("/existsByCCCD")
+    @ResponseBody
+    public ResponseEntity<Boolean> existsByCCCD(@RequestParam String cccd) {
+        System.out.println("Received CCCD: " + cccd); // Debugging log
+        boolean exists = informationService.existsByCCCD(cccd);
+        return ResponseEntity.ok(exists);
+    }
 }

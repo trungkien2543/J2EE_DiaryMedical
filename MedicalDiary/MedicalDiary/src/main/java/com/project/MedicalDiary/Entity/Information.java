@@ -16,16 +16,16 @@ public class Information {
 
     @Id
     @Column(name = "CCCD")
-    @NotNull(message = "CCCD cannot be null")
+    @NotNull(message = "Please enter your identification code")
     @Pattern(regexp = "^[0-9]{1,12}$", message = "CCCD must be a numeric value with up to 12 digits.")
     private String CCCD;
 
     @Column(name = "Name")
-    @NotNull(message = "Name cannot be null")
+    @NotNull(message = "Please enter your name")
     private String Name;
 
     @Column(name = "Gender")
-    @NotNull(message = "Gender cannot be null")
+    @NotNull(message = "Please select your gender")
     private Boolean Gender;
 
     @Column(name = "BHYT")
@@ -46,10 +46,6 @@ public class Information {
     @Column(name = "Medical_History")
     private String MedicalHistory;
 
-//    @Column(name = "ID_Family")
-//    private Long IDFamily;
-
-//    @ManyToOne(fetch = FetchType.LAZY)
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ID_Family", referencedColumnName = "ID_Family") // This links to ID_Family in Family
 //    @JsonManagedReference

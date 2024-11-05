@@ -1,4 +1,4 @@
-package com.project.MedicalDiary.DTORequest;
+package com.project.MedicalDiary.DTO;
 
 import com.project.MedicalDiary.Entity.Family;
 import com.project.MedicalDiary.Entity.Information;

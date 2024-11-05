@@ -1,12 +1,14 @@
 package com.project.MedicalDiary.Service.Imp;
 
 import com.project.MedicalDiary.Entity.RoomDetail;
+import com.project.MedicalDiary.Entity.RoomDetailId;
 import com.project.MedicalDiary.Repository.RoomDetailRepository;
 import com.project.MedicalDiary.Service.ImpInterface.RoomDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class RoomDetailServiceImp implements RoomDetailService {
@@ -35,7 +37,7 @@ public class RoomDetailServiceImp implements RoomDetailService {
 
     @Override
     public Boolean deleteRoomDetail(RoomDetail roomDetail) {
-        if (roomDetailRepository.existsById(roomDetail.getRoom().getIDRoom())) {
+        if (roomDetailRepository.existsByIDRoom(roomDetail.getRoom().getIDRoom())) {
             roomDetailRepository.delete(roomDetail);
             return true; // Deletion successful
         }
@@ -59,9 +61,18 @@ public class RoomDetailServiceImp implements RoomDetailService {
             throw new RuntimeException("No RoomDetail found with given parameters");
         }
     }
-//    @Override
-//    public List<RoomDetail> getPendingRequests(String idRoom, int Status) {
-//        return roomDetailRepository.findByIDRoomAndStatus(idRoom, Status);
-//    }
+    @Override
+    public List<RoomDetail> getPendingRequests(String idRoom, int Status) {
+        return roomDetailRepository.findByRoom_IDRoomAndStatus(idRoom, Status);
+    }
+    @Override
+    public List<RoomDetail> findByIsFollowed_CCCDAndStatus(String cccd,int Status){
+        return roomDetailRepository.findByIsFollowed_CCCDAndStatus(cccd,Status);
+    }
+
+    @Override
+    public Optional<RoomDetail> findRoomDetailById(RoomDetailId id) {
+        return roomDetailRepository.findById(id);
+    }
 
 }

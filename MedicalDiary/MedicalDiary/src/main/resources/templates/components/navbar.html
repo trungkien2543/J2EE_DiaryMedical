@@ -101,8 +101,7 @@
     </li>
 
     <!-- Nav Item - Messages -->
-<!--    th:if="${currentUrl == '/roomdetail'}"-->
-    <li class="nav-item dropdown no-arrow mx-1" >
+    <li class="nav-item dropdown no-arrow mx-1" th:if="${currentUrl == '/roomdetail'}">
       <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button"
          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <i class="fas fa-envelope fa-fw"></i>
@@ -117,37 +116,27 @@
           Message Center
         </h6>
         <!-- Messages -->
-        <a class="dropdown-item d-flex align-items-center">
+        <a class="dropdown-item d-flex align-items-center" th:each="item : ${pendingRequests}">
           <div class="dropdown-list-image mr-3">
             <div class="status-indicator bg-success"></div>
           </div>
           <div class="font-weight-bold">
-            <div class="text-truncate">Nguyen Van A wants to monitor your health</div>
+            <div class="text-truncate" th:text="${item.HouseOwner.Name} + ' wants to monitor your health'">
+              Nguyen Van A wants to monitor your health
+            </div>
             <div class="small text-gray-500">Pending Accept</div>
           </div>
           <div class="mx-2">
-            <button class="btn btn-success btn-sm" onclick="acceptRequest()">Accept</button>
-            <button class="btn btn-danger btn-sm" onclick="cancelRequest()">Cancel</button>
+<!--            RoomDetail(ID=RoomDetailId(IDRoom=000000000016, IDisFollowed=000000000001), room=Room(IDRoom=000000000016, PIN=123), isFollowed=Information(CCCD=000000000001, Name=Nguyen Van A, Gender=false, BHYT=BHYT001, Phone=0123456789, Job=Engineer, Department=IT, Address=123 Street, City, MedicalHistory=None), status=0)-->
+            <!-- Storing item ID in data-* attribute -->
+            <button class="btn btn-success btn-sm" th:attr="data-houseowner-cccd=${item.HouseOwner.CCCD}, data-isfollowed-cccd=${item.isFollowed.CCCD} "
+                    onclick="acceptRequest(this)">Accept</button>
+            <button class="btn btn-danger btn-sm" th:attr="data-houseowner-cccd=${item.HouseOwner.CCCD}, data-isfollowed-cccd=${item.isFollowed.CCCD} "
+                    onclick="cancelRequest(this)">Cancel</button>
           </div>
         </a>
-        <a class="dropdown-item d-flex align-items-center">
-          <div class="dropdown-list-image mr-3">
-            <div class="status-indicator bg-success"></div>
-          </div>
-          <div class="font-weight-bold">
-            <div class="text-truncate">You have canceled Nguyen Van A's request.</div>
-            <div class="small text-gray-500">Canceled</div>
-          </div>
-        </a>
-        <a class="dropdown-item d-flex align-items-center">
-          <div class="dropdown-list-image mr-3">
-            <div class="status-indicator bg-success"></div>
-          </div>
-          <div class="font-weight-bold">
-            <div class="text-truncate">You have accepted Nguyen Van A's request.</div>
-            <div class="small text-gray-500">Accepted</div>
-          </div>
-        </a>
+
+
       </div>
     </li>
 

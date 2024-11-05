@@ -3,6 +3,8 @@ package com.project.MedicalDiary.Controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.MedicalDiary.Entity.Information;
 import com.project.MedicalDiary.Entity.Room;
+import com.project.MedicalDiary.Entity.RoomDetail;
+import com.project.MedicalDiary.Entity.RoomDetailId;
 import com.project.MedicalDiary.Service.CustomUserDetails;
 import com.project.MedicalDiary.Service.ImpInterface.InformationService;
 import com.project.MedicalDiary.Service.ImpInterface.RoomDetailService;
@@ -32,7 +34,18 @@ public class RoomController {
     private InformationService informationService;
     @Autowired
     private RoomDetailService roomDetailService;
-
+    @GetMapping("/getRoomDetailByID")
+    @ResponseBody
+    public ResponseEntity<?> getRoomDetailByID(@RequestBody RoomDetailId roomDetailId) {
+        System.out.println("roomDetailId :  " + roomDetailId);
+        Optional<RoomDetail> optionalRoomDetail = roomDetailService.findRoomDetailById(roomDetailId);
+        if (optionalRoomDetail.isPresent()) {
+            return ResponseEntity.ok(optionalRoomDetail.get());
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("RoomDetail not found with ID: " + roomDetailId);
+        }
+    }
     @GetMapping("")
     public String room(Authentication authentication, Model model) {
 

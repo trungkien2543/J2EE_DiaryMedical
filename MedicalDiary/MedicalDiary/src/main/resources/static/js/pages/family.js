@@ -1,4 +1,5 @@
 
+
 $(document).on("click", ".family-detail", function () {
     let cccd = $(this).data("id");
     $("#titleModal").text("Xem chi tiết");
@@ -88,6 +89,84 @@ function clearInputFields() {
         $("#Medical_History").val("").prop("disabled", false); // If you have this field
         $("#IDFamily").val("").prop("disabled", false); // If you have this field
 }
+function setFieldDisabledStatus(disabled) {
+    $("#CCCD, #HoTen, #Gender, #BHYT, #Phone, #Job, #Department, #Address, #Medical_History, #IDFamily")
+        .prop("disabled", disabled);
+}
+
+function populateFormFields(data) {
+    $("#CCCD").val(data.cccd);
+    $("#HoTen").val(data.name);
+    $("#Gender").val(data.gender === 1 ? 1 : 0).change();
+    $("#BHYT").val(data.bhyt);
+    $("#Phone").val(data.phone);
+    $("#Job").val(data.job);
+    $("#Department").val(data.department);
+    $("#Address").val(data.address);
+    $("#Medical_History").val(data.medicalHistory);
+    $("#IDFamily").val(data.family.idfamily + " - " + data.family.name);
+}
+
+// Function to validate form fields
+function validateForm() {
+    let isValid = true;
+
+    // Clear any previous validation errors
+    $(".invalid-feedback").remove();
+
+    // Validate CCCD (required, numeric only, no blanks allowed)
+    if ($("#CCCD").val().trim() === "" || !/^\d+$/.test($("#CCCD").val())) {
+        $("#CCCD").after("<div class='invalid-feedback'>CCCD is required and must contain only numbers</div>");
+        $("#CCCD").addClass("is-invalid"); // Add Bootstrap class for invalid
+        isValid = false;
+    } else {
+        $("#CCCD").removeClass("is-invalid"); // Remove invalid class if valid
+    }
+
+    // Validate HoTen (required)
+    if ($("#HoTen").val().trim() === "") {
+        $("#HoTen").after("<div class='invalid-feedback'>Name is required</div>");
+        $("#HoTen").addClass("is-invalid");
+        isValid = false;
+    } else {
+        $("#HoTen").removeClass("is-invalid");
+    }
+
+    // Validate Gender (required, valid selection)
+    if ($("#Gender").val() === "" || $("#Gender").val() === null) {
+        $("#Gender").after("<div class='invalid-feedback'>Please select a gender</div>");
+        $("#Gender").addClass("is-invalid");
+        isValid = false;
+    } else {
+        $("#Gender").removeClass("is-invalid");
+    }
+
+    // Validate BHYT (optional but must be alphanumeric if provided)
+    if ($("#BHYT").val() !== "" && !/^[a-zA-Z0-9]+$/.test($("#BHYT").val())) {
+        $("#BHYT").after("<div class='invalid-feedback'>BHYT should be alphanumeric</div>");
+        $("#BHYT").addClass("is-invalid");
+        isValid = false;
+    } else {
+        $("#BHYT").removeClass("is-invalid");
+    }
+
+    // Validate Phone (numeric only)
+    if ($("#Phone").val() === "" || !/^[0-9]+$/.test($("#Phone").val())) {
+        $("#Phone").after("<div class='invalid-feedback'>Phone is required and should contain only numbers</div>");
+        $("#Phone").addClass("is-invalid");
+        isValid = false;
+    } else {
+        $("#Phone").removeClass("is-invalid");
+    }
+
+    return isValid;
+}
+
+
+// Clear validation error messages
+function clearValidationErrors() {
+    $(".error").remove();
+}
 
 $(document).on("click",".family-add",function (){
     clearInputFields();
@@ -166,27 +245,56 @@ $(document).on("click","#btn-saves",function (e){
         }
     };
     console.log(information);
+    // Clear previous error messages
+    clearValidationErrors();
+
+    // Perform validation
+    if (!validateForm()) {
+        console.log("Form validation failed.");
+        return;
+    }
     $.ajax({
-        type: "POST",
-        url: `./family/add`,
+        type: "get",
+        url: `./family/existsByCCCD`,
         contentType: 'application/json', // Đảm bảo rằng bạn đã chỉ định đúng contentType
         dataType: "json", // Thêm header để server biết đây là JSON
-        data: JSON.stringify(information), // Gửi dữ liệu dưới dạng JSON
-        success: function (response) {
-            console.log("Information created: :" + response);
-            // window.location.href ="/family?add-success-member"
-            $("#AddQuanTam").modal("hide");
-            notify('success', 'Message Add sucessfully', 'Add new family member successfully');
+        data: {
+            cccd : $("#CCCD").val(),
+        }, // Gửi dữ liệu dưới dạng JSON
+        success: function (is_exists) {
+            if(!is_exists){
+                $.ajax({
+                    type: "POST",
+                    url: `./family/add`,
+                    contentType: 'application/json', // Đảm bảo rằng bạn đã chỉ định đúng contentType
+                    dataType: "json", // Thêm header để server biết đây là JSON
+                    data: JSON.stringify(information), // Gửi dữ liệu dưới dạng JSON
+                    success: function (response) {
+                        console.log("Information created: :" + response);
+                        // window.location.href ="/family?add-success-member"
+                        $("#AddQuanTam").modal("hide");
+                        notify('success', 'Message Add sucessfully', 'Add new family member successfully');
 
-            addNewRecord(information);
+                        addNewRecord(information);
 
 
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        console.error("AJAX Error:", textStatus, errorThrown);
+                        console.error("Response Text:", jqXHR.responseText);
+                    }
+                });
+            } else {
+                $("#CCCD").after("<div class='invalid-feedback'>Duplicate CCCD with another person or your CCCD has been added</div>");
+                $("#CCCD").addClass("is-invalid"); // Add Bootstrap class for invalid
+            }
         },
         error: function (jqXHR, textStatus, errorThrown) {
             console.error("AJAX Error:", textStatus, errorThrown);
             console.error("Response Text:", jqXHR.responseText);
         }
     });
+
 });
 $(document).on("click",".family-edit",function (){
     let cccd = $(this).data("id");

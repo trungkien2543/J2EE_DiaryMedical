@@ -26,7 +26,6 @@
       <!--      </div>-->
       <!-- Modal -->
       <div class="modal fade" id="AddQuanTam" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropAddQuanTam" aria-hidden="true">
-        <!--      <div class="modal fade" id="AddQuanTam" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">-->
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-header">
@@ -35,24 +34,27 @@
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
-            <form class="forms-sample" action="@{/add}" method="post">
+            <form class="needs-validation" action="@{/add}" method="post" novalidate>
               <div class="modal-body">
                 <div class="form-group">
                   <label for="CCCD">CCCD</label>
-                  <input type="text" class="form-control" id="CCCD" placeholder="CCCD">
+                  <input type="text" class="form-control" id="CCCD" placeholder="CCCD" required>
+                  <div class="invalid-feedback">Please enter a valid CCCD.</div>
                 </div>
                 <div class="form-group">
                   <label for="HoTen">Full Name</label>
-                  <input type="text" class="form-control" id="HoTen" placeholder="Full name">
+                  <input type="text" class="form-control" id="HoTen" placeholder="Full name" required>
+                  <div class="invalid-feedback">Please enter a full name.</div>
                 </div>
                 <div class="form-row">
                   <div class="form-group col-md-3">
                     <label for="Gender">Gender</label>
-                    <select class="form-control" id="Gender">
+                    <select class="form-control" id="Gender" required>
                       <option value="" disabled selected hidden>Chọn giới tính</option>
                       <option value="1">Male</option>
                       <option value="0">Female</option>
                     </select>
+                    <div class="invalid-feedback">Please select a gender.</div>
                   </div>
                   <div class="form-group col-md-9">
                     <label for="BHYT">Health Insurance</label>
@@ -62,7 +64,8 @@
                 <div class="form-row">
                   <div class="form-group col-md-6">
                     <label for="Phone">Phone</label>
-                    <input type="text" class="form-control" id="Phone" placeholder="Phone">
+                    <input type="text" class="form-control" id="Phone" placeholder="Phone" required>
+                    <div class="invalid-feedback">Please enter a valid phone number.</div>
                   </div>
                   <div class="form-group col-md-6">
                     <label for="Job">Job</label>
@@ -83,7 +86,8 @@
                 </div>
                 <div class="form-group">
                   <label for="Address">Address</label>
-                  <input type="text" class="form-control" id="Address" placeholder="Address">
+                  <input type="text" class="form-control" id="Address" placeholder="Address" required>
+                  <div class="invalid-feedback">Please enter an address.</div>
                 </div>
                 <div class="form-group">
                   <label for="Medical_History">Background medical history</label>
@@ -92,16 +96,13 @@
               </div>
               <div class="modal-footer">
                 <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
-                <button id="btn-saves" class="btn btn-primary" type="submit">Saves</button>
-                <button id="btn-updates" class="btn btn-primary" type="button">Updates</button>
+                <button id="btn-saves" class="btn btn-primary" type="submit">Save</button>
+                <button id="btn-updates" class="btn btn-primary" type="button">Update</button>
               </div>
             </form>
-
-
           </div>
         </div>
       </div>
-    </div>
     <div class="card-body">
       <div class="table-responsive">
         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">

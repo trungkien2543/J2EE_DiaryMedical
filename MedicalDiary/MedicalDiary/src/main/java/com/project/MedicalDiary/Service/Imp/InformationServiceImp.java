@@ -91,6 +91,19 @@ public Information createInformation(Information information) {
     }
 
     @Override
+    public Boolean existsByCCCDAndFamily_IDFamilyNotNull(String CCCD) {
+        return informationRepository.existsByCCCDAndFamily_IDFamilyNotNull(CCCD);
+    }
+
+    @Override
+    public Boolean existsByCCCDAndFamily_IDFamilyNull(String CCCD) {
+        return informationRepository.existsByCCCDAndFamily_IDFamilyNull(CCCD);
+    }
+    @Override
+    public Boolean existsByCCCD(String CCCD) {
+        return informationRepository.existsByCCCD(CCCD);
+    }
+    @Override
     public Boolean updateInformation(Information information) {
         if (informationRepository.existsById(information.getCCCD())) {
             informationRepository.save(information);
