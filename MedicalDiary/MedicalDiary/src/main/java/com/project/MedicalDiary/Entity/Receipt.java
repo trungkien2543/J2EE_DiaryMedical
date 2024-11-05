@@ -49,7 +49,7 @@ public class Receipt {
     private String urlResult;
 
     @Column(name = "Url_BillDrug")
-    private Long idBill;
+    private String urlBill;
 
     @Column(name = "Remind")
     private String remind;
