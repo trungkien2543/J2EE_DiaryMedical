@@ -101,7 +101,7 @@
     </li>
 
     <!-- Nav Item - Messages -->
-    <li class="nav-item dropdown no-arrow mx-1" th:if="${currentUrl == '/roomdetail'}">
+    <li class="nav-item dropdown no-arrow mx-1" th:if="${currentUrl == '/roomdetail'}" >
       <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button"
          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <i class="fas fa-envelope fa-fw"></i>
@@ -116,7 +116,7 @@
           Message Center
         </h6>
         <!-- Messages -->
-        <a class="dropdown-item d-flex align-items-center" th:each="item : ${pendingRequests}">
+        <a class="dropdown-item d-flex align-items-center item-message" th:each="item : ${pendingRequests}" th:attr="data-houseowner-cccd=${item.HouseOwner.CCCD}">
           <div class="dropdown-list-image mr-3">
             <div class="status-indicator bg-success"></div>
           </div>

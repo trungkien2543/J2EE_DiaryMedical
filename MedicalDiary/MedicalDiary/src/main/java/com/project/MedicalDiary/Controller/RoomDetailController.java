@@ -16,9 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -37,13 +35,14 @@ public class RoomDetailController {
             String roomId = (String) session.getAttribute("IDRoom");
             System.out.println(roomId);
             List<RoomDetail> roomDetails = roomDetailService.getAllRoomDetailsByRoomID(roomId);
+//            List<RoomDetail> roomDetailsTemp = roomDetailService.findAllByRoom_IDRoomAndStatus(roomId,0);
             Information info = informationService.findByCCCD(roomId).get();
-            List<Information> list = new ArrayList<>();
+            Map<Information,RoomDetail> list = new HashMap<>();
             for (RoomDetail roomDetail : roomDetails) {
                 Optional<Information> obj = informationService.findByCCCD(roomDetail.getIsFollowed().getCCCD());
                 //Add to list
                 // Check if the Information object is present, then add it to the list
-                obj.ifPresent(list::add);
+                obj.ifPresent(information -> list.put(information, roomDetail));
             }
             List<RoomDetail> temps = roomDetailService.findByIsFollowed_CCCDAndStatus(roomId, 0);
             List<RoomDetailRequestDTO> pendingRequests = convertToDTOList(temps);
@@ -84,11 +83,35 @@ public class RoomDetailController {
     public ResponseEntity<Information> getDetail(@RequestParam String cccd) {
         System.out.println("Received CCCD: " + cccd); // Debugging log
         Optional<Information> informationOptional = informationService.findByCCCD(cccd);
-        System.out.println("Information GETDETAIL: " + informationOptional.get());
         if (informationOptional.isPresent()) {
+            System.out.println("Information GETDETAIL: " + informationOptional.get() );
             return ResponseEntity.ok(informationOptional.get());
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+    @RequestMapping(value = "/checkExist",method = {RequestMethod.POST,RequestMethod.PUT ,RequestMethod.GET})
+    @ResponseBody
+    public ResponseEntity<?> checkExist(@RequestBody InformationRequestDTO request, HttpSession session) {
+        String roomId = (String) session.getAttribute("IDRoom");
+
+        Information information = request.getInformation();
+        Family family = request.getFamily();
+        // Set the family object in information
+        information.setFamily(family);
+
+
+        RoomDetailId roomDetailId = new RoomDetailId();
+        roomDetailId.setIDRoom(roomId);  // Set ID_Room part of the composite key
+        roomDetailId.setIDisFollowed(information.getCCCD());
+        Optional<RoomDetail> roomDetail = roomDetailService.findRoomDetailById(roomDetailId);
+        if (roomDetail.isPresent()) {
+            if (roomDetail.get().getStatus() != -1)
+                return ResponseEntity.ok(1); //true
+            else
+                return ResponseEntity.ok(-1);
+        } else {
+            return ResponseEntity.ok(0); //false
         }
     }
     @GetMapping("/getFamilyByID")
@@ -108,7 +131,6 @@ public class RoomDetailController {
     @ResponseBody
     public ResponseEntity<RoomDetail> createRoomDetail(@RequestBody InformationRequestDTO request, HttpSession session) {
         String roomId = (String) session.getAttribute("IDRoom");
-
         Information information = request.getInformation();
         Family family = request.getFamily();
         // Set the family object in information
@@ -122,10 +144,11 @@ public class RoomDetailController {
         Room roomtemp = roomService.getRoomByID(roomId);
         roomDetail.setRoom(roomtemp);
         roomDetail.setIsFollowed(information);
-        System.out.println( "Room Detail : " + roomDetail);
-        RoomDetail createdRoomDetail = roomDetailService.createRoomDetail(roomDetail);
-        System.out.println("ADD Info : " + information); // Debugging log
+        roomDetail.setStatus(0);
 
+        System.out.println( "Room Detail : " + roomDetail);
+        RoomDetail createdRoomDetail = roomDetailService.save(roomDetail);
+        System.out.println("ADD Info : " + information); // Debugging log
         // Return a response with the created family and a status code
         return new ResponseEntity<>(createdRoomDetail, HttpStatus.CREATED);
     }
@@ -137,10 +160,11 @@ public class RoomDetailController {
 
         return new ResponseEntity<>(updateFamily, HttpStatus.CREATED);
     }
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteInf(@PathVariable String id) {
+    @DeleteMapping("/{id}") //1 element in room
+    public ResponseEntity<?> deleteInf(@PathVariable String id,HttpSession session) {
         try {
-            informationService.updateIDFamilyToNull(id);
+            String roomId = (String) session.getAttribute("IDRoom");
+            roomDetailService.deleteByID_IDRoomAndIsFollowed_CCCD(roomId, id);
             return ResponseEntity.ok().body("Family member deleted successfully.");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete family member.");
@@ -150,10 +174,6 @@ public class RoomDetailController {
     @ResponseBody
     public ResponseEntity<?> getRoomDetailByID(@RequestBody RoomDetailId roomDetailId) {
 
-//        System.out.println("roomDetailId :  " + request);
-//        RoomDetailId roomDetailId = new RoomDetailId();
-//        roomDetailId.setIDRoom(request.getIdroom());
-//        roomDetailId.setIDisFollowed(request.getIdisFollowed());
         Optional<RoomDetail> optionalRoomDetail = roomDetailService.findRoomDetailById(roomDetailId);
         if (optionalRoomDetail.isPresent()) {
             return ResponseEntity.ok(optionalRoomDetail.get());
@@ -179,28 +199,31 @@ public class RoomDetailController {
 
     @PostMapping("/cancelRequest")
     @ResponseBody
-    public ResponseEntity<String> cancelRequest(@RequestBody String idIsFollowed,HttpSession session) {
+    public ResponseEntity<String> cancelRequest(@RequestBody RoomDetail roomDetail,HttpSession session) {
         String roomId = (String) session.getAttribute("IDRoom");
 
         try {
-            roomDetailService.updateStatus(roomId, idIsFollowed, -1); // -1 for canceled
+            roomDetailService.updateStatus(roomDetail.getID().getIDRoom(), roomId, -1); // -1 for canceled
             return ResponseEntity.ok("Request canceled successfully.");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to cancel request.");
         }
     }
-    @GetMapping("/pendingRequest")
+    @RequestMapping(value = "/pendingRequest",method = {RequestMethod.POST,RequestMethod.PUT ,RequestMethod.GET})
     @ResponseBody
-    public ResponseEntity<List<RoomDetail>> pendingRequest(HttpSession session) {
+    public ResponseEntity<?> pendingRequest(@RequestBody RoomDetailId roomDetailId,HttpSession session) {
         String idRoom = (String) session.getAttribute("IDRoom");
-        // Fetch the list of RoomDetail entries with Status = 0 and the specified IDRoom
-        List<RoomDetail> pendingRequests = roomDetailService.getPendingRequests(idRoom, 0);
+        roomDetailId.setIDRoom(idRoom);
+        Optional<RoomDetail> optionalRoomDetail = roomDetailService.findRoomDetailById(roomDetailId);
+        RoomDetail roomDetail = new RoomDetail();
+        if (optionalRoomDetail.isPresent()) {
+            roomDetail = optionalRoomDetail.get();
+            roomDetailService.updateStatus(roomDetail.getID().getIDRoom(), roomDetailId.getIDisFollowed(), 0); // 0 for pending
+            return ResponseEntity.ok(true);
 
-        if (pendingRequests.isEmpty()) {
-            return ResponseEntity.noContent().build(); // Return 204 No Content if no requests are found
+        } else {
+            return ResponseEntity.ok(false);
         }
-
-        return ResponseEntity.ok(pendingRequests);
     }
 
 

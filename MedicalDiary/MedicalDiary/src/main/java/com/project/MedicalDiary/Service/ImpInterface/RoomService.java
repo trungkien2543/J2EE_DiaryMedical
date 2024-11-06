@@ -18,4 +18,7 @@ public interface RoomService {
     public Map<Information, Room> mapRoomsToMembers(Iterable<Information> listInfoOfFml, Iterable<Room> listRoom);
     public Boolean checkRoom(String IDRoom, String PIN);
     public Room getRoomByID(String IDRoom);
+    public Boolean changePIN(String IDRoom, String oldPIN, String newPIN);
+    Boolean existByIDRoom(String IDRoom);
+    Boolean deleteRoomByIDRoom(String IDRoom);
 }

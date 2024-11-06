@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface RoomDetailService {
 
-    RoomDetail createRoomDetail(RoomDetail roomDetail);
+    RoomDetail save(RoomDetail roomDetail);
 
     List<RoomDetail> getAllRoomDetails();
 
@@ -27,4 +27,9 @@ public interface RoomDetailService {
     List<RoomDetail> findByIsFollowed_CCCDAndStatus(String cccd, int Status);
 
     Optional<RoomDetail> findRoomDetailById(RoomDetailId id);
+    Boolean deleteByID_IDRoomAndIsFollowed_CCCD(String idRoom, String idIsFollowed); //Delete when cancel
+    List<RoomDetail> findAllByRoom_IDRoomAndStatus(String idRoom, int Status);
+    Boolean existsByRoom_IDRoom(String idRoom);
+    Boolean deleteAllByRoom_IDRoom(String idRoom);
+    Boolean existsByID(RoomDetailId id);
 }

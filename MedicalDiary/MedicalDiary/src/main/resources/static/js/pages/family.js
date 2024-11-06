@@ -1,4 +1,5 @@
-
+// Regex for Vietnamese letters and spaces
+const vietnameseNamePattern = /^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸỳỵỷỹ\s]+$/;
 
 $(document).on("click", ".family-detail", function () {
     let cccd = $(this).data("id");
@@ -124,8 +125,8 @@ function validateForm() {
     }
 
     // Validate HoTen (required)
-    if ($("#HoTen").val().trim() === "") {
-        $("#HoTen").after("<div class='invalid-feedback'>Name is required</div>");
+    if ($("#HoTen").val().trim() === "" || !vietnameseNamePattern.test($("#HoTen").val().trim())) {
+        $("#HoTen").after("<div class='invalid-feedback'>Name is required and should contain only letters</div>");
         $("#HoTen").addClass("is-invalid");
         isValid = false;
     } else {
@@ -151,22 +152,43 @@ function validateForm() {
     }
 
     // Validate Phone (numeric only)
-    if ($("#Phone").val() === "" || !/^[0-9]+$/.test($("#Phone").val())) {
-        $("#Phone").after("<div class='invalid-feedback'>Phone is required and should contain only numbers</div>");
+    if ($("#Phone").val() === "" || !/^[0]{1}[0-9]{9}$/.test($("#Phone").val())) {
+        $("#Phone").after("<div class='invalid-feedback'>Phone is required, should start with 0 and contain exactly 10 digits</div>");
         $("#Phone").addClass("is-invalid");
         isValid = false;
     } else {
         $("#Phone").removeClass("is-invalid");
     }
 
+    // Validate Job
+    if ($("#Job").val() === "") {
+        $("#Job").after("<div class='invalid-feedback'>Job is required</div>");
+        $("#Job").addClass("is-invalid");
+        isValid = false;
+    } else {
+        $("#Job").removeClass("is-invalid");
+    }
+
+    // Validate Department
+    if ($("#Department").val() === "") {
+        $("#Department").after("<div class='invalid-feedback'>Department is required</div>");
+        $("#Department").addClass("is-invalid");
+        isValid = false;
+    } else {
+        $("#Department").removeClass("is-invalid");
+    }
+    // Validate Address
+    if ($("#Address").val() === "") {
+        $("#Address").after("<div class='invalid-feedback'>Address is required</div>");
+        $("#Address").addClass("is-invalid");
+        isValid = false;
+    } else {
+        $("#Address").removeClass("is-invalid");
+    }
+
     return isValid;
 }
 
-
-// Clear validation error messages
-function clearValidationErrors() {
-    $(".error").remove();
-}
 
 $(document).on("click",".family-add",function (){
     clearInputFields();
@@ -245,9 +267,6 @@ $(document).on("click","#btn-saves",function (e){
         }
     };
     console.log(information);
-    // Clear previous error messages
-    clearValidationErrors();
-
     // Perform validation
     if (!validateForm()) {
         console.log("Form validation failed.");

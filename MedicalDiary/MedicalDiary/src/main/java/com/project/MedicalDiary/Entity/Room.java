@@ -15,7 +15,7 @@ import java.util.List;
 public class Room {
 
     @Id
-    @Column(name = "Id_Room", nullable = false, unique = true)
+    @Column(name = "ID_Room", nullable = false, unique = true)
     @NotNull(message = "ROOM ID is the identification code of the room owner.")
     private String IDRoom;
 

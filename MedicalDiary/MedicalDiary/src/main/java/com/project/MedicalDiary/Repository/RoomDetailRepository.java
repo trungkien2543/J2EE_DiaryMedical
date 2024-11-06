@@ -27,4 +27,9 @@ public interface RoomDetailRepository extends JpaRepository<RoomDetail, RoomDeta
 
     List<RoomDetail> findByRoom_IDRoomAndStatus(String IDRoom,int Status); // Use Status
     List<RoomDetail> findByIsFollowed_CCCDAndStatus(String cccd,int Status);
+    Boolean existsByRoom_IDRoom(String cccd);
+    List<RoomDetail> findByID_IDRoom(String idroom);
+    Boolean deleteByID_IDRoomAndIsFollowed_CCCD(String idRoom, String idIsFollowed);
+    List<RoomDetail> findAllByRoom_IDRoomAndStatus(String IDRoom, int Status);
+    Boolean existsByID(RoomDetailId id);
 }

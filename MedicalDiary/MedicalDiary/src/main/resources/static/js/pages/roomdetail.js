@@ -1,3 +1,29 @@
+function validationAdd(){
+    let isValid = true;
+
+    // Clear any previous validation errors
+    $(".invalid-feedback").remove();
+
+    // Validate CCCD (required, numeric only, no blanks allowed)
+    if ($("#CCCD").val().trim() === "" || !/^\d+$/.test($("#CCCD").val())) {
+        $("#CCCD").after("<div class='invalid-feedback'>CCCD is required and must contain only numbers</div>");
+        $("#CCCD").addClass("is-invalid"); // Add Bootstrap class for invalid
+        isValid = false;
+    } else {
+        $("#CCCD").removeClass("is-invalid"); // Remove invalid class if valid
+    }
+
+    // Validate HoTen (required)
+    if ($("#HoTen").val().trim() === "") {
+        $("#CCCD").after("<div class='invalid-feedback'>Enter data then please press ENTER button</div>");
+        $("#CCCD").addClass("is-invalid");
+        isValid = false;
+    } else {
+        $("#CCCD").removeClass("is-invalid");
+    }
+    return isValid;
+}
+
 $(document).on("click", ".room-detail-element", function () {
     let cccd = $(this).data("id");
     $("#titleModal").text("View member details");
@@ -86,6 +112,8 @@ $(document).on("click",".room-detail-add",function (){
 });
 $("#CCCD").on("keydown", function(event) {
     if (event.key === "Enter" || event.keyCode === 13) {
+        $(".invalid-feedback").remove();
+        $("#CCCD").removeClass("is-invalid"); // Remove invalid class if valid
         event.preventDefault(); // Prevent the default action if needed
         $.ajax({
             type: "get",
@@ -130,9 +158,9 @@ $("#CCCD").on("keydown", function(event) {
                 $("#idfml").val(response.family.idfamily);
                 $("#namefml").val(response.family.name);
                 },
-            error: function (jqXHR, textStatus, errorThrown) {
-                console.error("AJAX Error:", textStatus, errorThrown);
-                console.error("Response Text:", jqXHR.responseText);
+            error: function () {
+                $("#CCCD").after("<div class='invalid-feedback'>No user ID data available</div>");
+                $("#CCCD").addClass("is-invalid"); // Add Bootstrap class for invalid
             }
         });
 
@@ -157,36 +185,61 @@ $(document).on("click","#btn-saves",function (e){
             name: $("#namefml").val()
         }
     };
+    if(!validationAdd()){
+        console.log("Form ADD validation failed.");
+        return;
+    }
     console.log(information);
     $.ajax({
         type: "POST",
-        url: `./roomdetail/add`,
+        url: `./roomdetail/checkExist`,
         data: JSON.stringify(information), // Gửi dữ liệu dưới dạng JSON
         contentType: 'application/json', // Đảm bảo rằng bạn đã chỉ định đúng contentType
         dataType: "json", // Thêm header để server biết đây là JSON
         success: function (response) {
-            console.log("Information created: :" + response);
-            // window.location.href ="/family?add-success-member"
-            $("#AddQuanTam").modal("hide");
-            // notify('success', 'Message Add sucessfully', 'Add new family member successfully');
-            Swal.fire({
-                title: 'Follow Request Sent',
-                text: 'A follow request was successfully sent to the follower.',
-                icon: 'success',
-                confirmButtonText: 'Okay'
-            }).then((result) => {
-                // Redirect after the SweetAlert2 confirmation is closed
-                if (result.isConfirmed) {
-                    window.location.href = "/roomdetail";
-                }
-            });
+            if(response == 1){ // exist return true
+                $("#CCCD").after("<div class='invalid-feedback'>The user already exists in your room</div>");
+                $("#CCCD").addClass("is-invalid"); // Add Bootstrap class for invalid
+                return;
+            } else if (response == 0){
+                $.ajax({
+                    type: "POST",
+                    url: `./roomdetail/add`,
+                    data: JSON.stringify(information), // Gửi dữ liệu dưới dạng JSON
+                    contentType: 'application/json', // Đảm bảo rằng bạn đã chỉ định đúng contentType
+                    dataType: "json", // Thêm header để server biết đây là JSON
+                    success: function (response) {
+                        console.log("Information created: :" + response);
+                        // window.location.href ="/family?add-success-member"
+                        $("#AddQuanTam").modal("hide");
+                        // notify('success', 'Message Add sucessfully', 'Add new family member successfully');
+                        Swal.fire({
+                            title: 'Follow Request Sent',
+                            text: 'A follow request was successfully sent to the follower.',
+                            icon: 'success',
+                            confirmButtonText: 'Okay'
+                        }).then((result) => {
+                            // Redirect after the SweetAlert2 confirmation is closed
+                            if (result.isConfirmed) {
+                                window.location.href = "/roomdetail";
+                            }
+                        });
 
-        },
-        error: function (jqXHR, textStatus, errorThrown) {
-            console.error("AJAX Error:", textStatus, errorThrown);
-            console.error("Response Text:", jqXHR.responseText);
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        console.error("AJAX Error:", textStatus, errorThrown);
+                        console.error("Response Text:", jqXHR.responseText);
+                    }
+                });
+            } else {
+                $("#CCCD").after("<div class='invalid-feedback'>The user has canceled your follow request.</div>");
+                $("#CCCD").addClass("is-invalid"); // Add Bootstrap class for invalid
+                return;
+            }
         }
     });
+
+
 });
 $(document).on("click",".room-edit-element",function (){
     let cccd = $(this).data("id");
@@ -230,21 +283,10 @@ $(document).on("click",".room-edit-element",function (){
 
             $("#Medical_History").val(response.medicalHistory); // Nếu bạn có trường này trong response
             $("#Medical_History").prop("disabled",false);
-            $.ajax({
-                type : "get",
-                url: "./family/getFamilyByID",
-                data: {
-                    iD_Family: response.idfamily,
-                },
-                dataType: "json",
-                success: function (res) {
-                    $("#IDFamily").val(response.idfamily +" - " + res.name); // Nếu bạn có trường này trong response
-                    $("#IDFamily").prop("disabled",true);
-                    $("#idfml").val(response.idfamily);
-                    $("#namefml").val(res.name);
-                }
-
-            });
+            $("#IDFamily").val(response.family.idfamily +" - " + response.family.name); // Nếu bạn có trường này trong response
+            $("#IDFamily").prop("disabled",true);
+            $("#idfml").val(response.family.idfamily);
+            $("#namefml").val(response.family.name);
 
             // Hiển thị modal
             $("#AddQuanTam").modal("show");
@@ -256,6 +298,7 @@ $(document).on("click",".room-edit-element",function (){
     });
 
 });
+
 $(document).on("click","#btn-updates",function (e){
     e.preventDefault();
     const information = {
@@ -327,13 +370,15 @@ $(document).on("click", ".room-delete-element", function (e) {
                     // Handle successful deletion
                     Swal.fire({
                         title: 'Deleted!',
-                        text: 'Family member has been deleted.',
+                        text: 'The person you follow has been deleted.',
                         icon: 'success',
                         confirmButtonText: 'OK'
                     }).then(() => {
+                        console.log(response);
                         // Optionally, remove the deleted row from the table
                         $(`tr[data-id="${familyId}"]`).remove();
                     });
+
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
                     // Handle errors
@@ -350,12 +395,71 @@ $(document).on("click", ".room-delete-element", function (e) {
     });
 });
 
+$(document).on("click", ".room-resend-element", function (e) {
+    e.preventDefault(); // Prevent the default button behavior
+    const idIsFollowed = $(this).data("id"); // Get the family ID from data attribute
+    const idRoom = $(this).data("idroom");
+    let roomDetailId = {
+        idroom: idRoom,
+        idisFollowed: idIsFollowed
+    };
+    // Show a confirmation dialog
+    Swal.fire({
+        title: 'Do you want to resend a follow request?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: "YES",
+        cancelButtonText: "Cancel!",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Send the delete request to the server
+            $.ajax({
+                url: '/roomdetail/pendingRequest',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(roomDetailId),
+                success: function (response) {
+                    // Handle successful deletion
+                    Swal.fire({
+                        title: 'Deleted!',
+                        text: 'The person you follow has been deleted.',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        console.log(response);
+                        // Optionally, remove the deleted row from the table
+                        // Find the row by data-id and update the status badge
+                        $(`button[data-id="${idIsFollowed}"]`).remove();
+                        const row = $(`tr[data-id="${idIsFollowed}"]`);
+
+                        // Update the status badge text and class (from Cancelled to Pending)
+                        const statusBadge = row.find('.badge');
+                        if (statusBadge.length) {
+                            statusBadge.removeClass('badge-danger').addClass('badge-warning').text('Pending');
+                        }
+                    });
+
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    // Handle errors
+                    console.error("AJAX Error:", textStatus, errorThrown);
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Failed to delete the family member.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            });
+        }
+    });
+});
 function acceptRequest(button) {
     const idRoom = button.getAttribute("data-houseowner-cccd");
     const idIsFollowed = button.getAttribute("data-isfollowed-cccd");
     var roomDetailId = {
-        idroom: "000000000016",
-        idisFollowed: "000000000001"
+        idroom: idRoom,
+        idisFollowed: idIsFollowed
     };
     console.log(roomDetailId );
     $.ajax({
@@ -375,6 +479,7 @@ function acceptRequest(button) {
                 contentType: 'application/json',
                 data: JSON.stringify(response),
                 success: function(data) {
+                    $(`a.item-message[data-houseowner-cccd="${idRoom}"]`).remove();
                     notify('success', 'Request Accepted', data);
                 },
                 error: function(xhr, status, error) {
@@ -392,26 +497,46 @@ function acceptRequest(button) {
 
 }
 
-function cancelRequest(item) {
-    const itemId = button.getAttribute("data-item-id");
-    console.log("Accept request for item:", itemId);
-    // let roomDetail = item;
-    // roomDetail.status = 1;
-    // $.ajax({
-    //     url: '/roomdetail/cancelRequest',
-    //     type: 'POST',
-    //     contentType: 'application/json',
-    //     data: JSON.stringify(roomDetail)
-    //     ,
-    //     success: function(data) {
-    //         notify('success', 'Request Canceled', data);
-    //         // Update the UI accordingly
-    //     },
-    //     error: function(xhr, status, error) {
-    //         console.error('Error:', error);
-    //         notify('error', 'Error', 'An error occurred while canceling the request.');
-    //     }
-    // });
+function cancelRequest(button) {
+    const idRoom = button.getAttribute("data-houseowner-cccd");
+    const idIsFollowed = button.getAttribute("data-isfollowed-cccd");
+    var roomDetailId = {
+        idroom: idRoom,
+        idisFollowed: idIsFollowed
+    };
+    console.log(roomDetailId );
+    $.ajax({
+        url: '/roomdetail/getRoomDetailByID', // The endpoint URL
+        type: 'post',
+        contentType: 'application/json',
+        data: JSON.stringify(roomDetailId),
+        success: function(response) {
+            // Handle success - you can display the room details or process the response
+            console.log('Room Detail:', response);
+            let cccd =response.id.idroom;
+            console.log('Room Detail CCCCD:', cccd);
+
+            $.ajax({
+                url: '/roomdetail/cancelRequest',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(response),
+                success: function(data) {
+                    $(`a.item-message[data-houseowner-cccd="${idRoom}"]`).remove();
+                    notify('success', 'Request Accepted', data);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', error);
+                    notify('error', 'Error', 'An error occurred while accepting the request.');
+                }
+            });
+        },
+        error: function(xhr, status, error) {
+            // Handle error - for example, show an error message
+            console.error('Error fetching room detail:', error);
+
+        }
+    });
 }
 
 // const messengerDetail = {

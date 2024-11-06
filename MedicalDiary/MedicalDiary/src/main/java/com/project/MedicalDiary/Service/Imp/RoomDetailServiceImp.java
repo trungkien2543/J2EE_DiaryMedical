@@ -21,7 +21,7 @@ public class RoomDetailServiceImp implements RoomDetailService {
     }
 
     @Override
-    public RoomDetail createRoomDetail(RoomDetail roomDetail) {
+    public RoomDetail save(RoomDetail roomDetail) {
         return roomDetailRepository.save(roomDetail);
     }
 
@@ -73,6 +73,42 @@ public class RoomDetailServiceImp implements RoomDetailService {
     @Override
     public Optional<RoomDetail> findRoomDetailById(RoomDetailId id) {
         return roomDetailRepository.findById(id);
+    }
+
+    @Override
+    public Boolean deleteByID_IDRoomAndIsFollowed_CCCD(String idRoom, String idIsFollowed) {
+        Boolean isDeleted = false;
+        RoomDetailId id = new RoomDetailId(idRoom, idIsFollowed);
+        Optional<RoomDetail> roomDetail = roomDetailRepository.findById(id);
+        if (roomDetail.isPresent()) {
+            roomDetailRepository.delete(roomDetail.get());
+            isDeleted = true;
+        }
+        return isDeleted;
+    }
+
+    @Override
+    public List<RoomDetail> findAllByRoom_IDRoomAndStatus(String idRoom, int Status) {
+        return roomDetailRepository.findAllByRoom_IDRoomAndStatus(idRoom, Status);
+    }
+
+    @Override
+    public Boolean existsByRoom_IDRoom(String idRoom) {
+        return roomDetailRepository.existsByRoom_IDRoom(idRoom);
+    }
+
+    @Override
+    public  Boolean deleteAllByRoom_IDRoom(String idRoom){
+        List<RoomDetail> roomDetail = roomDetailRepository.findByID_IDRoom(idRoom);
+        for (RoomDetail i : roomDetail) {
+            roomDetailRepository.delete(i);
+        }
+        return roomDetailRepository.findByID_IDRoom(idRoom).isEmpty();
+    }
+
+    @Override
+    public Boolean existsByID(RoomDetailId id) {
+        return roomDetailRepository.existsByID(id);
     }
 
 }

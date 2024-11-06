@@ -1,18 +1,15 @@
 package com.project.MedicalDiary.Controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.project.MedicalDiary.Entity.Information;
-import com.project.MedicalDiary.Entity.Room;
-import com.project.MedicalDiary.Entity.RoomDetail;
-import com.project.MedicalDiary.Entity.RoomDetailId;
-import com.project.MedicalDiary.Service.CustomUserDetails;
-import com.project.MedicalDiary.Service.ImpInterface.InformationService;
-import com.project.MedicalDiary.Service.ImpInterface.RoomDetailService;
-import com.project.MedicalDiary.Service.ImpInterface.RoomService;
+import com.project.MedicalDiary.Entity.*;
+import com.project.MedicalDiary.Service.*;
+import com.project.MedicalDiary.Service.ImpInterface.*;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -34,6 +31,7 @@ public class RoomController {
     private InformationService informationService;
     @Autowired
     private RoomDetailService roomDetailService;
+
     @GetMapping("/getRoomDetailByID")
     @ResponseBody
     public ResponseEntity<?> getRoomDetailByID(@RequestBody RoomDetailId roomDetailId) {
@@ -46,6 +44,7 @@ public class RoomController {
                     .body("RoomDetail not found with ID: " + roomDetailId);
         }
     }
+
     @GetMapping("")
     public String room(Authentication authentication, Model model) {
 
@@ -76,14 +75,74 @@ public class RoomController {
 
         return "pages/fragments/rooms";
     }
-
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    @GetMapping("/exitsByIDRoom")
     @ResponseBody
-    public ResponseEntity<Room> createRoom(@RequestBody Room room) {
-        // Save the family object to the database
+    public ResponseEntity<Boolean> existByIDRoom(@RequestParam("IDRoom") String IDRoom){
+        boolean isPinValid = false;
+        isPinValid = roomService.existByIDRoom(IDRoom);
+
+        if (isPinValid) {
+            return ResponseEntity.ok(true);
+        } else {
+            return ResponseEntity.ok(false);
+        }
+
+    }
+    @GetMapping("/checkInRoom")
+    @ResponseBody
+    public ResponseEntity<Boolean> checkInRoom(@RequestParam("IDRoom") String IDRoom){
+        boolean isPinValid = false;
+        isPinValid = roomDetailService.existsByRoom_IDRoom(IDRoom);
+
+        if (isPinValid) {
+            return ResponseEntity.ok(true);
+        } else {
+            return ResponseEntity.ok(false);
+        }
+
+    }
+
+    @DeleteMapping("deleteAll/{IDRoom}") //Delete detail room
+    @ResponseBody
+    public ResponseEntity<Boolean> deleteAll(@PathVariable String IDRoom){
+        boolean isDelete = false;
+        isDelete = roomDetailService.deleteAllByRoom_IDRoom(IDRoom);
+        if (isDelete) {
+            return ResponseEntity.ok(true);
+        } else {
+            return ResponseEntity.ok(false);
+        }
+    }
+    @DeleteMapping("deleteRoom/{idroom}")
+    @ResponseBody
+    public ResponseEntity<Boolean> deleteRoom(@PathVariable String idroom){
+        boolean isDelete = false;
+        isDelete = roomService.deleteRoomByIDRoom(idroom);
+        if (isDelete) {
+            return ResponseEntity.ok(true);
+        }
+        return ResponseEntity.ok(false);
+    }
+
+    @RequestMapping(value = "/addRoom", method = {RequestMethod.POST, RequestMethod.PUT, RequestMethod.GET}
+            , consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity<?> createRoom(@Valid @RequestBody Room room) {
+        System.out.println("Room add : ");
+        System.out.println(room);
+        boolean exists = roomService.existByIDRoom(room.getIDRoom());
+        if (exists) {
+            // Return a conflict status if the room already exists
+            return new ResponseEntity<>("Room already exists", HttpStatus.CONFLICT);
+        }
+        if (room == null) {
+            return ResponseEntity.badRequest().body("Room object is null");
+        }
+
+        // Save the room object to the database if it doesn't exist
         Room createdRoom = roomService.createRoom(room);
 
-        // Return a response with the created family and a status code
+        // Return a response with the created room and a status code
         return new ResponseEntity<>(createdRoom, HttpStatus.CREATED);
     }
 
@@ -104,4 +163,20 @@ public class RoomController {
             return ResponseEntity.ok(false);
         }
     }
+    @PutMapping("/changePIN")
+    @ResponseBody
+    public ResponseEntity<Boolean> changePIN(
+            @RequestParam("IDRoom") String IDRoom,
+            @RequestParam("oldPIN") String oldPIN,
+            @RequestParam("newPIN") String newPIN) {
+
+        boolean isPinValid  = roomService.changePIN(IDRoom, oldPIN, newPIN);
+
+        if (isPinValid) {
+            return ResponseEntity.ok(true);
+        } else {
+            return ResponseEntity.ok(false);
+        }
+     }
+
 }

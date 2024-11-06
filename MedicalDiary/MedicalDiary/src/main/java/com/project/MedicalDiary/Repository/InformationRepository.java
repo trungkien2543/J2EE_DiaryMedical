@@ -30,4 +30,5 @@ public interface InformationRepository extends JpaRepository<Information, String
 
     Boolean existsByCCCD(String cccd);
 
+
 }
