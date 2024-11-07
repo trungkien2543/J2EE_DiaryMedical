@@ -16,4 +16,5 @@ public interface InformationService {
     Boolean existsByCCCDAndFamily_IDFamilyNotNull(String CCCD);
     Boolean existsByCCCDAndFamily_IDFamilyNull(String CCCD);
     Boolean existsByCCCD(String CCCD);
+    Optional<Information> findByCCCDAndFamily_IDFamilyNot(String CCCD, Long idFamily);
 }

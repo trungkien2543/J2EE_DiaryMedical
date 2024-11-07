@@ -103,6 +103,12 @@ public Information createInformation(Information information) {
     public Boolean existsByCCCD(String CCCD) {
         return informationRepository.existsByCCCD(CCCD);
     }
+
+    @Override
+    public Optional<Information> findByCCCDAndFamily_IDFamilyNot(String CCCD, Long idFamily) {
+        return informationRepository.findByCCCDAndFamily_IDFamilyNot(CCCD, idFamily);
+    }
+
     @Override
     public Boolean updateInformation(Information information) {
         if (informationRepository.existsById(information.getCCCD())) {

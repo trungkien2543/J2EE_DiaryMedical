@@ -24,6 +24,7 @@ public class Family {
     private Long IDFamily;
 
     @Column(name = "Name", nullable = false)
+    @NotNull(message = "Name is required")
     private String Name;
 
 

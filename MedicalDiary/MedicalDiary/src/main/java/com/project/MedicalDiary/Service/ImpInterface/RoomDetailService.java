@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface RoomDetailService {
 
-    RoomDetail save(RoomDetail roomDetail);
+    Boolean save(RoomDetail roomDetail);
 
     List<RoomDetail> getAllRoomDetails();
 

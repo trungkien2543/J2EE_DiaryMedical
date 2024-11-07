@@ -27,7 +27,7 @@ public class RoomDetailController {
     private final FamilyService familyService;
     private final RoomDetailService roomDetailService;
     private final RoomService roomService;
-
+    private Information info;
 
     @GetMapping("")
     public String roomDetail(Authentication authentication, Model model, HttpSession session) {
@@ -36,10 +36,10 @@ public class RoomDetailController {
             System.out.println(roomId);
             List<RoomDetail> roomDetails = roomDetailService.getAllRoomDetailsByRoomID(roomId);
 //            List<RoomDetail> roomDetailsTemp = roomDetailService.findAllByRoom_IDRoomAndStatus(roomId,0);
-            Information info = informationService.findByCCCD(roomId).get();
+            info = informationService.findByCCCD(roomId).get();
             Map<Information,RoomDetail> list = new HashMap<>();
             for (RoomDetail roomDetail : roomDetails) {
-                Optional<Information> obj = informationService.findByCCCD(roomDetail.getIsFollowed().getCCCD());
+                Optional<Information> obj = informationService.findByCCCDAndFamily_IDFamilyNot(roomDetail.getIsFollowed().getCCCD(),info.getFamily().getIDFamily());
                 //Add to list
                 // Check if the Information object is present, then add it to the list
                 obj.ifPresent(information -> list.put(information, roomDetail));
@@ -111,6 +111,9 @@ public class RoomDetailController {
             else
                 return ResponseEntity.ok(-1);
         } else {
+            if (information.getFamily().getIDFamily().equals(info.getFamily().getIDFamily())) {
+                return ResponseEntity.ok(-2);
+            }
             return ResponseEntity.ok(0); //false
         }
     }
@@ -129,7 +132,7 @@ public class RoomDetailController {
 
     @RequestMapping(value = "/add",method = {RequestMethod.POST,RequestMethod.PUT ,RequestMethod.GET})
     @ResponseBody
-    public ResponseEntity<RoomDetail> createRoomDetail(@RequestBody InformationRequestDTO request, HttpSession session) {
+    public ResponseEntity<?> createRoomDetail(@RequestBody InformationRequestDTO request, HttpSession session) {
         String roomId = (String) session.getAttribute("IDRoom");
         Information information = request.getInformation();
         Family family = request.getFamily();
@@ -147,10 +150,10 @@ public class RoomDetailController {
         roomDetail.setStatus(0);
 
         System.out.println( "Room Detail : " + roomDetail);
-        RoomDetail createdRoomDetail = roomDetailService.save(roomDetail);
+        Boolean isRoomDetail = roomDetailService.save(roomDetail);
         System.out.println("ADD Info : " + information); // Debugging log
         // Return a response with the created family and a status code
-        return new ResponseEntity<>(createdRoomDetail, HttpStatus.CREATED);
+        return new ResponseEntity<>(isRoomDetail, HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "update",method = {RequestMethod.POST,RequestMethod.PUT ,RequestMethod.GET})

@@ -231,8 +231,12 @@ $(document).on("click","#btn-saves",function (e){
                         console.error("Response Text:", jqXHR.responseText);
                     }
                 });
-            } else {
+            } else if(response == -1 ){
                 $("#CCCD").after("<div class='invalid-feedback'>The user has canceled your follow request.</div>");
+                $("#CCCD").addClass("is-invalid"); // Add Bootstrap class for invalid
+                return;
+            } else {
+                $("#CCCD").after("<div class='invalid-feedback'>This user is from the same family and should not be added.</div>");
                 $("#CCCD").addClass("is-invalid"); // Add Bootstrap class for invalid
                 return;
             }

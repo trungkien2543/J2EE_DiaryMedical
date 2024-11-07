@@ -1,7 +1,9 @@
 package com.project.MedicalDiary.Service.Imp;
 
+import com.project.MedicalDiary.Entity.Information;
 import com.project.MedicalDiary.Entity.RoomDetail;
 import com.project.MedicalDiary.Entity.RoomDetailId;
+import com.project.MedicalDiary.Repository.InformationRepository;
 import com.project.MedicalDiary.Repository.RoomDetailRepository;
 import com.project.MedicalDiary.Service.ImpInterface.RoomDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,15 +16,28 @@ import java.util.Optional;
 public class RoomDetailServiceImp implements RoomDetailService {
 
     private final RoomDetailRepository roomDetailRepository;
+    private final InformationRepository informationRepository;
 
     @Autowired
-    public RoomDetailServiceImp(RoomDetailRepository roomDetailRepository) {
+    public RoomDetailServiceImp(RoomDetailRepository roomDetailRepository, InformationRepository informationRepository) {
         this.roomDetailRepository = roomDetailRepository;
+        this.informationRepository = informationRepository;
     }
 
     @Override
-    public RoomDetail save(RoomDetail roomDetail) {
-        return roomDetailRepository.save(roomDetail);
+    public Boolean save(RoomDetail roomDetail) {
+        Optional<Information> info = informationRepository.findByCCCD(roomDetail.getIsFollowed().getCCCD());
+        Optional<Information> infoRoom = informationRepository.findByCCCD(roomDetail.getRoom().getIDRoom());
+        if (info.isPresent()) {
+            if (info.get().getFamily() != infoRoom.get().getFamily()) {
+                RoomDetail rD = roomDetailRepository.save(roomDetail);
+                if (rD.equals(roomDetail)) {
+                    return true;
+                } else
+                    return false;
+            }
+        }
+        return false;
     }
 
     @Override

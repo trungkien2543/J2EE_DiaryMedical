@@ -1,6 +1,7 @@
 package com.project.MedicalDiary.Repository;
 
 import com.project.MedicalDiary.Entity.Information;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -29,6 +30,8 @@ public interface InformationRepository extends JpaRepository<Information, String
     Boolean existsByCCCDAndFamily_IDFamilyNull(String cccd);
 
     Boolean existsByCCCD(String cccd);
+    @Query("SELECT i FROM Information i WHERE i.CCCD = :cccd AND i.family.IDFamily <> :idFamily")
+    Optional<Information> findByCCCDAndFamily_IDFamilyNot(String cccd, Long idFamily);
 
 
 }
