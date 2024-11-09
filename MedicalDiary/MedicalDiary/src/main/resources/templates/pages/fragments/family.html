@@ -103,6 +103,107 @@
           </div>
         </div>
       </div>
+
+
+      <div id="receiptModal" class="modal" tabindex="-1" style="display: none;">
+        <div class="modal-dialog" style="max-width: 600px;">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Receipt Form</h5>
+              <button type="button" class="btn btn-close" onclick="closeReceiptModal()" aria-label="Close">
+                <i class="fas fa-times-circle" style="color: #dc3545; font-size: 1.5rem;"></i>
+              </button>
+
+            </div>
+            <div class="modal-body" style="max-height: 85vh; overflow-y: auto;">
+              <form id="receiptForm" method="post" enctype="multipart/form-data">
+                <div class="mb-3">
+                  <label for="idPatient"><strong>Patient ID:</strong></label>
+                  <input type="text" id="idPatient" name="idPatient" class="form-control"readonly>
+                </div>
+                <div class="mb-3">
+                  <label for="idDoctor"><strong>Doctor ID:</strong></label>
+                  <input type="number" id="idDoctor" name="idDoctor" class="form-control">
+                </div>
+                <div class="mb-3">
+                  <label for="place"><strong>Place:</strong></label>
+                  <input type="text" id="place" name="place" class="form-control" readonly>
+                </div>
+
+                <div class="mb-3">
+                  <label for="datetime"><strong>Date and Time:</strong></label>
+                  <input type="datetime-local" id="datetime" name="datetime" class="form-control">
+                </div>
+
+                <div class="mb-3">
+                  <label for="reason"><strong>Reason:</strong></label>
+                  <input type="text" id="reason" name="idService" class="form-control">
+                </div>
+                <div class="mb-3">
+                  <label for="diagnosis"><strong>Diagnosis:</strong></label>
+                  <textarea id="diagnosis" name="diagnosis" class="form-control" rows="2"></textarea>
+                </div>
+                <div class="mb-3">
+                  <label for="treat"><strong>Treat:</strong></label>
+                  <input type="text" id="treat" name="treat" class="form-control">
+                </div>
+                <div class="mb-3">
+                  <label for="remind"><strong>Remind:</strong></label>
+                  <input type="text" id="remind" name="remind" class="form-control">
+                </div>
+
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label for="dateVisit"><strong>Date of Visit:</strong></label>
+                      <input type="datetime-local" id="dateVisit" name="dateVisit" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                      <label for="weight"><strong>Weight (kg):</strong></label>
+                      <input type="number" id="weight" name="weight" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                      <label for="height"><strong>Height (cm):</strong></label>
+                      <input type="number" id="height" name="height" class="form-control">
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label for="bloodPressure"><strong>Blood Pressure:</strong></label>
+                      <input type="number" id="bloodPressure" name="bloodPressure" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                      <label for="heartRate"><strong>Heart Rate:</strong></label>
+                      <input type="number" id="heartRate" name="heartRate" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                      <label for="temperature"><strong>Temperature (°C):</strong></label>
+                      <input type="number" id="temperature" name="temperature" class="form-control">
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mb-3">
+                  <label for="resultImage"><strong>Result Image:</strong></label>
+                  <input type="file" id="resultImage" name="resultImage" class="form-control" accept="image/*" onchange="previewImage(event, 'resultPreview')">
+                  <img id="resultPreview" alt="Preview Result Image" class="img-fluid mt-2" style="display: none; max-height: 200px; border-radius: 8px;">
+                </div>
+                <div class="mb-3">
+                  <label for="medicineImage"><strong>Medicine Image:</strong></label>
+                  <input type="file" id="medicineImage" name="medicineImage" class="form-control" accept="image/*" onchange="previewImage(event, 'medicinePreview')">
+                  <img id="medicinePreview" alt="Preview Medicine Image" class="img-fluid mt-2" style="display: none; max-height: 200px; border-radius: 8px;">
+                </div>
+                <div class="text-center mt-4">
+                  <button type="button" class="btn btn-success" id="btnSubmitReceipt">Submit</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
     <div class="card-body">
       <div class="table-responsive">
         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
@@ -123,8 +224,7 @@
           <tr th:each="i : ${list}" th:attr="data-id=${i.CCCD}">
             <td th:attr="data-id=${i.CCCD}">
               <button class="btn btn-datatable btn-icon btn-transparent-dark me-2"><i class='far fa-eye' ></i></button>
-              <button class="btn btn-datatable btn-icon btn-transparent-dark me-2"><i class='far fa-plus-square'></i></button>
-            </td>
+              <button class="btn btn-datatable btn-icon btn-transparent-dark me-2" th:onclick="openReceiptModal([[${i.CCCD}]])"><i class='far fa-plus-square' ></i></button>            </td>
             <td th:text="${i.CCCD}"></td>
             <td th:text="${i.Name}"></td>
             <td th:text="${i.Gender ? 'Nam' : 'Nữ'}"></td>
@@ -186,11 +286,12 @@
 <!--    </div>-->
 <!--  </div>-->
 
+  </div>
 </div>
 
 
 <!-- /.container-fluid -->
 </body>
 <script th:src="@{/js/pages/family.js}"></script>
-
+<script th:src="@{/js/pages/receipt.js}"></script>
 </html>

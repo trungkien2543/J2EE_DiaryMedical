@@ -3,9 +3,11 @@ package com.project.MedicalDiary.Controller;
 import com.project.MedicalDiary.DTO.InformationRequestDTO;
 import com.project.MedicalDiary.Entity.Family;
 import com.project.MedicalDiary.Entity.Information;
+import com.project.MedicalDiary.Entity.Receipt;
 import com.project.MedicalDiary.Service.CustomUserDetails;
 import com.project.MedicalDiary.Service.ImpInterface.FamilyService;
 import com.project.MedicalDiary.Service.ImpInterface.InformationService;
+import com.project.MedicalDiary.Service.ImpInterface.ReceiptService;
 import jakarta.validation.Valid;
 import lombok.*;
 import org.springframework.http.HttpStatus;
@@ -25,7 +27,10 @@ import java.util.Optional;
 public class FamilyController {
 
     private final InformationService informationService;
+
     private final FamilyService familyService;
+
+    private final ReceiptService receiptService;
 
     @GetMapping("")
     public String follower(Authentication authentication, Model model) {
@@ -41,6 +46,7 @@ public class FamilyController {
         model.addAttribute("nameFamily", nameFamily);
         return "pages/fragments/family";
     }
+
     @GetMapping("/getDetail")
     @ResponseBody
     public ResponseEntity<Information> getDetail(@RequestParam String cccd) {
@@ -53,6 +59,8 @@ public class FamilyController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
+
+
     @GetMapping("/getFamilyByID")
     @ResponseBody
     public ResponseEntity<Family> getFamilyByID(@RequestParam long iD_Family) {
@@ -65,6 +73,7 @@ public class FamilyController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
+
 //    @RequestMapping(value = "/add",method = {RequestMethod.POST,RequestMethod.PUT ,RequestMethod.GET})
 //    @ResponseBody
 //    public ResponseEntity<Information> createInformation(@RequestBody Information information) {
@@ -75,23 +84,26 @@ public class FamilyController {
 //        // Return a response with the created family and a status code
 //        return new ResponseEntity<>(createdInformation, HttpStatus.CREATED);
 //    }
-@RequestMapping(value = "/add", method = {RequestMethod.POST, RequestMethod.PUT, RequestMethod.GET}
-        , consumes = MediaType.APPLICATION_JSON_VALUE)
-@ResponseBody
-public ResponseEntity<Information> createInformation(@RequestBody @Valid InformationRequestDTO request) {
-    Information information = request.getInformation();
-    Family family = request.getFamily();
 
-    // Set the family object in information
-    information.setFamily(family);
 
-    // Save the information object with the family data to the database
-    Information createdInformation = informationService.createInformation(information);
-    System.out.println("ADD Info : " + information); // Debugging log
+    @RequestMapping(value = "/add", method = {RequestMethod.POST, RequestMethod.PUT, RequestMethod.GET}
+            , consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity<Information> createInformation(@RequestBody @Valid InformationRequestDTO request) {
+        Information information = request.getInformation();
+        Family family = request.getFamily();
 
-    // Return a response with the created information and a status code
-    return new ResponseEntity<>(createdInformation, HttpStatus.CREATED);
-}
+        // Set the family object in information
+        information.setFamily(family);
+
+        // Save the information object with the family data to the database
+        Information createdInformation = informationService.createInformation(information);
+        System.out.println("ADD Info : " + information); // Debugging log
+
+        // Return a response with the created information and a status code
+        return new ResponseEntity<>(createdInformation, HttpStatus.CREATED);
+    }
+
     @RequestMapping(value = "update",method = {RequestMethod.POST,RequestMethod.PUT ,RequestMethod.GET})
     @ResponseBody
     public ResponseEntity<Boolean> updateFamily(@RequestBody InformationRequestDTO request) {
@@ -137,5 +149,22 @@ public ResponseEntity<Information> createInformation(@RequestBody @Valid Informa
         System.out.println("Received CCCD: " + cccd); // Debugging log
         boolean exists = informationService.existsByCCCD(cccd);
         return ResponseEntity.ok(exists);
+    }
+
+
+
+
+    // Them rceipt vao
+    @RequestMapping(value = "/addReceipt",method = {RequestMethod.POST,RequestMethod.PUT ,RequestMethod.GET})
+    @ResponseBody
+    public ResponseEntity<Boolean> addReceipt(@RequestBody Receipt receipt) {
+
+        System.out.println("Received receipt: " + receipt);
+
+        Receipt addReceiptSuccess = receiptService.createReceipt(receipt);
+
+
+
+        return new ResponseEntity<>(true, HttpStatus.CREATED);
     }
 }
