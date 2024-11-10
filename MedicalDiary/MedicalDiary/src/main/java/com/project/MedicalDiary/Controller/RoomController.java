@@ -2,8 +2,8 @@ package com.project.MedicalDiary.Controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.MedicalDiary.Entity.*;
-import com.project.MedicalDiary.Service.*;
 import com.project.MedicalDiary.Service.ImpInterface.*;
+import com.project.MedicalDiary.Service.OAuth.CustomUserDetails;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

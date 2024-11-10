@@ -99,7 +99,7 @@ $("#idDoctor").on("keydown", function(event) {
 // Kiem tra form co du thong tin chua
 
 // Function to validate form fields
-function validateForm() {
+function validateFormReceipt() {
     let isValid = true;
 
     // Clear any previous validation errors
@@ -183,37 +183,15 @@ function validateForm() {
 
 // Nut them receipt vao he thong
 $(document).on("click","#btnSubmitReceipt",function (e){
-    e.preventDefault();
-    const patient = {
-        cccd: $("#idPatient").val()
-    };
-    const doctor = {
-        cccd: $("#idDoctor").val()
+    const formData = new FormData();
 
-    };
-    const receipt = {
-        patient: patient,
-        doctor: doctor,
-        place: $("#place").val(),
-        date: $("#datetime").val(),
-        reason: $("#reason").val(),
-        diagnosis: $("#diagnosis").val(),
-        treat: $("#treat").val(),
-        remind: $("#remind").val(),
-        dateVisit: $("#dateVisit").val(),
-        bloodPressure: $("#bloodPressure").val(),
-        weight: $("#weight").val(),
-        height: $("#height").val(),
-        heartRate: $("#heartRate").val(),
-        temperature: $("#temperature").val()
-    };
-    console.log(receipt);
+    e.preventDefault();
+
     // Perform validation
-    if (!validateForm()) {
+    if (!validateFormReceipt()) {
         console.log("Form validation failed.");
         return;
     }
-
 
     // Loai tru kha nang nguoi dung khong nhan phim enter tai cho Doctor ID
     if ($("#place").val().trim() === ""){
@@ -249,29 +227,97 @@ $(document).on("click","#btnSubmitReceipt",function (e){
         return;
     }
 
+    const patient = {
+        cccd: $("#idPatient").val()
+    };
+    const doctor = {
+        cccd: $("#idDoctor").val()
+
+    };
+    const receipt = {
+        patient: patient,
+        doctor: doctor,
+        place: $("#place").val(),
+        date: $("#datetime").val(),
+        reason: $("#reason").val(),
+        diagnosis: $("#diagnosis").val(),
+        treat: $("#treat").val(),
+        remind: $("#remind").val(),
+        dateVisit: $("#dateVisit").val(),
+        bloodPressure: $("#bloodPressure").val(),
+        weight: $("#weight").val(),
+        height: $("#height").val(),
+        heartRate: $("#heartRate").val(),
+        temperature: $("#temperature").val(),
+        urlResult: $("#resultPreview").attr("src"),
+        urlBill: $("#medicinePreview").attr("src")
+
+    };
+
+
+
+    //console.log(receipt);
+    let fileResult = $("#resultImage")[0].files[0];
+
+    if (fileResult){
+        formData.append("fileResult",fileResult);
+    }
+    else {
+        console.log("No file selected for fileResult.");
+        // Có thể quyết định gửi null hoặc không thêm tham số này vào FormData
+    }
+
+
+    let fileBill = $("#medicineImage")[0].files[0];
+
+    // Kiểm tra xem có file được chọn không
+    if (fileBill) {
+        formData.append("fileBill", fileBill); // Thêm file vào FormData nếu có
+    } else {
+        console.log("No file selected for fileBill.");
+        // Có thể quyết định gửi null hoặc không thêm tham số này vào FormData
+    }
+
+
+
+    formData.append("receipt", JSON.stringify(receipt)); // Receipt JSON
+
+
+    console.log(formData)
+
+
+    Swal.fire({
+        title: 'Info',
+        text: 'Please wait until there is a system notification',
+        icon: 'info',
+        confirmButtonText: 'OK'
+    });
 
 
     $.ajax({
+        url: "/family/addReceipt",
         type: "POST",
-        url: `./family/addReceipt`,
-        contentType: 'application/json', // Đảm bảo rằng bạn đã chỉ định đúng contentType
-        dataType: "json", // Thêm header để server biết đây là JSON
-        data: JSON.stringify(receipt), // Gửi dữ liệu dưới dạng JSON
-        success: function (response) {
+        data: formData,
+        contentType: false,
+        processData: false,  // Cần thiết khi gửi FormData
+        success: function(response) {
             Swal.fire({
                 title: 'Success',
                 text: 'This receipt is added successfully',
                 icon: 'success',
                 confirmButtonText: 'OK'
             });
-
             closeReceiptModal();
-
-
         },
-        error: function (jqXHR, textStatus, errorThrown) {
+        error: function(jqXHR, textStatus, errorThrown) {
             console.error("AJAX Error:", textStatus, errorThrown);
             console.error("Response Text:", jqXHR.responseText);
+            Swal.fire({
+                title: 'Error',
+                text: 'An error occurred: ' + jqXHR.responseText,
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
         }
     });
 

@@ -1,4 +1,4 @@
-package com.project.MedicalDiary.Service;
+package com.project.MedicalDiary.Service.OAuth;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;

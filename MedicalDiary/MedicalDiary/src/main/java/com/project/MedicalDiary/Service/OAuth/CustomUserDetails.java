@@ -1,4 +1,4 @@
-package com.project.MedicalDiary.Service;
+package com.project.MedicalDiary.Service.OAuth;
 
 import com.project.MedicalDiary.Entity.Account;
 import org.springframework.security.core.GrantedAuthority;

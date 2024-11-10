@@ -1,10 +1,13 @@
 package com.project.MedicalDiary.Config;
 
 
-import com.project.MedicalDiary.Repository.AccountRepository;
-import com.project.MedicalDiary.Service.CustomUserDetailsService;
+import com.cloudinary.Cloudinary;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.project.MedicalDiary.Service.OAuth.CustomUserDetailsService;
 import com.project.MedicalDiary.Service.Imp.AccountServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -15,13 +18,52 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Configuration
 @EnableWebSecurity
-public class WebSecurityConfig {
+public class WebConfig {
 
+    //Confnfig cho cloudinary
+
+    @Value("${cloudinary.cloud_name}")
+    private String cloudName;
+
+    @Value("${cloudinary.api_key}")
+    private String apiKey;
+
+    @Value("${cloudinary.api_secret}")
+    private String apiSecret;
+
+    @Bean
+    public Cloudinary cloudinaryConfig() {
+        Map<String, String> config = new HashMap<>();
+        config.put("cloud_name", cloudName);
+        config.put("api_key", apiKey);
+        config.put("api_secret", apiSecret);
+        return new Cloudinary(config);
+    }
+
+
+
+
+    // Config cho objectMapper
+
+    @Bean
+    public ObjectMapper objectMapper() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule()); // Đăng ký module JavaTimeModule
+        objectMapper.findAndRegisterModules(); // Đảm bảo tìm kiếm và đăng ký tất cả các module cần thiết
+        return objectMapper;
+    }
+
+
+
+
+    // Config cho phan dang nhap
     @Autowired
     private AccountServiceImp accountRepository; // Add this field
-
 
     // Inject the custom UserDetailsService
     @Bean

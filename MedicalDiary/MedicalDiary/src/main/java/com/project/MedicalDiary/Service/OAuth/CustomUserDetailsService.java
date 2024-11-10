@@ -1,7 +1,6 @@
-package com.project.MedicalDiary.Service;
+package com.project.MedicalDiary.Service.OAuth;
 
 import com.project.MedicalDiary.Entity.Account;
-import com.project.MedicalDiary.Repository.AccountRepository;
 import com.project.MedicalDiary.Service.Imp.AccountServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

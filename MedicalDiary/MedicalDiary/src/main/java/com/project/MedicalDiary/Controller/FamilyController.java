@@ -1,10 +1,12 @@
 package com.project.MedicalDiary.Controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.MedicalDiary.DTO.InformationRequestDTO;
 import com.project.MedicalDiary.Entity.Family;
 import com.project.MedicalDiary.Entity.Information;
 import com.project.MedicalDiary.Entity.Receipt;
-import com.project.MedicalDiary.Service.CustomUserDetails;
+import com.project.MedicalDiary.Service.Cloudinary.CloudinaryService;
+import com.project.MedicalDiary.Service.OAuth.CustomUserDetails;
 import com.project.MedicalDiary.Service.ImpInterface.FamilyService;
 import com.project.MedicalDiary.Service.ImpInterface.InformationService;
 import com.project.MedicalDiary.Service.ImpInterface.ReceiptService;
@@ -17,7 +19,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Map;
 import java.util.Optional;
 
 @Controller
@@ -31,6 +35,12 @@ public class FamilyController {
     private final FamilyService familyService;
 
     private final ReceiptService receiptService;
+
+    private final ObjectMapper objectMapper;
+
+    private final CloudinaryService cloudinaryService;
+
+
 
     @GetMapping("")
     public String follower(Authentication authentication, Model model) {
@@ -104,6 +114,8 @@ public class FamilyController {
         return new ResponseEntity<>(createdInformation, HttpStatus.CREATED);
     }
 
+
+
     @RequestMapping(value = "update",method = {RequestMethod.POST,RequestMethod.PUT ,RequestMethod.GET})
     @ResponseBody
     public ResponseEntity<Boolean> updateFamily(@RequestBody InformationRequestDTO request) {
@@ -116,6 +128,9 @@ public class FamilyController {
 
         return new ResponseEntity<>(updateFamily, HttpStatus.CREATED);
     }
+
+
+
     @PutMapping("/{id}")
     public ResponseEntity<?> deleteFamily(@PathVariable String id) {
         try {
@@ -135,6 +150,9 @@ public class FamilyController {
         boolean exists = informationService.existsByCCCDAndFamily_IDFamilyNotNull(cccd);
         return ResponseEntity.ok(exists);
     }
+
+
+
     //Write rest api to check information exist by CCCD and IDFamily == null
     @GetMapping("/existsByCCCDAndFamily_IDFamilyNull")
     @ResponseBody
@@ -143,6 +161,8 @@ public class FamilyController {
         boolean exists = informationService.existsByCCCDAndFamily_IDFamilyNull(cccd);
         return ResponseEntity.ok(exists);
     }
+
+
     @GetMapping("/existsByCCCD")
     @ResponseBody
     public ResponseEntity<Boolean> existsByCCCD(@RequestParam String cccd) {
@@ -155,16 +175,48 @@ public class FamilyController {
 
 
     // Them rceipt vao
-    @RequestMapping(value = "/addReceipt",method = {RequestMethod.POST,RequestMethod.PUT ,RequestMethod.GET})
+    @RequestMapping(value = "/addReceipt",method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<Boolean> addReceipt(@RequestBody Receipt receipt) {
+    public ResponseEntity<String> addReceipt(@RequestParam(value = "fileResult", required = false) MultipartFile fileResult,
+                                              @RequestParam(value = "fileBill",required = false) MultipartFile fileBill,
+                                              @RequestParam("receipt") String receiptJson) {
 
-        System.out.println("Received receipt: " + receipt);
-
-        Receipt addReceiptSuccess = receiptService.createReceipt(receipt);
+        System.out.println("Received receipt: " + receiptJson);
 
 
 
-        return new ResponseEntity<>(true, HttpStatus.CREATED);
+        // Xử lý file và đối tượng Receipt
+        // Ví dụ: Lưu file vào thư mục
+        try {
+//          // Chuyển chuỗi JSON thành đối tượng Receipt
+            Receipt receipt = objectMapper.readValue(receiptJson, Receipt.class);
+
+            if (fileResult != null && !fileResult.isEmpty()) {
+                Map<String, String> dataResult = this.cloudinaryService.upLoadFile(fileResult);
+                System.out.println(dataResult);
+                receipt.setUrlResult(dataResult.get("url"));
+            }
+
+            if (fileBill != null && !fileBill.isEmpty()) {
+                Map<String, String> dataBill = this.cloudinaryService.upLoadFile(fileBill);
+                System.out.println(dataBill);
+                receipt.setUrlBill(dataBill.get("url"));
+            }
+
+
+            System.out.println(receipt);
+
+            receiptService.createReceipt(receipt);
+
+
+            return ResponseEntity.ok("Receipt added successfully.");
+
+
+        } catch (Exception e) {
+            // Xử lý lỗi khi xử lý file
+            return ResponseEntity.status(400).body("Failed to process the receipt: " + e.getMessage());
+        }
+
+
     }
 }
