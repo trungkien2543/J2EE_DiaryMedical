@@ -3,6 +3,7 @@ function openReceiptModal(CCCD) {
     const modal = document.getElementById('receiptModal');
     modal.style.display = 'block';
     document.getElementById("idPatient").value = CCCD
+
 }
 
 // Hàm đóng modal và reset form
@@ -287,41 +288,94 @@ $(document).on("click","#btnSubmitReceipt",function (e){
 
 
     Swal.fire({
-        title: 'Info',
-        text: 'Please wait until there is a system notification',
+        html: `
+        <style>
+            .progress {
+                position: relative;
+                background: #ddd;
+                height: 30px;
+                width: 100%;
+                border-radius: 20px;
+               
+            }
+            .progress-done {
+                font-family: sans-serif;
+                font-weight: bolder;
+                color: #fff;
+                height: 100%;
+                background: linear-gradient(to left, rgb(2, 153, 253), rgb(233, 229, 232));
+                border-radius: 20px;
+                display: grid;
+                place-items: center;
+                width: 0;
+                box-shadow: 0 0 3px -5px rgb(2, 194, 253), 0 3px 150px rgb(0, 204, 255);
+                transition: width 0.5s ease;
+            }
+            .alertReceipt{
+                margin-top: 80px; /* Thêm khoảng cách phía trên đoạn văn */
+                text-align: center;
+            }
+        </style>
+        
+        <div class="progress">
+            <div class="progress-done" data-done="100"></div>
+        </div>
+        <p class="alertReceipt">Please wait until there is a system notification</p>
+       
+    `,
         icon: 'info',
-        confirmButtonText: 'OK'
-    });
+        showConfirmButton: false, // Loại bỏ nút OK
+        didOpen: () => {
+            const progressDone = document.querySelector('.progress-done');
+            let width = 0;
+
+            // Tăng width dần dần
+            const interval = setInterval(() => {
+                if (width < 95) { // Giới hạn đến 95% để chờ response từ server
+                    width += 0.5;
+                    progressDone.style.width = width + '%';
+                }
+            }, 50); // Cứ sau 50ms thì tăng 1%
 
 
-    $.ajax({
-        url: "/family/addReceipt",
-        type: "POST",
-        data: formData,
-        contentType: false,
-        processData: false,  // Cần thiết khi gửi FormData
-        success: function(response) {
-            Swal.fire({
-                title: 'Success',
-                text: 'This receipt is added successfully',
-                icon: 'success',
-                confirmButtonText: 'OK'
+            $.ajax({
+                url: "/family/addReceipt",
+                type: "POST",
+                data: formData,
+                contentType: false,
+                processData: false,  // Cần thiết khi gửi FormData
+                success: function(response) {
+
+                    clearInterval(interval); // Hàm clearInterval(interval) trong JavaScript được sử dụng để dừng một setInterval đã được bắt đầu trước đó. Khi bạn dùng setInterval, đoạn mã được chỉ định sẽ lặp lại sau một khoảng thời gian nhất định (tính bằng mili giây) cho đến khi bị dừng bằng clearInterval.
+                    progressDone.style.width = '100%';
+
+                    setTimeout(() => { // Hàm setTimeout trong JavaScript được dùng để trì hoãn việc thực hiện một đoạn mã nào đó sau một khoảng thời gian nhất định (tính bằng mili giây).
+                        Swal.close(); // Tự động đóng thông báo sau khi hoàn thành
+                        Swal.fire({
+                            title: 'Success',
+                            text: 'This receipt is added successfully',
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        });
+                        closeReceiptModal();
+                    }, 500); // Đợi một chút để hoàn thành hiệu ứng
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.error("AJAX Error:", textStatus, errorThrown);
+                    console.error("Response Text:", jqXHR.responseText);
+
+                    clearInterval(interval);
+                    Swal.close();
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'An error occurred: ' + jqXHR.responseText,
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
             });
-            closeReceiptModal();
-        },
-        error: function(jqXHR, textStatus, errorThrown) {
-            console.error("AJAX Error:", textStatus, errorThrown);
-            console.error("Response Text:", jqXHR.responseText);
-            Swal.fire({
-                title: 'Error',
-                text: 'An error occurred: ' + jqXHR.responseText,
-                icon: 'error',
-                confirmButtonText: 'OK'
-            });
+
         }
     });
-
-
-
 
 });
