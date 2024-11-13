@@ -1,6 +1,8 @@
 package com.project.MedicalDiary.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Data
@@ -8,24 +10,25 @@ import lombok.*;
 @AllArgsConstructor
 @ToString
 @Entity
-@IdClass(RoomDetailId.class)
+//@IdClass(RoomDetailId.class)
 @Table(name = "room_detail")
 public class RoomDetail {
-    @Id
-    @Column(name = "ID_Room", nullable = false)
-    private String IDRoom;
-    @Id
-    @Column(name = "ID_isFollowed", nullable = false)
-    private String ID_isFollowed;
+    @EmbeddedId
+    @NotNull(message = "ID is required")
+    private RoomDetailId ID;
+
+    @MapsId("IDRoom")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "ID_Room", nullable = false)
+    @NotNull(message = "Room is required")
+    private Room room;
+
+    @MapsId("IDisFollowed")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "ID_IsFollowed", nullable = false)
+    @NotNull(message = "isFollowed is required")
+    private Information isFollowed;
 
     @Column(name = "Status")
-    private int Status;
-
-    @ManyToOne
-    @JoinColumn(name = "Id_Room", nullable = false)
-    private Room room;
-    // Relationship to Information entity
-    @ManyToOne
-    @JoinColumn(name = "ID_isFollowed", referencedColumnName = "CCCD", insertable = false, updatable = false)
-    private Information information; // Links ID_isFollowed to CCCD in Information
+    private int status;
 }

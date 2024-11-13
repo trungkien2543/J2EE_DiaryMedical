@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class RoomServiceImp implements RoomService {
@@ -33,7 +34,7 @@ public class RoomServiceImp implements RoomService {
 
     @Override
     public Boolean deleteRoom(Room room) {
-        if (roomRepository.existsById(Long.valueOf(room.getIDRoom()))) {
+        if (roomRepository.existsById(room.getIDRoom())) {
             roomRepository.delete(room);
             return true; // Deletion successful
         }
@@ -67,6 +68,37 @@ public class RoomServiceImp implements RoomService {
         }
 
         return mapping;
+    }
+    @Override
+    public Boolean checkRoom(String IDRoom, String PIN) {
+        Optional<Room> room = roomRepository.findByIDRoomAndPIN(IDRoom, PIN);
+        return room.isPresent();
+    }
+
+    @Override
+    public Room getRoomByID(String IDRoom) {
+        return roomRepository.findRoomByIDRoom(IDRoom);
+    }
+    @Override
+    public Boolean changePIN(String IDRoom, String oldPIN, String newPIN) {
+        Optional<Room> room = roomRepository.findByIDRoomAndPIN(IDRoom, oldPIN);
+        if (room.isPresent()) {
+            Room roomToUpdate = room.get();
+            roomToUpdate.setPIN(newPIN);
+            roomRepository.save(roomToUpdate);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public Boolean existByIDRoom(String IDRoom) {
+        return roomRepository.existsByIDRoom(IDRoom);
+    }
+    @Override
+    public Boolean deleteRoomByIDRoom(String IDRoom) {
+        Room room = roomRepository.findRoomByIDRoom(IDRoom);
+        return deleteRoom(room);
     }
 
     @Override

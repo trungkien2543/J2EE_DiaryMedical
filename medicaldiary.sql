@@ -38,8 +38,8 @@ CREATE TABLE `account` (
 --
 
 INSERT INTO `account` (`ID_Family`, `PassWord`, `Email`) VALUES
-(1, '123', 'kien@gmail.com'),
-(2, '123', 'le@gmail.com');
+(1, '$2a$10$laVKL79xjNu1cOfB5Pcu3uEnx7vZH5ihj1arNP4jfi0EcFdaX4ppa', 'kien@gmail.com'),
+(2, '$2a$10$laVKL79xjNu1cOfB5Pcu3uEnx7vZH5ihj1arNP4jfi0EcFdaX4ppa', 'le@gmail.com');
 
 -- --------------------------------------------------------
 
@@ -175,7 +175,6 @@ ALTER TABLE `room`
 --
 ALTER TABLE `room_detail`
   ADD PRIMARY KEY (`ID_Room`,`ID_IsFollowed`),
-  ADD UNIQUE KEY `ID_Room` (`ID_Room`),
   ADD KEY `ID_IsFollowed` (`ID_IsFollowed`);
 
 --

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<!--layout:decorate="~{layouts/main}">-->
+<head th:replace="~{components/head :: head}">
+  <link rel="icon" th:href="@{/img/favicon.ico}" sizes="32x32" type="image/x-icon">
+</head>
+<body th:replace="~{layouts/main:: layout}">
+<!-- Begin Page Content -->
+<div class="container-fluid" th:fragment="content">
+
+  <!-- Page Heading -->
+  <h1 class="h3 mb-2 text-gray-800" th:text="'Room of ' + ${info.Name}">Room</h1>
+  <p class="mb-4">The person whose health I care about the most.</p>
+  <div class="text-right mb-2 mx-3">
+    <button class="btn btn-primary room-detail-add" type="button" data-toggle="modal" data-target="#AddQuanTam">Add People Interested</button>
+    <!--    <button id="btn-test">Button test</button>-->
+  </div>
+  <!-- Data -->
+  <div class="card shadow mb-4">
+    <div class="card-header py-3">
+      <!-- Modal -->
+      <div class="modal fade" id="AddQuanTam" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropAddQuanTam" aria-hidden="true">
+        <!--      <div class="modal fade" id="AddQuanTam" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">-->
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="titleModal">Add People Interested</h5>
+              <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <form class="forms-sample" action="@{/add}" method="post">
+              <div class="modal-body">
+                <div class="form-group">
+                  <label for="CCCD">CCCD</label>
+                  <input type="text" class="form-control" id="CCCD" placeholder="CCCD">
+                </div>
+                <div class="form-group">
+                  <label for="HoTen">Full Name</label>
+                  <input type="text" class="form-control" id="HoTen" placeholder="Full name">
+                </div>
+                <div class="form-row">
+                  <div class="form-group col-md-3">
+                    <label for="Gender">Gender</label>
+                    <select class="form-control" id="Gender">
+                      <option value="" disabled selected hidden>Chọn giới tính</option>
+                      <option value="1">Male</option>
+                      <option value="0">Female</option>
+                    </select>
+                  </div>
+                  <div class="form-group col-md-9">
+                    <label for="BHYT">Health Insurance</label>
+                    <input type="text" class="form-control" id="BHYT" placeholder="Health insurance">
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group col-md-6">
+                    <label for="Phone">Phone</label>
+                    <input type="text" class="form-control" id="Phone" placeholder="Phone">
+                  </div>
+                  <div class="form-group col-md-6">
+                    <label for="Job">Job</label>
+                    <input type="text" class="form-control" id="Job" placeholder="Job">
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group col-md-6">
+                    <label for="Department">Department</label>
+                    <input type="text" class="form-control" id="Department" placeholder="Department">
+                  </div>
+                  <div class="form-group col-md-6">
+                    <label for="IDFamily">Household Code</label>
+                    <input type="text" class="form-control" id="IDFamily" placeholder="Household code">
+                    <input type="text" hidden value="" id="idfml" th:value="${idFamily}">
+                    <input type="text" hidden value="" id="namefml" th:value="${nameFamily}">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="Address">Address</label>
+                  <input type="text" class="form-control" id="Address" placeholder="Address">
+                </div>
+                <div class="form-group">
+                  <label for="Medical_History">Background medical history</label>
+                  <textarea class="form-control" id="Medical_History" placeholder="Background medical history"></textarea>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
+                <button id="btn-saves" class="btn btn-primary" type="submit">Saves</button>
+                <button id="btn-updates" class="btn btn-primary" type="button">Updates</button>
+              </div>
+            </form>
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+          <thead>
+          <tr>
+            <th>Diary</th>
+            <th>Family</th>
+            <th>CCCD</th>
+            <th>Full name</th>
+            <th>Gender</th>
+            <th>Job</th>
+            <th>Department</th>
+            <th>Address</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="item : ${list}" th:attr="data-id=${item.key.CCCD}">
+            <td th:attr="data-id=${item.key.CCCD}">
+              <button class="btn btn-datatable btn-icon btn-transparent-dark me-2"><i class='far fa-eye' style='font-size:24px'></i></button>
+            </td>
+            <td th:text="${item.key.family.IDFamily}"></td>
+            <td th:text="${item.key.CCCD}"></td>
+            <td th:text="${item.key.Name}"></td>
+            <td th:text="${item.key.Gender ? 'Nam' : 'Nữ'}"></td>
+            <td th:text="${item.key.Job}"></td>
+            <td th:text="${item.key.Department}"></td>
+            <td th:text ="${item.key.Address}"></td>
+            <td>
+              <span th:if="${item.value.Status == 0}" class="badge badge-warning">Pending</span>
+              <span th:if="${item.value.Status == 1}" class="badge badge-success">Following</span>
+              <span th:if="${item.value.Status == -1}" class="badge badge-danger">Cancelled</span>
+            </td>
+            <td>
+              <button  th:attr="data-id=${item.key.CCCD}" class="btn btn-datatable btn-icon btn-transparent-dark me-2 px-1 room-detail-element" data-placement="top" title="Xem chi tiết" data-toggle="modal" data-target="#AddQuanTam">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
+                  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                  <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
+                </svg>
+              </button>
+              <button  th:attr="data-id=${item.key.CCCD}" class="btn btn-datatable btn-icon btn-transparent-dark me-2 px-1 room-edit-element" data-placement="top" title="Sửa" data-toggle="modal" data-target="#AddQuanTam">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                  <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                  <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+                </svg>
+              </button>
+              <button  th:attr="data-id=${item.key.CCCD}" class="btn btn-datatable btn-icon btn-transparent-dark px-1 room-delete-element" data-placement="top" title="Xoá">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                  <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
+                  <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
+                </svg>
+              </button>
+              <button th:if="${item.value.Status == -1}" th:attr="data-id=${item.key.CCCD} ,data-idRoom=${IDRoom} " class="btn btn-datatable btn-icon btn-transparent-dark px-1 room-resend-element" data-placement="top" title="Resend follow request">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
+                  <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z"/>
+                </svg>
+              </button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /.container-fluid -->
+</body>
+<script th:src="@{/js/pages/roomdetail.js}"></script>
+
+</html>

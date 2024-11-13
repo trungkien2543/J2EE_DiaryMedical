@@ -1,6 +1,7 @@
 package com.project.MedicalDiary.Entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.util.List;
@@ -14,12 +15,12 @@ import java.util.List;
 public class Room {
 
     @Id
-    @Column(name = "Id_Room", nullable = false, unique = true)
+    @Column(name = "ID_Room", nullable = false, unique = true)
+    @NotNull(message = "ROOM ID is the identification code of the room owner.")
     private String IDRoom;
 
     @Column(name = "PIN", nullable = false)
+    @NotNull(message = "Please enter pin code as number")
     private String PIN;
 
-    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<RoomDetail> roomDetails;
 }

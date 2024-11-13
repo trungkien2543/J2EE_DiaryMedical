@@ -12,5 +12,10 @@ public interface InformationService {
     Optional<Information> findByCCCD(String cccd); // This method looks correct
     Information createInformation(Information information);
     Boolean updateInformation(Information information);
-    Boolean deleteInformation(Information information);
+    Boolean deleteInformation(String id);
+    Boolean updateIDFamilyToNull(String id);
+    Boolean existsByCCCDAndFamily_IDFamilyNotNull(String CCCD);
+    Boolean existsByCCCDAndFamily_IDFamilyNull(String CCCD);
+    Boolean existsByCCCD(String CCCD);
+    Optional<Information> findByCCCDAndFamily_IDFamilyNot(String CCCD, Long idFamily);
 }

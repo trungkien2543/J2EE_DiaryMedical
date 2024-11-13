@@ -4,10 +4,13 @@
 <!--layout:decorate="~{layouts/main}">-->
 <head th:replace="~{components/head :: head}">
   <link rel="icon" th:href="@{/img/favicon.ico}" sizes="32x32" type="image/x-icon">
+
 </head>
 <body th:replace="~{layouts/main:: layout}">
 <!-- Begin Page Content -->
 <div class="container-fluid" th:fragment="content">
+
+
 
   <!-- Page Heading -->
   <h1 class="h3 mb-2 text-gray-800">Family member</h1>
@@ -26,7 +29,6 @@
       <!--      </div>-->
       <!-- Modal -->
       <div class="modal fade" id="AddQuanTam" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropAddQuanTam" aria-hidden="true">
-        <!--      <div class="modal fade" id="AddQuanTam" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">-->
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-header">
@@ -35,24 +37,27 @@
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
-            <form class="forms-sample" action="@{/add}" method="post">
+            <form class="needs-validation" action="@{/add}" method="post" novalidate>
               <div class="modal-body">
                 <div class="form-group">
                   <label for="CCCD">CCCD</label>
-                  <input type="text" class="form-control" id="CCCD" placeholder="CCCD">
+                  <input type="text" class="form-control" id="CCCD" placeholder="CCCD" required>
+                  <div class="invalid-feedback">Please enter a valid CCCD.</div>
                 </div>
                 <div class="form-group">
                   <label for="HoTen">Full Name</label>
-                  <input type="text" class="form-control" id="HoTen" placeholder="Full name">
+                  <input type="text" class="form-control" id="HoTen" placeholder="Full name" required>
+                  <div class="invalid-feedback">Please enter a full name.</div>
                 </div>
                 <div class="form-row">
                   <div class="form-group col-md-3">
                     <label for="Gender">Gender</label>
-                    <select class="form-control" id="Gender">
+                    <select class="form-control" id="Gender" required>
                       <option value="" disabled selected hidden>Chọn giới tính</option>
                       <option value="1">Male</option>
                       <option value="0">Female</option>
                     </select>
+                    <div class="invalid-feedback">Please select a gender.</div>
                   </div>
                   <div class="form-group col-md-9">
                     <label for="BHYT">Health Insurance</label>
@@ -62,7 +67,8 @@
                 <div class="form-row">
                   <div class="form-group col-md-6">
                     <label for="Phone">Phone</label>
-                    <input type="text" class="form-control" id="Phone" placeholder="Phone">
+                    <input type="text" class="form-control" id="Phone" placeholder="Phone" required>
+                    <div class="invalid-feedback">Please enter a valid phone number.</div>
                   </div>
                   <div class="form-group col-md-6">
                     <label for="Job">Job</label>
@@ -83,7 +89,8 @@
                 </div>
                 <div class="form-group">
                   <label for="Address">Address</label>
-                  <input type="text" class="form-control" id="Address" placeholder="Address">
+                  <input type="text" class="form-control" id="Address" placeholder="Address" required>
+                  <div class="invalid-feedback">Please enter an address.</div>
                 </div>
                 <div class="form-group">
                   <label for="Medical_History">Background medical history</label>
@@ -92,16 +99,113 @@
               </div>
               <div class="modal-footer">
                 <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
-                <button id="btn-saves" class="btn btn-primary" type="submit">Saves</button>
-                <button id="btn-updates" class="btn btn-primary" type="button">Updates</button>
+                <button id="btn-saves" class="btn btn-primary" type="submit">Save</button>
+                <button id="btn-updates" class="btn btn-primary" type="button">Update</button>
               </div>
             </form>
-
-
           </div>
         </div>
       </div>
-    </div>
+
+
+      <div id="receiptModal" class="modal" tabindex="-1" style="display: none;">
+        <div class="modal-dialog" style="max-width: 600px;">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Receipt Form</h5>
+              <button type="button" class="btn btn-close" onclick="closeReceiptModal()" aria-label="Close">
+                <i class="fas fa-times-circle" style="color: #dc3545; font-size: 1.5rem;"></i>
+              </button>
+
+            </div>
+            <div class="modal-body" style="max-height: 85vh; overflow-y: auto;">
+              <form id="receiptForm" method="post" enctype="multipart/form-data">
+                <div class="mb-3">
+                  <label for="idPatient"><strong>Patient ID:</strong></label>
+                  <input type="text" id="idPatient" name="idPatient" class="form-control"readonly>
+                </div>
+                <div class="mb-3">
+                  <label for="idDoctor"><strong>Doctor ID:</strong></label>
+                  <input type="number" id="idDoctor" name="idDoctor" class="form-control">
+                </div>
+                <div class="mb-3">
+                  <label for="place"><strong>Place:</strong></label>
+                  <input type="text" id="place" name="place" class="form-control" readonly>
+                </div>
+
+                <div class="mb-3">
+                  <label for="datetime"><strong>Date and Time:</strong></label>
+                  <input type="datetime-local" id="datetime" name="datetime" class="form-control">
+                </div>
+
+                <div class="mb-3">
+                  <label for="reason"><strong>Reason:</strong></label>
+                  <input type="text" id="reason" name="idService" class="form-control">
+                </div>
+                <div class="mb-3">
+                  <label for="diagnosis"><strong>Diagnosis:</strong></label>
+                  <textarea id="diagnosis" name="diagnosis" class="form-control" rows="2"></textarea>
+                </div>
+                <div class="mb-3">
+                  <label for="treat"><strong>Treat:</strong></label>
+                  <input type="text" id="treat" name="treat" class="form-control">
+                </div>
+                <div class="mb-3">
+                  <label for="remind"><strong>Remind:</strong></label>
+                  <input type="text" id="remind" name="remind" class="form-control">
+                </div>
+
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label for="dateVisit"><strong>Date of Visit:</strong></label>
+                      <input type="datetime-local" id="dateVisit" name="dateVisit" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                      <label for="weight"><strong>Weight (kg):</strong></label>
+                      <input type="number" id="weight" name="weight" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                      <label for="height"><strong>Height (cm):</strong></label>
+                      <input type="number" id="height" name="height" class="form-control">
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label for="bloodPressure"><strong>Blood Pressure:</strong></label>
+                      <input type="number" id="bloodPressure" name="bloodPressure" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                      <label for="heartRate"><strong>Heart Rate:</strong></label>
+                      <input type="number" id="heartRate" name="heartRate" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                      <label for="temperature"><strong>Temperature (°C):</strong></label>
+                      <input type="number" id="temperature" name="temperature" class="form-control">
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mb-3">
+                  <label for="resultImage"><strong>Result Image:</strong></label>
+                  <input type="file" id="resultImage" name="resultImage" class="form-control" accept="image/*" onchange="previewImage(event, 'resultPreview')">
+                  <img id="resultPreview" alt="Preview Result Image" class="img-fluid mt-2" style="display: none; max-height: 200px; border-radius: 8px;">
+                </div>
+                <div class="mb-3">
+                  <label for="medicineImage"><strong>Medicine Image:</strong></label>
+                  <input type="file" id="medicineImage" name="medicineImage" class="form-control" accept="image/*" onchange="previewImage(event, 'medicinePreview')">
+                  <img id="medicinePreview" alt="Preview Medicine Image" class="img-fluid mt-2" style="display: none; max-height: 200px; border-radius: 8px;">
+                </div>
+                <div class="text-center mt-4">
+                  <button type="button" class="btn btn-success" id="btnSubmitReceipt">Submit</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
     <div class="card-body">
       <div class="table-responsive">
         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
@@ -119,10 +223,10 @@
           </tr>
           </thead>
           <tbody>
-          <tr th:each="i : ${list}">
+          <tr th:each="i : ${list}" th:attr="data-id=${i.CCCD}">
             <td th:attr="data-id=${i.CCCD}">
-              <button class="btn btn-datatable btn-icon btn-transparent-dark me-2"><i class='far fa-eye' style='font-size:24px'></i></button>
-            </td>
+              <button class="btn btn-datatable btn-icon btn-transparent-dark me-2"><i class='far fa-eye' ></i></button>
+              <button class="btn btn-datatable btn-icon btn-transparent-dark me-2" th:onclick="openReceiptModal([[${i.CCCD}]])"><i class='far fa-plus-square' ></i></button>            </td>
             <td th:text="${i.CCCD}"></td>
             <td th:text="${i.Name}"></td>
             <td th:text="${i.Gender ? 'Nam' : 'Nữ'}"></td>
@@ -184,11 +288,12 @@
 <!--    </div>-->
 <!--  </div>-->
 
+  </div>
 </div>
 
 
 <!-- /.container-fluid -->
 </body>
 <script th:src="@{/js/pages/family.js}"></script>
-
+<script th:src="@{/js/pages/receipt.js}"></script>
 </html>

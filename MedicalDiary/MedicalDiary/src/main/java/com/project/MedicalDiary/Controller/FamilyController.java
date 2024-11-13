@@ -1,18 +1,27 @@
 package com.project.MedicalDiary.Controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.project.MedicalDiary.DTO.InformationRequestDTO;
 import com.project.MedicalDiary.Entity.Family;
 import com.project.MedicalDiary.Entity.Information;
-import com.project.MedicalDiary.Service.CustomUserDetails;
+import com.project.MedicalDiary.Entity.Receipt;
+import com.project.MedicalDiary.Service.Cloudinary.CloudinaryService;
+import com.project.MedicalDiary.Service.OAuth.CustomUserDetails;
 import com.project.MedicalDiary.Service.ImpInterface.FamilyService;
 import com.project.MedicalDiary.Service.ImpInterface.InformationService;
+import com.project.MedicalDiary.Service.ImpInterface.ReceiptService;
+import jakarta.validation.Valid;
 import lombok.*;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Map;
 import java.util.Optional;
 
 @Controller
@@ -22,7 +31,16 @@ import java.util.Optional;
 public class FamilyController {
 
     private final InformationService informationService;
+
     private final FamilyService familyService;
+
+    private final ReceiptService receiptService;
+
+    private final ObjectMapper objectMapper;
+
+    private final CloudinaryService cloudinaryService;
+
+
 
     @GetMapping("")
     public String follower(Authentication authentication, Model model) {
@@ -51,6 +69,8 @@ public class FamilyController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
+
+
     @GetMapping("/getFamilyByID")
     @ResponseBody
     public ResponseEntity<Family> getFamilyByID(@RequestParam long iD_Family) {
@@ -63,25 +83,140 @@ public class FamilyController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
-    @RequestMapping(value = "/add",method = {RequestMethod.POST,RequestMethod.PUT ,RequestMethod.GET})
-//    @RequestMapping(value = "/add", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+
+//    @RequestMapping(value = "/add",method = {RequestMethod.POST,RequestMethod.PUT ,RequestMethod.GET})
+//    @ResponseBody
+//    public ResponseEntity<Information> createInformation(@RequestBody Information information) {
+//        // Save the family object to the database
+//        Information createdInformation = informationService.createInformation(information);
+//        System.out.println("ADD Info : " + information); // Debugging log
+//
+//        // Return a response with the created family and a status code
+//        return new ResponseEntity<>(createdInformation, HttpStatus.CREATED);
+//    }
+
+
+    @RequestMapping(value = "/add", method = {RequestMethod.POST, RequestMethod.PUT, RequestMethod.GET}
+            , consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<Information> createInformation(@RequestBody Information information) {
-        // Save the family object to the database
+    public ResponseEntity<Information> createInformation(@RequestBody @Valid InformationRequestDTO request) {
+        Information information = request.getInformation();
+        Family family = request.getFamily();
+
+        // Set the family object in information
+        information.setFamily(family);
+
+        // Save the information object with the family data to the database
         Information createdInformation = informationService.createInformation(information);
         System.out.println("ADD Info : " + information); // Debugging log
 
-        // Return a response with the created family and a status code
+        // Return a response with the created information and a status code
         return new ResponseEntity<>(createdInformation, HttpStatus.CREATED);
     }
 
+
+
     @RequestMapping(value = "update",method = {RequestMethod.POST,RequestMethod.PUT ,RequestMethod.GET})
     @ResponseBody
-    public ResponseEntity<Boolean> updateFamily(@RequestBody Information information) {
+    public ResponseEntity<Boolean> updateFamily(@RequestBody InformationRequestDTO request) {
+        Information information = request.getInformation();
+        Family family = request.getFamily();
+        // Set the family object in information
+        information.setFamily(family);
         boolean updateFamily = informationService.updateInformation(information);
+        System.out.println("Update Info : " + information); // Debugging log
 
         return new ResponseEntity<>(updateFamily, HttpStatus.CREATED);
     }
 
 
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> deleteFamily(@PathVariable String id) {
+        try {
+//            informationService.deleteInformation(id);
+            // Set IDFamily to null before deleting the information
+            informationService.updateIDFamilyToNull(id);
+            return ResponseEntity.ok().body("Family member deleted successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete family member.");
+        }
+    }
+    //Write rest api to check information exist by CCCD and IDFamily != null
+    @GetMapping("/existsByCCCDAndFamily_IDFamilyNotNull")
+    @ResponseBody
+    public ResponseEntity<Boolean> existsByCCCDAndFamily_IDFamilyNotNull(@RequestParam String cccd) {
+        System.out.println("Received CCCD: " + cccd); // Debugging log
+        boolean exists = informationService.existsByCCCDAndFamily_IDFamilyNotNull(cccd);
+        return ResponseEntity.ok(exists);
+    }
+
+
+
+    //Write rest api to check information exist by CCCD and IDFamily == null
+    @GetMapping("/existsByCCCDAndFamily_IDFamilyNull")
+    @ResponseBody
+    public ResponseEntity<Boolean> existsByCCCDAndFamily_IDFamilyNull(@RequestParam String cccd) {
+        System.out.println("Received CCCD: " + cccd); // Debugging log
+        boolean exists = informationService.existsByCCCDAndFamily_IDFamilyNull(cccd);
+        return ResponseEntity.ok(exists);
+    }
+
+
+    @GetMapping("/existsByCCCD")
+    @ResponseBody
+    public ResponseEntity<Boolean> existsByCCCD(@RequestParam String cccd) {
+        System.out.println("Received CCCD: " + cccd); // Debugging log
+        boolean exists = informationService.existsByCCCD(cccd);
+        return ResponseEntity.ok(exists);
+    }
+
+
+
+
+    // Them rceipt vao
+    @RequestMapping(value = "/addReceipt",method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<String> addReceipt(@RequestParam(value = "fileResult", required = false) MultipartFile fileResult,
+                                              @RequestParam(value = "fileBill",required = false) MultipartFile fileBill,
+                                              @RequestParam("receipt") String receiptJson) {
+
+        System.out.println("Received receipt: " + receiptJson);
+
+
+
+        // Xử lý file và đối tượng Receipt
+        // Ví dụ: Lưu file vào thư mục
+        try {
+//          // Chuyển chuỗi JSON thành đối tượng Receipt
+            Receipt receipt = objectMapper.readValue(receiptJson, Receipt.class);
+
+            if (fileResult != null && !fileResult.isEmpty()) {
+                Map<String, String> dataResult = this.cloudinaryService.upLoadFile(fileResult);
+                System.out.println(dataResult);
+                receipt.setUrlResult(dataResult.get("url"));
+            }
+
+            if (fileBill != null && !fileBill.isEmpty()) {
+                Map<String, String> dataBill = this.cloudinaryService.upLoadFile(fileBill);
+                System.out.println(dataBill);
+                receipt.setUrlBill(dataBill.get("url"));
+            }
+
+
+            System.out.println(receipt);
+
+            receiptService.createReceipt(receipt);
+
+
+            return ResponseEntity.ok("Receipt added successfully.");
+
+
+        } catch (Exception e) {
+            // Xử lý lỗi khi xử lý file
+            return ResponseEntity.status(400).body("Failed to process the receipt: " + e.getMessage());
+        }
+
+
+    }
 }

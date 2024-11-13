@@ -3,6 +3,8 @@ package com.project.MedicalDiary.Entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -34,7 +36,7 @@ public class Receipt {
     private String place;
 
     @Column(name = "Date")
-    private java.time.LocalDateTime date;
+    private LocalDateTime date;
 
     @Column(name = "Reason")
     private String reason;
@@ -49,7 +51,7 @@ public class Receipt {
     private String urlResult;
 
     @Column(name = "Url_BillDrug")
-    private Long idBill;
+    private String urlBill;
 
     @Column(name = "Remind")
     private String remind;

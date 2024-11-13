@@ -6,7 +6,7 @@ import com.project.MedicalDiary.Entity.Information;
 import com.project.MedicalDiary.Service.Imp.AccountServiceImp;
 import com.project.MedicalDiary.Service.Imp.FamilyServiceImp;
 import com.project.MedicalDiary.Service.Imp.InformationServiceImp;
-import com.project.MedicalDiary.Service.SendEmailService;
+import com.project.MedicalDiary.Service.OAuth.SendEmailService;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Random;
 
 @Controller
@@ -212,12 +211,12 @@ public class LoginController {
 
 
         // Tạo tài khoản mới
-        Account accountNew = accountServiceImp.createAccount(new Account(email,familyNew.getIDFamily(),passwordEncoder.encode(password)));
+        Account accountNew = accountServiceImp.createAccount(new Account(email,familyNew,passwordEncoder.encode(password)));
 
         //Thêm thanh viên mới
 
         for (Information member: familyMembers ) {
-            member.setIDFamily(familyNew.getIDFamily());
+            member.setFamily(familyNew);
             informationServiceImp.createInformation(member);
         }
 

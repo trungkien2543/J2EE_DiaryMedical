@@ -3,6 +3,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import lombok.*;
 
 @Data
@@ -13,14 +14,18 @@ import lombok.*;
 @Table(name = "information")
 public class Information {
 
-    @Column(name = "CCCD")
     @Id
+    @Column(name = "CCCD")
+    @NotNull(message = "Please enter your identification code")
+    @Pattern(regexp = "^[0-9]{1,12}$", message = "CCCD must be a numeric value with up to 12 digits.")
     private String CCCD;
 
-    @Column(name = "Name", nullable = false)
+    @Column(name = "Name")
+    @NotNull(message = "Please enter your name")
     private String Name;
 
     @Column(name = "Gender")
+    @NotNull(message = "Please select your gender")
     private Boolean Gender;
 
     @Column(name = "BHYT")
@@ -41,13 +46,10 @@ public class Information {
     @Column(name = "Medical_History")
     private String MedicalHistory;
 
-    @Column(name = "ID_Family")
-    private Long IDFamily;
-
-//    @ManyToOne(cascade = CascadeType.ALL)
-//    @JoinColumn(name = "ID_Family", referencedColumnName = "ID_Family") // This links to ID_Family in Family
-//    @JsonIgnore
-//    private Family family;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "ID_Family", referencedColumnName = "ID_Family") // This links to ID_Family in Family
+//    @JsonManagedReference
+    private Family family;
 
 }
 

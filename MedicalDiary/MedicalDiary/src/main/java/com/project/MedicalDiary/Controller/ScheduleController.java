@@ -2,7 +2,7 @@ package com.project.MedicalDiary.Controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.MedicalDiary.Entity.*;
-import com.project.MedicalDiary.Service.CustomUserDetails;
+import com.project.MedicalDiary.Service.OAuth.CustomUserDetails;
 import com.project.MedicalDiary.Service.Imp.*;
 import jakarta.servlet.http.HttpSession;
 import lombok.*;
@@ -75,7 +75,8 @@ public class ScheduleController {
 
             for (RoomDetail t : members) {
                 Map<String, Object> memberInfo = new HashMap<>();
-                memberInfo.put("info", iSe.getByCCCD(t.getID_isFollowed()));
+                
+                memberInfo.put("info", t.getIsFollowed());
                 memberInfo.put("name", ifor.getName());
 
                 String randomColor = getRandomColor();
