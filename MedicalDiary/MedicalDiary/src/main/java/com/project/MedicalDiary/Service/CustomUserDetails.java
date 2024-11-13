@@ -1,6 +1,6 @@
 package com.project.MedicalDiary.Service;
 
-import com.project.MedicalDiary.Model.Account;
+import com.project.MedicalDiary.Entity.Account;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -34,8 +34,8 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return account.getUsername();
+        return account.getEmail();
     }
 
-    public Long getID_Family(){return  account.getID_Family();}
+    public Long getID_Family(){return  account.getIDFamily();}
 }

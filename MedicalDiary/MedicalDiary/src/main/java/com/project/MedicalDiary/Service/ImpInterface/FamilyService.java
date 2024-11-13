@@ -1,6 +1,6 @@
-package com.project.MedicalDiary.Service.Imp;
+package com.project.MedicalDiary.Service.ImpInterface;
 
-import com.project.MedicalDiary.Model.Family;
+import com.project.MedicalDiary.Entity.Family;
 
 import java.util.List;
 import java.util.Optional;

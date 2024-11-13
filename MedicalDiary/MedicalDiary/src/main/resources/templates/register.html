@@ -2,7 +2,6 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -14,25 +13,23 @@
     <!-- Custom fonts for this template-->
     <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     <link
-        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
-        rel="stylesheet">
+            href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+            rel="stylesheet">
 
     <!-- Custom styles for this template-->
     <link href="css/sb-admin-2.min.css" rel="stylesheet">
-
     <link href="css/login/register.css" rel="stylesheet">
-
 </head>
 
 <body class="bg-gradient-primary">
-
-    <div class="container custom-container">
+<div class="container custom-container">
+    <form class="user" th:action="@{/register}" method="POST">
 
         <div class="card o-hidden border-0 shadow-lg my-5">
             <div class="card-body p-0">
                 <!-- Nested Row within Card Body -->
                 <div class="row">
-                    <div class="col-lg-6 d-none d-lg-block bg-login-image"  style="padding: 50px 0px 50px 10px;">
+                    <div class="col-lg-6 d-none d-lg-block bg-login-image" style="padding: 50px 0px 50px 10px;">
                         <img src="../img/login.png" style="width: 100%; height: auto;" alt="Image">
                     </div>
                     <div class="col-lg-6">
@@ -40,28 +37,27 @@
                             <div class="text-center">
                                 <h1 class="h4 text-gray-900 mb-4">Create an Account!</h1>
                             </div>
-                            <form class="user" method="POST">
-                                <div class="form-group row">
-                                    <div class="col-sm-12 mb-3 mb-sm-0">
-                                        <input type="text" class="form-control form-control-user" id="exampleFirstName" placeholder="Family Name" name="familyName">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <input type="email" class="form-control form-control-user" id="exampleInputEmail" placeholder="Email Address" name="email">
-                                </div>
-                                <div class="form-group row">
-                                    <div class="col-sm-6 mb-3 mb-sm-0">
-                                        <input type="password" class="form-control form-control-user" id="exampleInputPassword" placeholder="Password" name="password">
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <input type="password" class="form-control form-control-user" id="exampleRepeatPassword" placeholder="Repeat Password" name="repeatPassword">
-                                    </div>
-                                </div>
 
-                                <button type="button" class="btn btn-primary btn-user btn-block" id="submitBtn">
-                                    Register Account
-                                </button>
-                            </form>
+                            <div class="form-group row">
+                                <div class="col-sm-12 mb-3 mb-sm-0">
+                                    <input type="text" class="form-control form-control-user" id="exampleFirstName" placeholder="Family Name" name="familyName">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <input type="email" class="form-control form-control-user" id="exampleInputEmail" placeholder="Email Address" name="email">
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-sm-6 mb-3 mb-sm-0">
+                                    <input type="password" class="form-control form-control-user" id="exampleInputPassword" placeholder="Password" name="password">
+                                </div>
+                                <div class="col-sm-6">
+                                    <input type="password" class="form-control form-control-user" id="exampleRepeatPassword" placeholder="Repeat Password" name="repeatPassword">
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-user btn-block" id="submitBtn">
+                                Register Account
+                            </button>
 
                             <hr>
                             <div class="text-center">
@@ -73,15 +69,12 @@
                         </div>
                     </div>
 
-
                     <div class="card-body">
                         <div class="text-right mb-2 mx-3">
                             <button class="btn btn-primary family-add" type="button" onclick="showForm('add')" style="margin-bottom: 20px">Add Family Member</button>
                         </div>
 
                         <div class="modal-backdrop"></div>
-                        <!--Nen mo phia sau cai form-->
-
 
                         <div id="familyForm" class="modal-dialog" role="document" style="display: none;">
                             <div class="modal-content">
@@ -91,62 +84,58 @@
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>
-                                <form class="forms-sample" id="familyFormedit">
-                                    <div class="modal-body">
-                                        <div class="form-group">
-                                            <label for="CCCD">CCCD</label>
-                                            <input type="number" class="form-control" id="CCCD" placeholder="CCCD" required>
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <label for="CCCD">CCCD</label>
+                                        <input type="number" class="form-control" id="CCCD" placeholder="CCCD">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="HoTen">Full Name</label>
+                                        <input type="text" class="form-control" id="HoTen" placeholder="Full name">
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-3">
+                                            <label for="Gender">Gender</label>
+                                            <select class="form-control" id="Gender">
+                                                <option value="1">Male</option>
+                                                <option value="0">Female</option>
+                                            </select>
                                         </div>
-                                        <div class="form-group">
-                                            <label for="HoTen">Full Name</label>
-                                            <input type="text" class="form-control" id="HoTen" placeholder="Full name" required>
-                                        </div>
-                                        <div class="form-row">
-                                            <div class="form-group col-md-3">
-                                                <label for="Gender">Gender</label>
-                                                <select class="form-control" id="Gender">
-                                                    <option value="1">Male</option>
-                                                    <option value="0">Female</option>
-                                                </select>
-                                            </div>
-                                            <div class="form-group col-md-9">
-                                                <label for="BHYT">Health Insurance</label>
-                                                <input type="text" class="form-control" id="BHYT" placeholder="Health insurance" required>
-                                            </div>
-                                        </div>
-                                        <div class="form-row">
-                                            <div class="form-group col-md-6">
-                                                <label for="Phone">Phone</label>
-                                                <input type="number" class="form-control" id="Phone" placeholder="Phone" required>
-                                            </div>
-                                            <div class="form-group col-md-6">
-                                                <label for="Job">Job</label>
-                                                <input type="text" class="form-control" id="Job" placeholder="Job" required>
-                                            </div>
-                                        </div>
-                                        <div class="form-row">
-                                            <div class="form-group col-md-6">
-                                                <label for="Department">Department</label>
-                                                <input type="text" class="form-control" id="Department" placeholder="Department" required>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="Address">Address</label>
-                                            <input type="text" class="form-control" id="Address" placeholder="Address" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="Medical_History">Background medical history</label>
-                                            <textarea class="form-control" id="Medical_History" placeholder="Background medical history" required></textarea>
+                                        <div class="form-group col-md-9">
+                                            <label for="BHYT">Health Insurance</label>
+                                            <input type="text" class="form-control" id="BHYT" placeholder="Health insurance">
                                         </div>
                                     </div>
-                                    <div class="modal-footer">
-                                        <button class="btn btn-secondary" type="button" onclick="hideForm()">Close</button>
-                                        <button id="btn-saves" class="btn btn-primary" type="button">Add</button>
-                                        <button id="btn-updates" class="btn btn-primary" type="button">Update</button>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-6">
+                                            <label for="Phone">Phone</label>
+                                            <input type="number" class="form-control" id="Phone" placeholder="Phone">
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label for="Job">Job</label>
+                                            <input type="text" class="form-control" id="Job" placeholder="Job">
+                                        </div>
                                     </div>
-                                </form>
-
-
+                                    <div class="form-row">
+                                        <div class="form-group col-md-6">
+                                            <label for="Department">Department</label>
+                                            <input type="text" class="form-control" id="Department" placeholder="Department">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Address">Address</label>
+                                        <input type="text" class="form-control" id="Address" placeholder="Address">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Medical_History">Background medical history</label>
+                                        <textarea class="form-control" id="Medical_History" placeholder="Background medical history"></textarea>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-secondary" type="button" onclick="hideForm()">Close</button>
+                                    <button id="btn-saves" class="btn btn-primary" type="button">Add</button>
+                                    <button id="btn-updates" class="btn btn-primary" type="button">Update</button>
+                                </div>
                             </div>
                         </div>
 
@@ -167,40 +156,116 @@
                                 </tr>
                                 </thead>
                                 <tbody>
+<!--                                <tr th:each="member, iterStat : ${familyMemberList}">-->
+<!--                                    <td>-->
+<!--                                        <div th:text="${member.cccd}"></div>-->
+<!--                                        <input type="hidden" th:name="'familyMembers[' + ${iterStat.index} + '].cccd'" th:value="${member.cccd}"/>-->
+<!--                                    </td>-->
 
+<!--                                    <td>-->
+<!--                                        <div th:text="${member.name}"></div>-->
+<!--                                        <input type="hidden" th:name="'familyMembers[' + ${iterStat.index} + '].name'" th:value="${member.name}" />-->
+<!--                                    </td>-->
+<!--                                    <td>-->
+<!--                                        <div th:text="${member.gender == 1 ? 'Male' : 'Female'}"></div>-->
+<!--                                        <input type="hidden" th:name="'familyMembers[' + ${iterStat.index} + '].gender'" th:value="${member.gender}" />-->
+<!--                                    </td>-->
+<!--                                    <td>-->
+<!--                                        <div th:text="${member.bhyt}"></div>-->
+<!--                                        <input type="hidden" th:name="'familyMembers[' + ${iterStat.index} + '].healthInsurance'" th:value="${member.bhyt}" />-->
+<!--                                    </td>-->
+<!--                                    <td>-->
+<!--                                        <div th:text="${member.phone}"></div>-->
+<!--                                        <input type="hidden" th:name="'familyMembers[' + ${iterStat.index} + '].phone'" th:value="${member.phone}" />-->
+<!--                                    </td>-->
+<!--                                    <td>-->
+<!--                                        <div th:text="${member.job}"></div>-->
+<!--                                        <input type="hidden" th:name="'familyMembers[' + ${iterStat.index} + '].job'" th:value="${member.job}" />-->
+<!--                                    </td>-->
+<!--                                    <td>-->
+<!--                                        <div th:text="${member.department}"></div>-->
+<!--                                        <input type="hidden" th:name="'familyMembers[' + ${iterStat.index} + '].department'" th:value="${member.department}" />-->
+<!--                                    </td>-->
+<!--                                    <td>-->
+<!--                                        <div th:text="${member.address}"></div>-->
+<!--                                        <input type="hidden" th:name="'familyMembers[' + ${iterStat.index} + '].address'" th:value="${member.address}" />-->
+<!--                                    </td>-->
+<!--                                    <td>-->
+<!--                                        <div th:text="${member.medicalHistory}"></div>-->
+<!--                                        <input type="hidden" th:name="'familyMembers[' + ${iterStat.index} + '].medicalHistory'" th:value="${member.medicalHistory}" />-->
+<!--                                    </td>-->
+<!--                                </tr>-->
                                 </tbody>
                             </table>
                         </div>
+
                     </div>
                 </div>
             </div>
         </div>
+    </form>
+</div>
 
-    </div>
+<!-- Scripts -->
+<script src="vendor/jquery/jquery.min.js"></script>
+<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="js/sb-admin-2.min.js"></script>
 
-    <!-- Bootstrap core JavaScript-->
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="js/login/register.js"></script>
 
-    <!-- Core plugin JavaScript-->
-    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+<!-- Include SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <!-- Custom scripts for all pages-->
-    <script src="js/sb-admin-2.min.js"></script>
+<script th:inline="javascript">
 
 
+    let errorMessage = /*[[${errorMessage}]]*/ null; // Lấy giá trị errorMessage từ server
 
-    <script th:inline="javascript">
-        // Lưu danh sách vào biến toàn cục để có thể truy cập từ file JS bên ngoài
-        var membersList = /*[[${list}]]*/ [];
+    let isError = errorMessage !== null;
 
-        console.log(membersList)
-    </script>
+    if (isError) {
+        Swal.fire({
+            title: 'Error',
+            text: errorMessage, // Chèn nội dung errorMessage vào text
+            icon: 'error',
+            confirmButtonText: 'OK'
+        });
+    }
 
-    <script src="js/login/register.js"></script>
+    let isSuccess = /*[[${successMessage != null}]]*/ false;
 
-    <!-- Include SweetAlert2 -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    if (isSuccess) {
+        Swal.fire({
+            title: 'Success',
+            text: 'The account has been successfully registered',
+            icon: 'success',
+            confirmButtonText: 'OK'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '/login'; // Chuyển hướng đến trang mong muốn
+            }
+        });
+    }
+
+
+
+
+    // Lưu danh sách vào biến toàn cục để có thể truy cập từ file JS bên ngoài
+    var membersList = /*[[${list}]]*/ [];
+
+    // Xu ly bang them nguoi dung vao gia dinh
+    // Danh sach nguoi dung se them
+    const membersRegister = /*[[${familyMemberList}]]*/ [];
+
+
+    console.log(membersList)
+
+    console.log(membersRegister)
+
+    renderMembers(membersRegister);
+
+
+</script>
 
 
 </body>

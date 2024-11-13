@@ -1,9 +1,9 @@
+
 $(document).on("click", ".family-detail", function () {
     let cccd = $(this).data("id");
     $("#titleModal").text("Xem chi tiết");
     $("#btn-saves").hide();
     $("#btn-updates").hide();
-
     $.ajax({
         type: "get",
         url: "./family/getDetail",
@@ -12,6 +12,7 @@ $(document).on("click", ".family-detail", function () {
         },
         dataType: "json",
         success: function (response) {
+            console.log(response);
             // Cập nhật giá trị cho các trường thông tin
             $("#CCCD").val(response.cccd);
             $("#CCCD").prop("disabled", true);
@@ -39,18 +40,20 @@ $(document).on("click", ".family-detail", function () {
             $("#Address").val(response.address); // Nếu bạn có trường này trong response
             $("#Address").prop("disabled",true);
 
-            $("#Medical_History").val(response.medical_history); // Nếu bạn có trường này trong response
+            $("#Medical_History").val(response.medicalHistory); // Nếu bạn có trường này trong response
             $("#Medical_History").prop("disabled",true);
             $.ajax({
                 type : "get",
                 url: "./family/getFamilyByID",
                 data: {
-                    iD_Family: response.id_Family,
+                    iD_Family: response.idfamily,
                 },
                 dataType: "json",
                 success: function (res) {
-                    $("#ID_Family").val(response.id_Family +" - " + res.name); // Nếu bạn có trường này trong response
-                    $("#ID_Family").prop("disabled",true);
+                    $("#IDFamily").val(response.idfamily +" - " + res.name); // Nếu bạn có trường này trong response
+                    $("#IDFamily").prop("disabled",true);
+                    $("#idfml").val(response.idfamily);
+                    $("#namefml").val(res.name);
                 }
 
             });
@@ -63,6 +66,7 @@ $(document).on("click", ".family-detail", function () {
             console.error("Response Text:", jqXHR.responseText);
         }
     });
+
 });
 function clearInputFields() {
         // Clear input fields and enable them
@@ -79,19 +83,63 @@ function clearInputFields() {
         $("#Department").val("").prop("disabled", false); // If you have this field
         $("#Address").val("").prop("disabled", false); // If you have this field
         $("#Medical_History").val("").prop("disabled", false); // If you have this field
-        $("#ID_Family").val("").prop("disabled", false); // If you have this field
+        $("#IDFamily").val("").prop("disabled", false); // If you have this field
 }
+
 $(document).on("click",".family-add",function (){
     clearInputFields();
-    $("#titleModal").text("Thêm người nhà");
+    $("#titleModal").text("Add Family Member");
     $("#btn-saves").show();
     $("#btn-updates").hide();
+    let idFML = $("#idfml").val();
+    let nameFML = $("#namefml").val();
+    $("#IDFamily").val(idFML + " - " + nameFML);
+    $("#IDFamily").prop("disabled",true);
 });
 
-$(document).on("click",".family-update",function (){
+$(document).on("click","#btn-saves",function (e){
+    e.preventDefault();
+    const information = {
+        cccd: $("#CCCD").val(),
+        name: $("#HoTen").val(),
+        gender: parseInt($("#Gender").val(), 10),
+        nhyt: $("#BHYT").val(),
+        phone: $("#Phone").val(),
+        job: $("#Job").val(),
+        department: $("#Department").val(),
+        address: $("#Address").val(),
+        medicalHistory: $("#Medical_History").val(),
+        idfamily: parseInt($("#idfml").val(), 10),
 
+        // family : {
+        //     idfamily: parseInt($("#idfml").val(), 10),
+        //     name: $("#namefml").val()
+        // }
+        // iDFamily: parseInt($("#idfml").val(), 10)
+
+    };
+    console.log(information);
+    $.ajax({
+        type: "POST",
+        url: `./family/add`,
+        data: JSON.stringify(information), // Gửi dữ liệu dưới dạng JSON
+        contentType: 'application/json', // Đảm bảo rằng bạn đã chỉ định đúng contentType
+        dataType: "json", // Thêm header để server biết đây là JSON
+        success: function (response) {
+            console.log("Information created: :" + response);
+            window.location.href ="/family?add-success-member"
+            notify('success', 'Message Add sucessfully', 'Add new family member successfully');
+            $("#modal-add-user").modal("hide");
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            console.error("AJAX Error:", textStatus, errorThrown);
+            console.error("Response Text:", jqXHR.responseText);
+        }
+    });
+});
+$(document).on("click",".family-edit",function (){
     let cccd = $(this).data("id");
-    $("#titleModal").text("Chỉnh sửa chi tiết");
+    $("#titleModal").text("Update detail");
     $("#btn-saves").hide();
     $("#btn-updates").show();
     $.ajax({
@@ -129,24 +177,59 @@ $(document).on("click",".family-update",function (){
             $("#Address").val(response.address); // Nếu bạn có trường này trong response
             $("#Address").prop("disabled",false);
 
-            $("#Medical_History").val(response.medical_history); // Nếu bạn có trường này trong response
+            $("#Medical_History").val(response.medicalHistory); // Nếu bạn có trường này trong response
             $("#Medical_History").prop("disabled",false);
             $.ajax({
                 type : "get",
                 url: "./family/getFamilyByID",
                 data: {
-                    iD_Family: response.id_Family,
+                    iDFamily: response.idfamily,
                 },
                 dataType: "json",
                 success: function (res) {
-                    $("#ID_Family").val(response.id_Family +" - " + res.name); // Nếu bạn có trường này trong response
-                    $("#ID_Family").prop("disabled",true);
+                    $("#IDFamily").val(response.idfamily +" - " + res.name); // Nếu bạn có trường này trong response
+                    $("#IDFamily").prop("disabled",true);
+                    $("#idfml").val(response.idfamily);
+                    $("#namefml").val(res.name);
                 }
 
             });
 
             // Hiển thị modal
             $("#AddQuanTam").modal("show");
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            console.error("AJAX Error:", textStatus, errorThrown);
+            console.error("Response Text:", jqXHR.responseText);
+        }
+    });
+
+});
+$(document).on("click","#btn-updates",function (e){
+    e.preventDefault();
+    const information = {
+        cccd: $("#CCCD").val(),
+        name: $("#HoTen").val(),
+        gender: parseInt($("#Gender").val(), 10),
+        bhyt: $("#BHYT").val(),
+        phone: $("#Phone").val(),
+        job: $("#Job").val(),
+        department: $("#Department").val(),
+        address: $("#Address").val(),
+        medicalHistory: $("#Medical_History").val(),
+        idfamily: parseInt($("#idfml").val(), 10),
+    };
+    $.ajax({
+        type: "post",
+        url: "./family/update",
+        data: JSON.stringify(information), // Gửi dữ liệu dưới dạng JSON
+        contentType: "application/json",
+        dataType: "json",
+        success: function (response) {
+            console.log("response :" + response);
+            window.location.href ="/family?update-success-member"
+            notify('success', 'Message updated successfully', 'Update family member successfully.');
+            $("#modal-add-user").modal("hide");
         },
         error: function (jqXHR, textStatus, errorThrown) {
             console.error("AJAX Error:", textStatus, errorThrown);

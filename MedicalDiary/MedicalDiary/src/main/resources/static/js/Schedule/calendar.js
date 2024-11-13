@@ -1,7 +1,34 @@
+
+let selectedCheckboxValues = [];
+let calendar;
+function updateSelectedCheckboxValues(checkbox) {
+        const checkboxValue = checkbox.value;
+        if (checkbox.checked) {
+            selectedCheckboxValues.push(checkboxValue);
+        } else {
+            const index = selectedCheckboxValues.indexOf(checkboxValue);
+            if (index > -1) {
+                selectedCheckboxValues.splice(index, 1);
+            }
+        }
+        sendSelectedValuesToController(selectedCheckboxValues, checkbox.checked ? "add" : "remove", checkboxValue);
+    }
+
 document.addEventListener('DOMContentLoaded', function () {
+    const checkboxes = document.querySelectorAll('.checkbox-container input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('click', function() {
+                    updateSelectedCheckboxValues(checkbox);
+                });
+            });
     // Khởi tạo calendar chính
     var calendarEl = document.getElementById('calendar');
-    var calendar = new FullCalendar.Calendar(calendarEl, {
+
+    // Lấy ngày đầu tiên của tháng hiện tại
+    const today = new Date();
+    const currentMonthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+
+    calendar = new FullCalendar.Calendar(calendarEl, {
         height: 'auto',
         expandRows: true,
         slotMinTime: '08:00',
@@ -9,17 +36,26 @@ document.addEventListener('DOMContentLoaded', function () {
         headerToolbar: {
             left: 'prev,next today',
             center: 'title',
-            right: 'dayGridMonth,timeGridWeek,listWeek'
+            right: 'dayGridMonth,timeGridWeek,listYear'
         },
         initialView: 'dayGridMonth',
-        initialDate: '2024-10-10',
+        initialDate: currentMonthStart,
         navLinks: true,
+        views: {
+                    listYear: {
+                        type: 'list',
+                        duration: { years: 1 }, // Hiển thị tất cả các sự kiện trong 1 năm
+                        buttonText: 'Year' // Đặt tên nút là 'Year'
+                    }
+                },
+                
         editable: true,
         dayMaxEvents: 3,  // Giới hạn số sự kiện hiển thị và hiển thị "+ more"
         selectable: true,
         nowIndicator: true,
         eventLimitClick: 'day', // Hoặc xóa dòng này để tắt tính năng popover
         events: window.events || [],
+
 
         // Xử lý sự kiện khi click vào event
         eventClick: function (info) {
@@ -85,6 +121,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
             });
         }
+        
     });
     calendar.render();
 
@@ -98,7 +135,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 right: 'prev,next'
             },
             initialView: 'dayGridMonth',
-            initialDate: '2024-10-10',
+            initialDate: currentMonthStart,
             selectable: false,
             editable: false,
             dayMaxEvents: true,
@@ -120,22 +157,105 @@ document.addEventListener('DOMContentLoaded', function () {
         });
         miniCalendar.render();
     }
-
-    // Ẩn/Hiện danh sách checkbox khi nhấn vào mũi tên
-            var toggleArrow = document.getElementById('toggleArrow');
-            var checkboxContainer = document.getElementById('checkboxContainer');
+        var toggleArrows = document.querySelectorAll('.toggle-arrow');
+        toggleArrows.forEach(function(toggleArrow) {
             toggleArrow.addEventListener('click', function() {
+                var checkboxContainer = toggleArrow.nextElementSibling;
                 checkboxContainer.classList.toggle('hidden');
                 toggleArrow.classList.toggle('collapsed');
             });
+        });
+        
+
 });
 
-
 function showAlert(button) {
+    var checkbox = button.previousElementSibling;
+    var cccd = checkbox.value;
     var label = button.parentNode.textContent.trim();
     document.getElementById("alertName").innerText = label;
+    var cccdInput = document.getElementById("cccdInput");
+    if (!cccdInput) {
+        cccdInput = document.createElement("input");
+        cccdInput.type = "hidden";
+        cccdInput.name = "cccd";
+        cccdInput.id = "cccdInput";
+        document.querySelector("#customAlert form").appendChild(cccdInput);
+    }
+    cccdInput.value = cccd;
     document.getElementById("customAlert").style.display = "block";
 }
+
 function closeAlert() {
     document.getElementById("customAlert").style.display = "none";
+}
+
+function sendSelectedValuesToController(selectedValues, action, changedValue) {
+    fetch('/createCalendar', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            selectedValues: selectedValues,
+            action: action,
+            changedValue: changedValue
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log("Response data:", data);
+
+        if (data.status === "success") {
+            console.log("Action:", action);
+            console.log("Data events:", data.events);
+
+            if (action === "add" && Array.isArray(data.events)) {
+                console.log("Adding events to calendar:", data.events);
+                data.events.forEach(event => {
+                    // Check if the event has a color and apply it
+                    console.log("Event Color: " ,event.color);
+                    if (event.color) {
+                        calendar.addEvent({
+                            title: event.title,
+                            start: event.start,
+                            backgroundColor: event.color,  // Gán màu nền
+                            borderColor: event.color,      // Gán màu viền
+                            groupId: event.groupId,         // Đảm bảo groupId được gán đúng
+                            allDay: true
+                        });
+                    } else {
+                        calendar.addEvent({
+                            title: event.title,
+                            start: event.start,
+                            groupId: event.groupId
+                        });
+                    }
+                    console.log("Added event:", event);
+                });
+            } else if (action === "remove") {
+                console.log("Removing events with groupIds:", data.idRes);
+                if (Array.isArray(data.idRes) && data.idRes.length > 0) {
+                    data.idRes.forEach(groupId => {
+                        const eventsToRemove = calendar.getEvents().filter(event => event.groupId === String(groupId));
+                        if (eventsToRemove.length > 0) {
+                            eventsToRemove.forEach(event => {
+                                console.log("Removing event with groupId:", event.groupId);
+                                event.remove();
+                            });
+                        } else {
+                            console.log("No events found with groupId:", groupId);
+                        }
+                    });
+                } else {
+                    console.log("No groupIds found in idRes for removal.");
+                }
+            }
+        } else {
+            console.log("Error: Unexpected response status", data.status);
+        }
+    })
+    .catch(error => {
+        console.error("Error handling response:", error);
+    });
 }

@@ -14,6 +14,7 @@
   <p class="mb-4">The person whose health I care about the most.</p>
   <div class="text-right mb-2 mx-3">
     <button class="btn btn-primary family-add" type="button" data-toggle="modal" data-target="#AddQuanTam">Add Family Member</button>
+<!--    <button id="btn-test">Button test</button>-->
   </div>
   <!-- Data -->
   <div class="card shadow mb-4">
@@ -34,7 +35,7 @@
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
-            <form class="forms-sample">
+            <form class="forms-sample" action="@{/add}" method="post">
               <div class="modal-body">
                 <div class="form-group">
                   <label for="CCCD">CCCD</label>
@@ -48,6 +49,7 @@
                   <div class="form-group col-md-3">
                     <label for="Gender">Gender</label>
                     <select class="form-control" id="Gender">
+                      <option value="" disabled selected hidden>Chọn giới tính</option>
                       <option value="1">Male</option>
                       <option value="0">Female</option>
                     </select>
@@ -73,8 +75,10 @@
                     <input type="text" class="form-control" id="Department" placeholder="Department">
                   </div>
                   <div class="form-group col-md-6">
-                    <label for="ID_Family">Household Code</label>
-                    <input type="text" class="form-control" id="ID_Family" placeholder="Household code">
+                    <label for="IDFamily">Household Code</label>
+                    <input type="text" class="form-control" id="IDFamily" placeholder="Household code">
+                    <input type="text" hidden value="" id="idfml" th:value="${idFamily}">
+                    <input type="text" hidden value="" id="namefml" th:value="${nameFamily}">
                   </div>
                 </div>
                 <div class="form-group">
@@ -103,6 +107,7 @@
         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
           <thead>
           <tr>
+            <th>Diary</th>
             <th>CCCD</th>
             <th>Full name</th>
             <th>Gender</th>
@@ -115,27 +120,30 @@
           </thead>
           <tbody>
           <tr th:each="i : ${list}">
-            <td th:text="${i.cccd}"></td>
-            <td th:text="${i.name}"></td>
-            <td th:text="${i.gender ? 'Nam' : 'Nữ'}"></td>
-            <td th:text="${i.job}"></td>
-            <td th:text="${i.department}"></td>
-            <td th:text ="${i.address}"></td>
+            <td th:attr="data-id=${i.CCCD}">
+              <button class="btn btn-datatable btn-icon btn-transparent-dark me-2"><i class='far fa-eye' style='font-size:24px'></i></button>
+            </td>
+            <td th:text="${i.CCCD}"></td>
+            <td th:text="${i.Name}"></td>
+            <td th:text="${i.Gender ? 'Nam' : 'Nữ'}"></td>
+            <td th:text="${i.Job}"></td>
+            <td th:text="${i.Department}"></td>
+            <td th:text ="${i.Address}"></td>
             <!--            <td><div class="badge bg-success text-white rounded-pill">Active</div></td>-->
             <td>
-              <button  th:attr="data-id=${i.cccd}" class="btn btn-datatable btn-icon btn-transparent-dark me-2 px-1 family-detail" data-placement="top" title="Xem chi tiết" data-toggle="modal" data-target="#AddQuanTam">
+              <button  th:attr="data-id=${i.CCCD}" class="btn btn-datatable btn-icon btn-transparent-dark me-2 px-1 family-detail" data-placement="top" title="Xem chi tiết" data-toggle="modal" data-target="#AddQuanTam">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
                   <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
                   <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
                 </svg>
               </button>
-              <button  th:attr="data-id=${i.cccd}" class="btn btn-datatable btn-icon btn-transparent-dark me-2 px-1 family-edit" data-placement="top" title="Sửa" data-toggle="modal" data-target="#AddQuanTam">
+              <button  th:attr="data-id=${i.CCCD}" class="btn btn-datatable btn-icon btn-transparent-dark me-2 px-1 family-edit" data-placement="top" title="Sửa" data-toggle="modal" data-target="#AddQuanTam">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
                   <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
                   <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
                 </svg>
               </button>
-              <button  th:attr="data-id=${i.cccd}" class="btn btn-datatable btn-icon btn-transparent-dark px-1 family-delete" data-placement="top" title="Xoá">
+              <button  th:attr="data-id=${i.CCCD}" class="btn btn-datatable btn-icon btn-transparent-dark px-1 family-delete" data-placement="top" title="Xoá">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
                   <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
                   <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
@@ -153,8 +161,31 @@
       </div>
     </div>
   </div>
+<!--  <div th:if="${#request.param('add-success-member')}" class="toast-container" aria-live="polite" aria-atomic="true">-->
+<!--    <div class="toast fade show" data-autohide="true" data-delay="5000" data-type="success" role="alert" aria-live="assertive" aria-atomic="true">-->
+<!--      <div class="toast-content">-->
+<!--        <div class="toast-icon">-->
+<!--          <svg viewBox="0 0 512 512">-->
+<!--            <path fill="#f8f9fa" d="M504 256c0 136.967-111.033 248-248 248S8 392.967 8 256 119.033 8 256 8s248 111.033 248 248zM227.314 387.314l184-184c6.248-6.248 6.248-16.379 0-22.627l-22.627-22.627c-6.248-6.249-16.379-6.249-22.628 0L216 308.118l-70.059-70.059c-6.248-6.248-16.379-6.248-22.628 0l-22.627 22.627c-6.248 6.248-6.248 16.379 0 22.627l104 104c6.249 6.249 16.379 6.249 22.628.001z"></path>-->
+<!--          </svg>-->
+<!--        </div>-->
+<!--        <div class="toast-body">-->
+<!--          <strong>Success Message</strong>-->
+<!--          <div>This is a success message.</div>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <button class="close" type="button" data-dismiss="toast" aria-label="Close">-->
+<!--            <span aria-hidden="true">-->
+<!--                <svg class="svg-inline&#45;&#45;fa fa-times fa-w-11 fa-fw fa-xs" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="times" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 352 512">-->
+<!--                    <path fill="currentColor" d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"></path>-->
+<!--                </svg>-->
+<!--            </span>-->
+<!--      </button>-->
+<!--    </div>-->
+<!--  </div>-->
 
 </div>
+
 
 <!-- /.container-fluid -->
 </body>

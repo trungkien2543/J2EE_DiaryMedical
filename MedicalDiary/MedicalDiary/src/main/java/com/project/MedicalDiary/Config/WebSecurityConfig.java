@@ -1,7 +1,9 @@
 package com.project.MedicalDiary.Config;
 
 
+import com.project.MedicalDiary.Repository.AccountRepository;
 import com.project.MedicalDiary.Service.CustomUserDetailsService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -15,10 +17,15 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
+
+    @Autowired
+    private AccountRepository accountRepository; // Add this field
+
+
     // Inject the custom UserDetailsService
     @Bean
     public UserDetailsService userDetailsService() {
-        return new CustomUserDetailsService();
+        return new CustomUserDetailsService(accountRepository);
     }
 
     /*
@@ -39,6 +46,7 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .csrf().disable()
                 .authorizeHttpRequests((requests) -> requests
 
                         .requestMatchers("/","/home", "/css/**", "/js/**", "/img/**","/scss/**","/vendor/**").permitAll()

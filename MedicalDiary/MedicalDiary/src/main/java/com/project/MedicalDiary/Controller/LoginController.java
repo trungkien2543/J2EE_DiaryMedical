@@ -1,12 +1,13 @@
 package com.project.MedicalDiary.Controller;
 
-import com.project.MedicalDiary.Model.Account;
-import com.project.MedicalDiary.Model.Information;
-import com.project.MedicalDiary.Repository.AccountRepository;
-import com.project.MedicalDiary.Repository.InformationRepository;
+import com.project.MedicalDiary.Entity.Account;
+import com.project.MedicalDiary.Entity.Family;
+import com.project.MedicalDiary.Entity.Information;
+import com.project.MedicalDiary.Service.Imp.AccountServiceImp;
+import com.project.MedicalDiary.Service.Imp.FamilyServiceImp;
+import com.project.MedicalDiary.Service.Imp.InformationServiceImp;
 import com.project.MedicalDiary.Service.SendEmailService;
 import jakarta.mail.MessagingException;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -15,8 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.crypto.Cipher;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
 
 @Controller
@@ -27,19 +29,27 @@ public class LoginController {
 
     private Account account = null;
 
-    @Autowired
-    private AccountRepository accountRepository;
+
+    private ArrayList<Information> familyMembers;
 
     @Autowired
-    private InformationRepository informationRepository;
+    private AccountServiceImp accountServiceImp;
+
+    @Autowired
+    private InformationServiceImp informationServiceImp;
+
+    @Autowired
+    private FamilyServiceImp familyServiceImp;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-
     // Gửi email
     @Autowired
     private SendEmailService sendEmailService;
+
+
+
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String LoadData(Model model) {
@@ -57,7 +67,7 @@ public class LoginController {
 
     @RequestMapping(value = "/forgot_password", method = RequestMethod.POST)
     public String checkEmail(Model model, @RequestParam String email) {
-        account = accountRepository.getAccountByUserName(email);
+        account = accountServiceImp.findByEmail(email).get();
 
         if (account == null) {
             model.addAttribute("errorMessage", "This email is not registered in the system");
@@ -82,6 +92,10 @@ public class LoginController {
         }
     }
 
+
+
+
+
     // Xu ly phan reset password
 
     @RequestMapping(value = "/reset_password", method = RequestMethod.GET)
@@ -97,9 +111,9 @@ public class LoginController {
 
                 model.addAttribute("successMessage", "We will send code to your mail");
 
-                account.setPassWord(passwordEncoder.encode(NewPassword));
+                account.setPassword(passwordEncoder.encode(NewPassword));
 
-                accountRepository.updateAccount(account);
+                accountServiceImp.updateAccount(account);
 
             }
             else{
@@ -117,10 +131,14 @@ public class LoginController {
 
     // Xu ly phan dang ky tai khoan
 
+    // Xu ly phan dang ky tai khoan
+
     @RequestMapping(value = "/register", method = RequestMethod.GET)
     public String LoadRegister(Model model) {
 
-        ArrayList<Information> temp = (ArrayList<Information>) informationRepository.getAll();
+        ArrayList<Information> temp = (ArrayList<Information>) informationServiceImp.getAll();
+
+        familyMembers = new ArrayList<>();
 
 
         // Kiểm tra xem dữ liệu có tồn tại không
@@ -130,10 +148,87 @@ public class LoginController {
             System.out.println("Data in list: " + temp);
         }
 
+
+
         model.addAttribute("list", temp);
+
+        model.addAttribute("familyMemberList",familyMembers);
 
         return "register.html";
 
+    }
+
+    @RequestMapping(value = "/register", method = RequestMethod.POST)
+    public String register(@RequestParam Map<String, String> allParams, @RequestParam String familyName,
+                           @RequestParam String email,
+                           @RequestParam String password,
+                           @RequestParam String repeatPassword, Model model) {
+
+
+        // reset family members
+        familyMembers = new ArrayList<>();
+
+
+        // Assuming you know the keys pattern
+        int index = 0;
+        while (allParams.containsKey("familyMembers[" + index + "].cccd")) {
+            Information member = new Information();
+            member.setCCCD(allParams.get("familyMembers[" + index + "].cccd"));
+            member.setName(allParams.get("familyMembers[" + index + "].name"));
+            member.setGender(Boolean.valueOf(allParams.get("familyMembers[" + index + "].gender")));
+            member.setBHYT(allParams.get("familyMembers[" + index + "].bhyt"));
+            member.setPhone(allParams.get("familyMembers[" + index + "].phone"));
+            member.setJob(allParams.get("familyMembers[" + index + "].job"));
+            member.setDepartment(allParams.get("familyMembers[" + index + "].department"));
+            member.setAddress(allParams.get("familyMembers[" + index + "].address"));
+            member.setMedicalHistory(allParams.get("familyMembers[" + index + "].medicalHistory"));
+
+            familyMembers.add(member);
+            index++;
+        }
+
+
+        System.out.println(email + " " + password + " " + repeatPassword + " " + familyName);
+
+
+        if (!repeatPassword.equals(password)) {
+            model.addAttribute("errorMessage", "The 2 passwords are not the same");
+
+            model.addAttribute("familyMemberList",familyMembers);
+            return "/register";
+        }
+
+
+
+        if(accountServiceImp.findByEmail(email).isPresent()) {
+            model.addAttribute("errorMessage", "Email that was used to sign up for another account");
+
+            model.addAttribute("familyMemberList",familyMembers);
+            return "/register";
+        }
+
+        // Tạo gia đình mới
+        Family familyNew = familyServiceImp.createFamily(new Family(familyName));
+
+
+        // Tạo tài khoản mới
+        Account accountNew = accountServiceImp.createAccount(new Account(email,familyNew.getIDFamily(),passwordEncoder.encode(password)));
+
+        //Thêm thanh viên mới
+
+        for (Information member: familyMembers ) {
+            member.setIDFamily(familyNew.getIDFamily());
+            informationServiceImp.createInformation(member);
+        }
+
+
+        model.addAttribute("familyMemberList",familyMembers);
+
+
+        model.addAttribute("successMessage", "You can use this account for login");
+
+
+        return "/register";
     }
 
 

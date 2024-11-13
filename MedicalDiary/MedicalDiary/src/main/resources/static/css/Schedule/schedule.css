@@ -301,3 +301,24 @@
         background-color: #9e9e9e;
         color: white;
     }
+
+    .panel-scroll-container {
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 5px; /* Thêm padding để scrollbar không đè content */
+        }
+
+        /* Tùy chỉnh scrollbar cho đẹp (tùy chọn) */
+        .panel-scroll-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .panel-scroll-container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .panel-scroll-container::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 3px;
+        }
+

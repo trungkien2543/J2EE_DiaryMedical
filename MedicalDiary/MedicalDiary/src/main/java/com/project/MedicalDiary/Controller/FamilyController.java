@@ -1,12 +1,11 @@
 package com.project.MedicalDiary.Controller;
 
-import com.project.MedicalDiary.Model.Family;
-import com.project.MedicalDiary.Model.Information;
+import com.project.MedicalDiary.Entity.Family;
+import com.project.MedicalDiary.Entity.Information;
 import com.project.MedicalDiary.Service.CustomUserDetails;
-import com.project.MedicalDiary.Service.Imp.FamilyService;
-import com.project.MedicalDiary.Service.Imp.InformationService;
+import com.project.MedicalDiary.Service.ImpInterface.FamilyService;
+import com.project.MedicalDiary.Service.ImpInterface.InformationService;
 import lombok.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -21,28 +20,31 @@ import java.util.Optional;
 //@RestController
 @RequestMapping("/family")
 public class FamilyController {
-    @Autowired
-    private InformationService informationServiceImp;
-    @Autowired
-    private FamilyService familyServiceImp;
+
+    private final InformationService informationService;
+    private final FamilyService familyService;
+
     @GetMapping("")
     public String follower(Authentication authentication, Model model) {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         // Retrieve ID_Family
-        long idFamily = userDetails.getID_Family();
+        Long idFamily = userDetails.getID_Family();
+        String nameFamily = familyService.findByID(idFamily).get().getName();
 
-        Iterable<Information> list=informationServiceImp.findByIDFamily(idFamily);
+        Iterable<Information> list =informationService.findByFamily_IDFamily(idFamily);
         model.addAttribute("list",list);
         model.addAttribute("message", "Family");
+        model.addAttribute("idFamily", idFamily);
+        model.addAttribute("nameFamily", nameFamily);
         return "pages/fragments/family";
     }
 
     @GetMapping("/getDetail")
     @ResponseBody
     public ResponseEntity<Information> getDetail(@RequestParam String cccd) {
-        System.out.println("Received id: " + cccd); // Debugging log
-        Optional<Information> informationOptional = informationServiceImp.findByCCCD(cccd);
-
+        System.out.println("Received CCCD: " + cccd); // Debugging log
+        Optional<Information> informationOptional = informationService.findByCCCD(cccd);
+        System.out.println("Information GETDETAIL: " + informationOptional.get());
         if (informationOptional.isPresent()) {
             return ResponseEntity.ok(informationOptional.get());
         } else {
@@ -52,8 +54,8 @@ public class FamilyController {
     @GetMapping("/getFamilyByID")
     @ResponseBody
     public ResponseEntity<Family> getFamilyByID(@RequestParam long iD_Family) {
-        System.out.println("Received id: " + iD_Family); // Debugging log
-        Optional<Family> familyOptional = familyServiceImp.findByID(iD_Family);
+        System.out.println("Received idFML: " + iD_Family); // Debugging log
+        Optional<Family> familyOptional = familyService.findByID(iD_Family);
 
         if (familyOptional.isPresent()) {
             return ResponseEntity.ok(familyOptional.get());
@@ -61,15 +63,24 @@ public class FamilyController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
-    @PostMapping
-    public ResponseEntity<Family> createFamily(@RequestBody Family family) {
-        // You can add validation logic here if needed
-
+    @RequestMapping(value = "/add",method = {RequestMethod.POST,RequestMethod.PUT ,RequestMethod.GET})
+//    @RequestMapping(value = "/add", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity<Information> createInformation(@RequestBody Information information) {
         // Save the family object to the database
-        Family createdFamily = familyServiceImp.createFamily(family);
+        Information createdInformation = informationService.createInformation(information);
+        System.out.println("ADD Info : " + information); // Debugging log
 
         // Return a response with the created family and a status code
-        return new ResponseEntity<>(createdFamily, HttpStatus.CREATED);
+        return new ResponseEntity<>(createdInformation, HttpStatus.CREATED);
+    }
+
+    @RequestMapping(value = "update",method = {RequestMethod.POST,RequestMethod.PUT ,RequestMethod.GET})
+    @ResponseBody
+    public ResponseEntity<Boolean> updateFamily(@RequestBody Information information) {
+        boolean updateFamily = informationService.updateInformation(information);
+
+        return new ResponseEntity<>(updateFamily, HttpStatus.CREATED);
     }
 
 
