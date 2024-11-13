@@ -96,11 +96,11 @@ document.addEventListener('DOMContentLoaded', function () {
                         <div style="display: flex; flex-direction: row; justify-content: space-between; margin-top: 20px;">
                             <div>
                                 <p>Hình ảnh kết quả</p>
-                                <img src="../../img/OIP.jpg" alt="Image 1" style="width: 350px; object-fit: cover; border-radius: 8px;">
+                                <img src="${data.urlResult}" alt="Image 1" style="width: 350px; object-fit: cover; border-radius: 8px;">
                             </div>
                             <div>
                                 <p>Hình ảnh thuốc</p>
-                                <img src="../../img/OIP.jpg" alt="Image 2" style="width: 350px; object-fit: cover; border-radius: 8px;">
+                                <img src="${data.urlBill}" alt="Image 2" style="width: 350px; object-fit: cover; border-radius: 8px;">
                             </div>
                         </div>
                     </div>

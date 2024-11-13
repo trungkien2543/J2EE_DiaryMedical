@@ -75,7 +75,7 @@ public class ScheduleController {
 
             for (RoomDetail t : members) {
                 Map<String, Object> memberInfo = new HashMap<>();
-                
+                System.out.println(t.getIsFollowed());
                 memberInfo.put("info", t.getIsFollowed());
                 memberInfo.put("name", ifor.getName());
 
@@ -103,11 +103,9 @@ public class ScheduleController {
         String groupId = request.get("groupId");
         Optional<Receipt> receiptOpt = rSe.getReceiptById(groupId);
 
-        return receiptOpt.map(receipt -> {
-            Receipt receiptDTO = new Receipt(receipt.getPatient(), receipt.getDoctor(),
-                    receipt.getPlace(), receipt.getDate());
-            return ResponseEntity.ok(receiptDTO);
-        }).orElse(ResponseEntity.notFound().build());
+
+            return ResponseEntity.ok(receiptOpt.orElse(null));
+
     }
 
     @PostMapping("/createCalendar")
