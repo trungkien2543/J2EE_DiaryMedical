@@ -37,5 +37,4 @@ public class CustomUserDetails implements UserDetails {
         return account.getEmail();
     }
 
-    public Long getID_Family(){return  account.getFamily().getIDFamily();}
 }

@@ -2,14 +2,16 @@ package com.project.MedicalDiary.Controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.MedicalDiary.Entity.*;
-import com.project.MedicalDiary.Service.OAuth.CustomUserDetails;
 import com.project.MedicalDiary.Service.Imp.*;
 import jakarta.servlet.http.HttpSession;
 import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.RememberMeAuthenticationToken;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -36,12 +38,41 @@ public class ScheduleController {
     @Autowired
     private RoomDetailServiceImp rodeSe;
 
+    @Autowired
+    private AccountServiceImp accountServiceImp;
+
     @GetMapping("/schedule")
     public String reicept(Authentication authentication, Model model, HttpSession session) {
         model.addAttribute("message", "Schedule");
 
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        long idFamily = userDetails.getID_Family();
+        String email = "";
+
+        // Do cơ chế lưu thông tin của mỗi authencaiton là khác nhau nên phải kiểm tra đó là loại nào để lấy cho phù hợp
+        if (authentication instanceof OAuth2AuthenticationToken oauthToken) { // Sử dụng tài khoản google
+            email = oauthToken.getPrincipal().getAttribute("email");
+        } else if (authentication instanceof UsernamePasswordAuthenticationToken userPassToken) { // Sử dụng tài khoản
+            email = userPassToken.getName();
+        } else if (authentication instanceof RememberMeAuthenticationToken rememberMeToken) { // Sử dụng remember me
+            email = rememberMeToken.getName(); // Lấy tên người dùng (username hoặc email)
+        }
+
+        if (email == null || email.isEmpty()) {
+            System.out.println( "Unable to retrieve user email.");
+            return "error";
+        }
+
+        // Lấy thông tin tài khoản dựa trên email
+        Optional<Account> accountOpt = accountServiceImp.findByEmail(email);
+        if (!accountOpt.isPresent()) {
+            System.out.println( "Unable to retrieve user email.");
+            return "error";
+        }
+
+
+        Account account = accountServiceImp.findByEmail(email).get();
+
+        // Retrieve ID_Family
+        Long idFamily = account.getFamily().getIDFamily();
 
         List<Information> listIf = iSe.findByFamily_IDFamily(idFamily);
 

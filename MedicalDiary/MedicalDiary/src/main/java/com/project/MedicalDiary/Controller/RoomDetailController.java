@@ -212,6 +212,8 @@ public class RoomDetailController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to cancel request.");
         }
     }
+
+
     @RequestMapping(value = "/pendingRequest",method = {RequestMethod.POST,RequestMethod.PUT ,RequestMethod.GET})
     @ResponseBody
     public ResponseEntity<?> pendingRequest(@RequestBody RoomDetailId roomDetailId,HttpSession session) {

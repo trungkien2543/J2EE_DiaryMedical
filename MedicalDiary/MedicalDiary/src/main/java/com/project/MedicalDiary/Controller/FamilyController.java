@@ -1,21 +1,27 @@
 package com.project.MedicalDiary.Controller;
 
+import ch.qos.logback.core.net.SyslogOutputStream;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.MedicalDiary.DTO.InformationRequestDTO;
+import com.project.MedicalDiary.Entity.Account;
 import com.project.MedicalDiary.Entity.Family;
 import com.project.MedicalDiary.Entity.Information;
 import com.project.MedicalDiary.Entity.Receipt;
 import com.project.MedicalDiary.Service.Cloudinary.CloudinaryService;
-import com.project.MedicalDiary.Service.OAuth.CustomUserDetails;
+import com.project.MedicalDiary.Service.Imp.AccountServiceImp;
 import com.project.MedicalDiary.Service.ImpInterface.FamilyService;
 import com.project.MedicalDiary.Service.ImpInterface.InformationService;
 import com.project.MedicalDiary.Service.ImpInterface.ReceiptService;
 import jakarta.validation.Valid;
 import lombok.*;
+import org.aspectj.lang.annotation.RequiredTypes;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.RememberMeAuthenticationToken;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -40,13 +46,39 @@ public class FamilyController {
 
     private final CloudinaryService cloudinaryService;
 
-
+    private final AccountServiceImp accountServiceImp;
 
     @GetMapping("")
     public String follower(Authentication authentication, Model model) {
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+
+        String email = "";
+
+        // Do cơ chế lưu thông tin của mỗi authencaiton là khác nhau nên phải kiểm tra đó là loại nào để lấy cho phù hợp
+        if (authentication instanceof OAuth2AuthenticationToken oauthToken) { // Sử dụng tài khoản google
+            email = oauthToken.getPrincipal().getAttribute("email");
+        } else if (authentication instanceof UsernamePasswordAuthenticationToken userPassToken) { // Sử dụng tài khoản
+            email = userPassToken.getName();
+        } else if (authentication instanceof RememberMeAuthenticationToken rememberMeToken) { // Sử dụng remember me
+            email = rememberMeToken.getName(); // Lấy tên người dùng (username hoặc email)
+        }
+
+        if (email == null || email.isEmpty()) {
+            System.out.println( "Unable to retrieve user email.");
+            return "error";
+        }
+
+        // Lấy thông tin tài khoản dựa trên email
+        Optional<Account> accountOpt = accountServiceImp.findByEmail(email);
+        if (!accountOpt.isPresent()) {
+            System.out.println( "Unable to retrieve user email.");
+            return "error";
+        }
+
+
+        Account account = accountServiceImp.findByEmail(email).get();
+
         // Retrieve ID_Family
-        Long idFamily = userDetails.getID_Family();
+        Long idFamily = account.getFamily().getIDFamily();
         String nameFamily = familyService.findByID(idFamily).get().getName();
 
         Iterable<Information> list =informationService.findByFamily_IDFamily(idFamily);

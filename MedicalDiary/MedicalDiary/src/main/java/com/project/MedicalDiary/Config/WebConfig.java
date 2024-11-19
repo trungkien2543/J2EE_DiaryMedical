@@ -103,6 +103,10 @@ public class WebConfig {
                         .loginPage("/login")
                         .permitAll()
                 )
+                .oauth2Login(oauth2login->{
+                    oauth2login
+                            .loginPage("/login");
+                })
                 .logout((logout) -> logout.permitAll())
                 .rememberMe((rememberMe) -> rememberMe
                         .key("5bZUZjoAB21JT1gYRkfm")  // Khóa dùng để mã hóa cookie remember-me
