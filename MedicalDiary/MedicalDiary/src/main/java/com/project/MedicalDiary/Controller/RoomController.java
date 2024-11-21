@@ -85,14 +85,14 @@ public class RoomController {
         Long idFamily = account.getFamily().getIDFamily();
 
         System.out.println(idFamily);
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            // Convert the Authentication object to JSON and print it
-            String authJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(authentication);
-            System.out.println(authJson);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        try {
+//            // Convert the Authentication object to JSON and print it
+//            String authJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(authentication);
+//            System.out.println(authJson);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 //        Iterable<Room> listRoom = roomService.getRoomByIDFamily(idFamily);
         List<Room> listRoom = roomService.getAll();
         Iterable<Information> listInfoOfFml = informationService.findByFamily_IDFamily(idFamily);
