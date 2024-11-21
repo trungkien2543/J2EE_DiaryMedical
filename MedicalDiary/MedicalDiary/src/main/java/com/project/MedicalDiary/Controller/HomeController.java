@@ -50,10 +50,9 @@ public class HomeController {
 
         if (email == null || email.isEmpty()) {
             System.out.println( "Unable to retrieve user email.");
-//            return "error";
-        } else {
-            System.out.printf("Email address: %s\n", email);
+            return "error";
         }
+
 
         // Lấy thông tin tài khoản dựa trên email
         Optional<Account> accountOpt = accountServiceImp.findByEmail(email);
