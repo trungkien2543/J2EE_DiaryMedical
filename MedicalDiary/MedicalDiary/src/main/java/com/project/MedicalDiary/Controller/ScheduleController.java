@@ -44,7 +44,7 @@ public class ScheduleController {
     @GetMapping("/schedule")
     public String reicept(Authentication authentication, Model model, HttpSession session) {
         model.addAttribute("message", "Schedule");
-
+// ádasidoa
         String email = "";
 
         // Do cơ chế lưu thông tin của mỗi authencaiton là khác nhau nên phải kiểm tra đó là loại nào để lấy cho phù hợp

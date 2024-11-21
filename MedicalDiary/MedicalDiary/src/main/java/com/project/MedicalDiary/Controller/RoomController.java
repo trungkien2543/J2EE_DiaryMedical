@@ -55,7 +55,7 @@ public class RoomController {
 
     @GetMapping("")
     public String room(Authentication authentication, Model model) {
-
+        // ádasidoa
         String email = "";
 
         // Do cơ chế lưu thông tin của mỗi authencaiton là khác nhau nên phải kiểm tra đó là loại nào để lấy cho phù hợp
