@@ -105,7 +105,9 @@ public class WebConfig {
                 )
                 .oauth2Login(oauth2login->{
                     oauth2login
-                            .loginPage("/login");
+                            .loginPage("/login")
+                            .defaultSuccessUrl("/", true); // Chuyển hướng đến "/"
+
                 })
                 .logout((logout) -> logout.permitAll())
                 .rememberMe((rememberMe) -> rememberMe

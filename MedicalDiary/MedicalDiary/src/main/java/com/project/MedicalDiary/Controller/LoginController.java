@@ -206,6 +206,9 @@ public class LoginController {
             return "/register";
         }
 
+
+
+
         // Tạo gia đình mới
         Family familyNew = familyServiceImp.createFamily(new Family(familyName));
 
