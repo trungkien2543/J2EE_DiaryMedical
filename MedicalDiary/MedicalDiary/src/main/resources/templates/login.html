@@ -104,6 +104,35 @@
                         confirmButtonText: 'OK'
                     });
                 }
+
+
+                let successMessage = /*[[${successMessage}]]*/ null;
+
+                let isSuccess = successMessage !== null;
+
+                if (isSuccess) {
+                    Swal.fire({
+                        title: 'Success',
+                        text: successMessage,
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    })
+                }
+
+
+                let errorMessage = /*[[${errorMessage}]]*/ null; // Lấy giá trị errorMessage từ server
+
+                let isErrorMessage = errorMessage !== null;
+
+                if (isErrorMessage) {
+                    Swal.fire({
+                        title: 'Error',
+                        text: errorMessage, // Chèn nội dung errorMessage vào text
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+
             </script>
 
 

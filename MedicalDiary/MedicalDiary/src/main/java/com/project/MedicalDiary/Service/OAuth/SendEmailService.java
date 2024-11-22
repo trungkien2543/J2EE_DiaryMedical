@@ -16,6 +16,7 @@ public class SendEmailService {
     @Value("${spring.mail.from}")
     private String from;
 
+
     public void sendEmail(String recipient,String code, String subject) throws MessagingException {
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
@@ -64,4 +65,93 @@ public class SendEmailService {
 
         mailSender.send(mimeMessage);
     }
+
+    public void sendVerifyEmail(String recipient,String code, String subject) throws MessagingException {
+        MimeMessage mimeMessage = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+
+        helper.setFrom(from);
+        helper.setTo(recipient);
+        helper.setSubject(subject);
+
+
+
+        String body = "<!DOCTYPE html>\n" +
+                "<html lang=\"en\">\n" +
+                "<head>\n" +
+                "    <meta charset=\"UTF-8\">\n" +
+                "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
+                "    <title>Email Verification</title>\n" +
+                "    <style>\n" +
+                "        body {\n" +
+                "            font-family: Arial, sans-serif;\n" +
+                "            background-color: #f0f4f8;\n" +
+                "            margin: 0;\n" +
+                "            padding: 0;\n" +
+                "        }\n" +
+                "        .container {\n" +
+                "            max-width: 400px;\n" +
+                "            margin: 50px auto;\n" +
+                "            background-color: #ffffff;\n" +
+                "            border-radius: 10px;\n" +
+                "            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);\n" +
+                "            padding: 30px;\n" +
+                "            text-align: center;\n" +
+                "        }\n" +
+                "        h2 {\n" +
+                "            color: #333;\n" +
+                "            font-size: 24px;\n" +
+                "            margin-bottom: 20px;\n" +
+                "        }\n" +
+                "        p {\n" +
+                "            color: #555;\n" +
+                "            font-size: 16px;\n" +
+                "            line-height: 1.5;\n" +
+                "            margin: 10px 0;\n" +
+                "        }\n" +
+                "        button {\n" +
+                "            background-color: #3498db;\n" +
+                "            color: white;\n" +
+                "            padding: 12px 25px;\n" +
+                "            border: none;\n" +
+                "            border-radius: 5px;\n" +
+                "            font-size: 16px;\n" +
+                "            cursor: pointer;\n" +
+                "            transition: background-color 0.3s;\n" +
+                "        }\n" +
+                "        button:hover {\n" +
+                "            background-color: #2980b9;\n" +
+                "        }\n" +
+                "        .footer {\n" +
+                "            margin-top: 20px;\n" +
+                "            font-size: 12px;\n" +
+                "            color: #777;\n" +
+                "        }\n" +
+                "        .footer a {\n" +
+                "            color: #3498db;\n" +
+                "            text-decoration: none;\n" +
+                "        }\n" +
+                "    </style>\n" +
+                "</head>\n" +
+                "<body>\n" +
+                "    <div class=\"container\">\n" +
+                "        <h2>Email Verification</h2>\n" +
+                "        <p>Please click \"Verify\" to confirm your email address:</p>\n" +
+                "        <form action=\"http://localhost:8080/register\" method=\"GET\">\n" +
+                "            <!-- Trường hidden chứa mã xác minh -->\n" +
+                "            <input type=\"hidden\" name=\"verificationCode\" value=\""+ code +"\"> <!-- Thay giá trị bằng mã thực tế -->\n" +
+                "            <button type=\"submit\">Verify</button>\n" +
+                "        </form>\n" +
+                "    </div>\n" +
+                "</body>\n" +
+                "</html>\n";
+
+        // Thiết lập nội dung email với HTML
+        helper.setText(body, true); // true để cho phép nội dung HTML
+
+        mailSender.send(mimeMessage);
+    }
+
+
+
 }

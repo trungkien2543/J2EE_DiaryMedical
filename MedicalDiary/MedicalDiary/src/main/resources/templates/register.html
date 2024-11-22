@@ -232,20 +232,25 @@
         });
     }
 
-    let isSuccess = /*[[${successMessage != null}]]*/ false;
+    let successMessage = /*[[${successMessage}]]*/ null;
+
+    let isSuccess = successMessage !== null;
 
     if (isSuccess) {
         Swal.fire({
             title: 'Success',
-            text: 'The account has been successfully registered',
+            text: successMessage,
             icon: 'success',
             confirmButtonText: 'OK'
         }).then((result) => {
             if (result.isConfirmed) {
-                window.location.href = '/login'; // Chuyển hướng đến trang mong muốn
+                // Chuyển hướng đến Gmail
+                window.location.href = "https://mail.google.com";
             }
         });
     }
+
+
 
 
 

@@ -95,7 +95,7 @@ public class WebConfig {
                         .requestMatchers("/","/home", "/css/**", "/js/**", "/img/**","/scss/**","/vendor/**").permitAll()
                         .requestMatchers("/forgot_password").permitAll()
                         .requestMatchers("/reset_password").permitAll()
-                        .requestMatchers("/register").permitAll()
+                        .requestMatchers("/register/**").permitAll()
                         .anyRequest().authenticated()
 
                 )
