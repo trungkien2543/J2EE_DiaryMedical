@@ -50,7 +50,6 @@ public class HomeController {
 
         if (email == null || email.isEmpty()) {
             System.out.println( "Unable to retrieve user email.");
-            return "error";
         }
 
 
