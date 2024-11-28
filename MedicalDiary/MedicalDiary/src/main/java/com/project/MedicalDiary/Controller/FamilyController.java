@@ -27,6 +27,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -86,6 +87,11 @@ public class FamilyController {
         model.addAttribute("message", "Family");
         model.addAttribute("idFamily", idFamily);
         model.addAttribute("nameFamily", nameFamily);
+
+        List<Receipt> listRemind = receiptService.findReceiptsWithinDateRange();
+
+        model.addAttribute("listRemind", listRemind);
+
         return "pages/fragments/family";
     }
 

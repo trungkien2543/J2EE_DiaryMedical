@@ -2,8 +2,11 @@ package com.project.MedicalDiary.Controller;
 
 import com.project.MedicalDiary.Entity.Account;
 import com.project.MedicalDiary.Entity.Family;
+import com.project.MedicalDiary.Entity.Receipt;
 import com.project.MedicalDiary.Service.Imp.AccountServiceImp;
 import com.project.MedicalDiary.Service.Imp.FamilyServiceImp;
+import com.project.MedicalDiary.Service.Imp.ReceiptServiceImp;
+import com.project.MedicalDiary.Service.ImpInterface.ReceiptService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.RememberMeAuthenticationToken;
@@ -15,6 +18,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -28,6 +32,8 @@ public class HomeController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    private final ReceiptService receiptService;
 
     @GetMapping("/")
     public String home(Authentication authentication,Model model) {
@@ -63,6 +69,10 @@ public class HomeController {
             // Tạo tài khoản mới
             Account accountNew = accountServiceImp.createAccount(new Account(email,familyNew,passwordEncoder.encode("")));
         }
+
+        List<Receipt> listRemind = receiptService.findReceiptsWithinDateRange();
+
+        model.addAttribute("listRemind", listRemind);
 
 
         return "pages/fragments/home";

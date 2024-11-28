@@ -3,6 +3,7 @@ package com.project.MedicalDiary.Controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.MedicalDiary.Entity.*;
 import com.project.MedicalDiary.Service.Imp.*;
+import com.project.MedicalDiary.Service.ImpInterface.ReceiptService;
 import jakarta.servlet.http.HttpSession;
 import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,9 @@ public class ScheduleController {
 
     @Autowired
     private AccountServiceImp accountServiceImp;
+
+    @Autowired
+    private ReceiptService receiptService;
 
     @GetMapping("/schedule")
     public String reicept(Authentication authentication, Model model, HttpSession session) {
@@ -80,6 +84,10 @@ public class ScheduleController {
         model.addAttribute("listReceipt", listReceipt);
         model.addAttribute("listIf", listIf);
         model.addAttribute("currentUrl", "/schedule");
+
+        List<Receipt> listRemind = receiptService.findReceiptsWithinDateRange();
+
+        model.addAttribute("listRemind", listRemind);
 
         Map<String, List<Information>> userInfoMap = (Map<String, List<Information>>) session.getAttribute("userInfoMap");
 

@@ -40,6 +40,8 @@ public class RoomController {
 
     private final AccountServiceImp accountServiceImp;
 
+    private final ReceiptService receiptService;
+
     @GetMapping("/getRoomDetailByID")
     @ResponseBody
     public ResponseEntity<?> getRoomDetailByID(@RequestBody RoomDetailId roomDetailId) {
@@ -102,6 +104,11 @@ public class RoomController {
         model.addAttribute("currentUrl", "/rooms"); //Kiếm tra link hiện tại của web
         model.addAttribute("memberRoomMap", memberRoomMap);
         model.addAttribute("listInfoOfFml", listInfoOfFml);
+
+        List<Receipt> listRemind = receiptService.findReceiptsWithinDateRange();
+
+        model.addAttribute("listRemind", listRemind);
+
         // Get the CustomUserDetails from the Authentication object
 
         return "pages/fragments/rooms";

@@ -6,6 +6,7 @@ import com.project.MedicalDiary.Service.ImpInterface.ReceiptService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -56,4 +57,19 @@ public class ReceiptServiceImp implements ReceiptService {
         }
         return false; // Receipt does not exist
     }
+
+    @Override
+    public List<Receipt> findReceiptsWithinDateRange() {
+
+        LocalDateTime now = LocalDateTime.now();
+
+        LocalDateTime threeDaysLater = now.plusDays(3);
+
+        return receiptRepository.findReceiptsWithinDateRange(now, threeDaysLater);
+    }
+
+//    @Override
+//    public List<Receipt> findReceiptsWithinNextThreeDays() {
+//        return receiptRepository.findReceiptsWithinNextThreeDays();
+//    }
 }
