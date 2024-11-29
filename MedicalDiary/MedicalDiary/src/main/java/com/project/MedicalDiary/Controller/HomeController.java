@@ -75,6 +75,9 @@ public class HomeController {
         model.addAttribute("listRemind", listRemind);
 
 
+        model.addAttribute("familyName", nameFamily);
+
+
         return "pages/fragments/home";
     }
 

@@ -89,6 +89,8 @@ public class ScheduleController {
 
         model.addAttribute("listRemind", listRemind);
 
+        model.addAttribute("familyName", account.getFamily().getName());
+
         Map<String, List<Information>> userInfoMap = (Map<String, List<Information>>) session.getAttribute("userInfoMap");
 
         if (userInfoMap == null) {

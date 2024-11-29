@@ -109,6 +109,8 @@ public class RoomController {
 
         model.addAttribute("listRemind", listRemind);
 
+        model.addAttribute("familyName", account.getFamily().getName());
+
         // Get the CustomUserDetails from the Authentication object
 
         return "pages/fragments/rooms";

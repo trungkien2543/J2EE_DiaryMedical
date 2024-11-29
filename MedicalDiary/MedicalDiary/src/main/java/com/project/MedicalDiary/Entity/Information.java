@@ -46,6 +46,9 @@ public class Information {
     @Column(name = "Medical_History")
     private String MedicalHistory;
 
+    @Column(name = "Email")
+    private String Email;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ID_Family", referencedColumnName = "ID_Family") // This links to ID_Family in Family
 //    @JsonManagedReference

@@ -92,6 +92,8 @@ public class FamilyController {
 
         model.addAttribute("listRemind", listRemind);
 
+        model.addAttribute("familyName", nameFamily);
+
         return "pages/fragments/family";
     }
 
