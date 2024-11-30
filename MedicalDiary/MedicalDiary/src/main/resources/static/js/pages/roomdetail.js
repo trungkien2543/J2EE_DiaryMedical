@@ -56,6 +56,8 @@ $(document).on("click", ".room-detail-element", function () {
             $("#BHYT").prop("disabled",true);
             $("#Phone").val(response.phone); // Nếu bạn có trường này trong response
             $("#Phone").prop("disabled",true);
+            $("#Email").val(response.email); // Nếu bạn có trường này trong response
+            $("#Email").prop("disabled",true);
             $("#Job").val(response.job); // Nếu bạn có trường này trong response
             $("#Job").prop("disabled",true);
 
@@ -93,6 +95,7 @@ function clearInputFields() {
     // Clear and enable other input fields
     $("#BHYT").val("").prop("disabled", true); // If you have this field
     $("#Phone").val("").prop("disabled", true); // If you have this field
+    $("#Email").val("").prop("disabled", true); // If you have this field
     $("#Job").val("").prop("disabled", true); // If you have this field
     $("#Department").val("").prop("disabled", true); // If you have this field
     $("#Address").val("").prop("disabled", true); // If you have this field
@@ -141,6 +144,8 @@ $("#CCCD").on("keydown", function(event) {
                 $("#BHYT").prop("disabled",true);
                 $("#Phone").val(response.phone); // Nếu bạn có trường này trong response
                 $("#Phone").prop("disabled",true);
+                $("#Email").val(response.email); // Nếu bạn có trường này trong response
+                $("#Email").prop("disabled",true);
                 $("#Job").val(response.job); // Nếu bạn có trường này trong response
                 $("#Job").prop("disabled",true);
 
@@ -175,6 +180,7 @@ $(document).on("click","#btn-saves",function (e){
             gender: parseInt($("#Gender").val(), 10),
             bhyt: $("#BHYT").val(),
             phone: $("#Phone").val(),
+            email: $("#Email").val(),
             job: $("#Job").val(),
             department: $("#Department").val(),
             address: $("#Address").val(),
@@ -276,6 +282,8 @@ $(document).on("click",".room-edit-element",function (){
             $("#BHYT").prop("disabled",false);
             $("#Phone").val(response.phone); // Nếu bạn có trường này trong response
             $("#Phone").prop("disabled",false);
+            $("#Email").val(response.email); // Nếu bạn có trường này trong response
+            $("#Email").prop("disabled",false);
             $("#Job").val(response.job); // Nếu bạn có trường này trong response
             $("#Job").prop("disabled",false);
 
@@ -312,6 +320,7 @@ $(document).on("click","#btn-updates",function (e){
             gender: parseInt($("#Gender").val(), 10),
             bhyt: $("#BHYT").val(),
             phone: $("#Phone").val(),
+            phone: $("#Email").val(),
             job: $("#Job").val(),
             department: $("#Department").val(),
             address: $("#Address").val(),

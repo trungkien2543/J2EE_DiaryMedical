@@ -75,6 +75,7 @@ $(document).on('click','.add-room',function (){
     $('#btn-save-room').show();
     $('#btn-update-room').hide();
     $('#btn-join-room').hide();
+    $('#forgotPIN').hide();
     openModal("add-room");
 });
 //Write method validateFormRoom() 
@@ -234,6 +235,7 @@ $(document).on('click','.change-pin',function (){
     $('#btn-join-room').hide();
     let cccd = $(this).data("id");
     let pinold = $("#idPinOld").val();
+    $('#forgotPIN').hide();
     console.log('Data-id : ' + cccd);
     $('#btn-update-room').data('id',cccd);
     openModal("change-pin");
@@ -349,6 +351,7 @@ $(document).on('click','.join-room',function (){
     InputFirldsJoin(name);
     $('#btn-save-room, #btn-update-room').hide();
     $('#btn-join-room').show();
+    $('#forgotPIN').show();
     openModal("join-room");
 
 
