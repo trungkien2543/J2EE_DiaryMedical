@@ -66,21 +66,7 @@
           <span class="dropdown-item text-center small text-gray-500">No reminders</span>
         </div>
         <div th:each="reminder : ${listRemind}">
-          <a class="dropdown-item d-flex align-items-center" th:href="@{/receipt/{id}(id=${reminder.IDReceipt})}">
-<!--            <div class="mr-3">-->
-<!--              &lt;!&ndash; Apply class based on the date difference &ndash;&gt;-->
-<!--              <div th:if="${reminder.dateVisit != null}">-->
-<!--                <div th:if="${#temporals.between(reminder.dateVisit, #temporals.now(), 'DAYS') == 1}" class="icon-circle bg-danger">-->
-<!--                  <i class="fas fa-calendar text-white"></i>-->
-<!--                </div>-->
-<!--                <div th:if="${#temporals.between(reminder.dateVisit, #temporals.now(), 'DAYS') == 2}" class="icon-circle bg-warning">-->
-<!--                  <i class="fas fa-calendar text-white"></i>-->
-<!--                </div>-->
-<!--                <div th:if="${#temporals.between(reminder.dateVisit, #temporals.now(), 'DAYS') == 3}" class="icon-circle bg-success">-->
-<!--                  <i class="fas fa-calendar text-white"></i>-->
-<!--                </div>-->
-<!--              </div>-->
-<!--            </div>-->
+          <a class="dropdown-item d-flex align-items-center" href="/schedule">
             <div>
               <!-- Display Date and Time -->
               <div class="small text-gray-500" th:text="${#temporals.format(reminder.dateVisit, 'yyyy-MM-dd HH:mm')}"></div>
