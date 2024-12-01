@@ -12,32 +12,18 @@ function updateSelectedCheckboxValues(checkbox) {
             }
         }
         sendSelectedValuesToController(selectedCheckboxValues, checkbox.checked ? "add" : "remove", checkboxValue);
-}
-
-function formatDateTime(values) {
-    // Tách chuỗi thành mảng, sử dụng dấu phẩy làm dấu phân cách
-    values = dateString.split(',');
-
-    // Giải nén giá trị từ mảng
-    const [year, month, day, hour, minute] = values.map(Number); // Chuyển tất cả thành số
-
-    // Thêm số 0 vào các giá trị tháng, ngày, giờ, phút nếu cần
-    const formattedMonth = (month < 10) ? `0${month}` : month;
-    const formattedDay = (day < 10) ? `0${day}` : day;
-    const formattedHour = (hour < 10) ? `0${hour}` : hour;
-    const formattedMinute = (minute < 10) ? `0${minute}` : minute;
-
-    // Trả về chuỗi theo định dạng yyyy-MM-ddTHH:mm
-    return `${year}-${formattedMonth}-${formattedDay}T${formattedHour}:${formattedMinute}`;
-}
+    }
 
 document.addEventListener('DOMContentLoaded', function () {
-    const checkboxes = document.querySelectorAll('.checkbox-container input[type="checkbox"]');
-            checkboxes.forEach(checkbox => {
-                checkbox.addEventListener('click', function() {
-                    updateSelectedCheckboxValues(checkbox);
-                });
+        const checkboxes = document.querySelectorAll('.checkbox-container input[type="checkbox"]');
+        console.log("Danh sách checkbox: ", checkboxes);
+
+        checkboxes.forEach(checkbox => {
+            console.log("Checkbox: ", checkbox);
+            checkbox.addEventListener('click', function() {
+                updateSelectedCheckboxValues(checkbox);
             });
+        });
     // Khởi tạo calendar chính
     var calendarEl = document.getElementById('calendar');
 
@@ -65,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         buttonText: 'Year' // Đặt tên nút là 'Year'
                     }
                 },
-                
+
         editable: true,
         dayMaxEvents: 3,  // Giới hạn số sự kiện hiển thị và hiển thị "+ more"
         selectable: true,
@@ -73,184 +59,104 @@ document.addEventListener('DOMContentLoaded', function () {
         eventLimitClick: 'day', // Hoặc xóa dòng này để tắt tính năng popover
         events: window.events || [],
 
-
-        // Xử lý sự kiện khi click vào event
         eventClick: function (info) {
-            info.jsEvent.preventDefault();  // Sửa: Tắt popover mặc định
-            var groupId = info.event.groupId; // Lấy groupId từ sự kiện được click
+            info.jsEvent.preventDefault();
+            var groupId = info.event.groupId;
+            var isFollowUp = info.event.title.startsWith('Follow-up visit for:');
 
-            // Đóng bất kỳ popover nào đang mở
-            var popovers = document.querySelectorAll('.fc-popover');
-            popovers.forEach(function(popover) {
-                popover.style.display = 'none';  // Đóng popover
-            });
+            console.log(isFollowUp);
 
-            // Tiếp tục xử lý sự kiện
-            fetch(`/getReceiptInfo`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ groupId: groupId })
-            })
-            .then(response => response.json())
-            .then(data => {
+            // Ẩn popover
+            document.querySelectorAll('.fc-popover').forEach(popover => popover.style.display = 'none');
+
+            // Hàm lấy và hiển thị thông tin receipt
+            const showReceipt = (groupId) => {
+                return fetch(`/getReceiptInfo`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ groupId: groupId })
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error('Failed to fetch receipt information');
+                    return response.json();
+                })
+                .then(data => {
+                    Swal.fire({
+                        html: `
+                        <div style="display: flex; flex-direction: column; font-size: 16px; padding: 10px;">
+                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; align-items: start; text-align: justify; padding-left: 20px;">
+                                <p><i class="fas fa-receipt"></i> <strong>Receipt ID:</strong> ${data.idreceipt}</p>
+                                <p><i class="fas fa-user"></i> <strong>Patient:</strong> ${data.patient.name}</p>
+                                <p><i class="fas fa-user-md"></i> <strong>Doctor:</strong> ${data.doctor.name}</p>
+                                <p><i class="fas fa-map-marker-alt"></i> <strong>Place:</strong> ${data.place}</p>
+                                <p><i class="fas fa-calendar-alt"></i> <strong>Date:</strong> ${data.date}</p>
+                                <p><i class="fas fa-clock"></i> <strong>Reason:</strong> ${data.reason}</p>
+                                <p><i class="fas fa-envelope"></i> <strong>Remind:</strong> ${data.remind}</p>
+                                <p><i class="fas fa-file-invoice-dollar"></i> <strong>Treat:</strong> ${data.treat}</p>
+                                <p><i class="fas fa-procedures"></i> <strong>Date Visit:</strong> ${data.dateVisit}</p>
+                                <p><i class="fas fa-clinic-medical"></i> <strong>Blood Pressure:</strong> ${data.bloodPressure}</p>
+                                <p><i class="fas fa-notes-medical"></i> <strong>Diagnosis:</strong> ${data.diagnosis}</p>
+                                <p><i class="fas fa-phone-alt"></i> <strong>Weight:</strong> ${data.weight}</p>
+                                <p><i class="fas fa-envelope"></i> <strong>Height:</strong> ${data.height}</p>
+                                <p><i class="fas fa-envelope"></i> <strong>Heart Rate:</strong> ${data.heartRate}</p>
+                                <p><i class="fas fa-envelope"></i> <strong>Temperature:</strong> ${data.temperature}</p>
+
+                            </div>
+                            <div style="display: flex; flex-direction: row; justify-content: space-between; margin-top: 20px;">
+                                <div>
+                                    <p>Hình ảnh kết quả</p>
+                                    <img src="../../img/OIP.jpg" alt="Image 1" style="width: 350px; object-fit: cover; border-radius: 8px;">
+                                </div>
+                                <div>
+                                    <p>Hình ảnh thuốc</p>
+                                    <img src="../../img/OIP.jpg" alt="Image 2" style="width: 350px; object-fit: cover; border-radius: 8px;">
+                                </div>
+                            </div>
+                        </div>
+                        `,
+                        confirmButtonText: '<i class="fas fa-check-circle"></i> OK',
+                        confirmButtonColor: '#4CAF50',
+                        background: '#f9f9f9',
+                        width: '825px',
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Không thể lấy thông tin của receipt!',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                });
+            };
+
+            // Xử lý sự kiện Follow-up
+            if (isFollowUp) {
                 Swal.fire({
+                    title: 'Follow-up Visit Details',
                     html: `
                     <div style="display: flex; flex-direction: column; font-size: 16px; padding: 10px;">
-                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; align-items: start; text-align: justify; padding-left: 20px;">
-                            <p><i class="fas fa-receipt"></i> <strong>Receipt ID:</strong> ${data.idReceipt}</p>
-                            <p><i class="fas fa-user"></i> <strong>Patient ID:</strong> ${data.patient.cccd}</p>
-                            <p><i class="fas fa-user-md"></i> <strong>Doctor ID:</strong>${data.doctor.cccd}</p>
-                            <p><i class="fas fa-map-marker-alt"></i> <strong>Place:</strong> ${data.place}</p>
-                            <p><i class="fas fa-calendar-alt"></i> <strong id="formattedDate">Date:</strong>${data.date}</p>
-                            <p><i class="fas fa-clock"></i> <strong>Time:</strong> ${data.time}</p>
-                            <p><i class="fas fa-file-invoice-dollar"></i> <strong>Total Amount:</strong> ${data.totalAmount}</p>
-                            <p><i class="fas fa-procedures"></i> <strong>Service ID:</strong> ${data.idService}</p>
-                            <p><i class="fas fa-clinic-medical"></i> <strong>Clinic:</strong> ${data.clinic}</p>
-                            <p><i class="fas fa-notes-medical"></i> <strong>Diagnosis:</strong> ${data.diagnosis}</p>
-                            <p><i class="fas fa-phone-alt"></i> <strong>Phone:</strong> ${data.phone}</p>
-                            <p><i class="fas fa-envelope"></i> <strong>Email:</strong> ${data.email}</p>
+                        <div style="display: grid; grid-template-columns: 1fr; gap: 10px; text-align: center;">
+                            <p><strong>This is a Follow-up Visit</strong></p>
+                            <p><i class="fas fa-calendar-check"></i> Follow-up Date: ${info.event.start ? info.event.start.toLocaleDateString() : 'N/A'}</p>
+                            <p><i class="fas fa-notes-medical"></i> Original Reason: ${info.event.title.replace('Follow-up visit for: ', '')}</p>
                         </div>
-                        <div style="display: flex; flex-direction: row; justify-content: space-between; margin-top: 20px;">
-                            <div>
-                                <p>Hình ảnh kết quả</p>
-                                <img src="${data.urlResult}" alt="Image 1" style="width: 350px; object-fit: cover; border-radius: 8px;">
-                            </div>
-                            <div>
-                                <p>Hình ảnh thuốc</p>
-                                <img src="${data.urlBill}" alt="Image 2" style="width: 350px; object-fit: cover; border-radius: 8px;">
-                            </div>
-                        </div>
-                        
-                        <div class="mb-2 mx-3" style="margin-top: 42px;">
-                            <button class="btn btn-primary family-add" type="button" data-toggle="modal" onclick="openReceiptModal()">Edit Receipt</button>
-                        </div>
-                        
-                        
-                        <div id="receiptModal" class="modal" tabindex="-1" style="display: block; z-index: max()">
-                            <div class="modal-dialog" style="max-width: 600px;">
-                              <div class="modal-content">
-                                <div class="modal-header">
-                                  <h5 class="modal-title">Receipt Form</h5>
-                                  <button type="button" class="btn btn-close" onclick="closeReceiptModal()" aria-label="Close">
-                                    <i class="fas fa-times-circle" style="color: #dc3545; font-size: 1.5rem;"></i>
-                                  </button>
-                    
-                                </div>
-                                <div class="modal-body" style="max-height: 85vh; overflow-y: auto;">
-                                  <form id="receiptForm" method="post" enctype="multipart/form-data">
-                                    <div class="mb-3">
-                                      <label for="idPatient"><strong>Patient ID:</strong></label>
-                                      <input type="text" id="idPatient" name="idPatient" class="form-control" readonly value="${data.patient.cccd}">
-                                    </div>
-                                    <div class="mb-3">
-                                      <label for="idDoctor"><strong>Doctor ID:</strong></label>
-                                      <input type="number" id="idDoctor" name="idDoctor" class="form-control" value="${data.doctor.cccd}">
-                                    </div>
-                                    <div class="mb-3">
-                                      <label for="place"><strong>Place:</strong></label>
-                                      <input type="text" id="place" name="place" class="form-control" readonly value="${data.place}">
-                                    </div>
-                    
-                                    <div class="mb-3">
-                                      <label for="datetime"><strong>Date and Time:</strong></label>
-                                      <input type="datetime-local" id="datetime" name="datetime" class="form-control" value="2024-11-01T08:00:00">
-                                    </div>
-                    
-                                    <div class="mb-3">
-                                      <label for="reason"><strong>Reason:</strong></label>
-                                      <input type="text" id="reason" name="idService" class="form-control" value="${data.reason}">
-                                    </div>
-                                    <div class="mb-3">
-                                      <label for="diagnosis"><strong>Diagnosis:</strong></label>
-                                      <textarea id="diagnosis" name="diagnosis" class="form-control" rows="2" value="${data.diagnosis}"></textarea>
-                                    </div>
-                                    <div class="mb-3">
-                                      <label for="treat"><strong>Treat:</strong></label>
-                                      <input type="text" id="treat" name="treat" class="form-control" value="${data.treat}">
-                                    </div>
-                                    <div class="mb-3">
-                                      <label for="remind"><strong>Remind:</strong></label>
-                                      <input type="text" id="remind" name="remind" class="form-control" value="${data.remind}">
-                                    </div>
-                    
-                                    <div class="row">
-                                      <div class="col-md-6">
-                                      <div class="mb-3">
-                                            <label for="dateVisit"><strong>Date of Visit:</strong></label>
-                                            <input type="datetime-local" id="dateVisit" name="dateVisit" class="form-control" 
-                                                   value="${data.dateVisit}">
-                                        </div>
-
-                                        <div class="mb-3">
-                                          <label for="weight"><strong>Weight (kg):</strong></label>
-                                          <input type="number" id="weight" name="weight" class="form-control" value="${data.weight}">
-                                        </div>
-                                        <div class="mb-3">
-                                          <label for="height"><strong>Height (cm):</strong></label>
-                                          <input type="number" id="height" name="height" class="form-control" value="${data.height}">
-                                        </div>
-                                      </div>
-                                      <div class="col-md-6">
-                                        <div class="mb-3">
-                                          <label for="bloodPressure"><strong>Blood Pressure:</strong></label>
-                                          <input type="number" id="bloodPressure" name="bloodPressure" class="form-control" value="${data.bloodPressure}">
-                                        </div>
-                                        <div class="mb-3">
-                                          <label for="heartRate"><strong>Heart Rate:</strong></label>
-                                          <input type="number" id="heartRate" name="heartRate" class="form-control" value="${data.heartRate}">
-                                        </div>
-                                        <div class="mb-3">
-                                          <label for="temperature"><strong>Temperature (°C):</strong></label>
-                                          <input type="number" id="temperature" name="temperature" class="form-control" value="${data.temperature}">
-                                        </div>
-                                      </div>
-                                    </div>
-                    
-                                    <div class="mb-3">
-                                      <label for="resultImage"><strong>Result Image:</strong></label>
-                                      <input type="file" id="resultImage" name="resultImage" class="form-control" accept="image/*" onchange="previewImage(event, 'resultPreview')">
-                                      <img id="resultPreview" alt="Preview Result Image" class="img-fluid mt-2" style="display: none; max-height: 200px; border-radius: 8px;">
-                                    </div>
-                                    <div class="mb-3">
-                                      <label for="medicineImage"><strong>Medicine Image:</strong></label>
-                                      <input type="file" id="medicineImage" name="medicineImage" class="form-control" accept="image/*" onchange="previewImage(event, 'medicinePreview')">
-                                      <img id="medicinePreview" alt="Preview Medicine Image" class="img-fluid mt-2" style="display: none; max-height: 200px; border-radius: 8px;">
-                                    </div>
-                                    <div class="text-center mt-4">
-                                      <button type="button" class="btn btn-success" id="btnSubmitReceipt">Submit</button>
-                                    </div>
-                                  </form>
-                                </div>
-                              </div>
-                            </div>
-                        </div>    
                     </div>
-                    `, footer: '<button type="button" class="btn btn-success" id="btnCustomClose">OK</button>',
-                    showConfirmButton: false, // Tắt nút xác nhận mặc định của SweetAlert2
-                    background: '#f9f9f9',
-                    width: '850px',
-                    didRender: () => {
-                        document.getElementById('btnCustomClose').addEventListener('click', () => {
-                            Swal.close();
-                        }
-
-
-
-                    );
-                },
+                    `,
+                    showCancelButton: true,
+                    confirmButtonText: 'Show Detail',
+                    cancelButtonText: 'Close',
+                    preConfirm: () => showReceipt(groupId)
                 });
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                Swal.fire({
-                    title: 'Error',
-                    text: 'Không thể lấy thông tin của receipt!',
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                });
-            });
+            } else {
+                showReceipt(groupId);
+            }
         }
-        
+
+
+
+
     });
     calendar.render();
 
@@ -294,9 +200,64 @@ document.addEventListener('DOMContentLoaded', function () {
                 toggleArrow.classList.toggle('collapsed');
             });
         });
-        
+
 
 });
+
+function showReceipt(event){
+    // Giữ nguyên logic cũ cho các sự kiện không phải follow-up
+                    fetch(`/getReceiptInfo`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ groupId: groupId })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        Swal.fire({
+                            html: `
+                            <div style="display: flex; flex-direction: column; font-size: 16px; padding: 10px;">
+                                                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; align-items: start; text-align: justify; padding-left: 20px;">
+                                                        <p><i class="fas fa-receipt"></i> <strong>Receipt ID:</strong> ${data.idReceipt}</p>
+                                                        <p><i class="fas fa-user"></i> <strong>Patient ID:</strong> ${data.idPatient}</p>
+                                                        <p><i class="fas fa-user-md"></i> <strong>Doctor ID:</strong> ${data.idDoctor}</p>
+                                                        <p><i class="fas fa-map-marker-alt"></i> <strong>Place:</strong> ${data.place}</p>
+                                                        <p><i class="fas fa-calendar-alt"></i> <strong>Date:</strong> ${data.date}</p>
+                                                        <p><i class="fas fa-clock"></i> <strong>Time:</strong> ${data.time}</p>
+                                                        <p><i class="fas fa-file-invoice-dollar"></i> <strong>Total Amount:</strong> ${data.totalAmount}</p>
+                                                        <p><i class="fas fa-procedures"></i> <strong>Service ID:</strong> ${data.idService}</p>
+                                                        <p><i class="fas fa-clinic-medical"></i> <strong>Clinic:</strong> ${data.clinic}</p>
+                                                        <p><i class="fas fa-notes-medical"></i> <strong>Diagnosis:</strong> ${data.diagnosis}</p>
+                                                        <p><i class="fas fa-phone-alt"></i> <strong>Phone:</strong> ${data.phone}</p>
+                                                        <p><i class="fas fa-envelope"></i> <strong>Email:</strong> ${data.email}</p>
+                                                    </div>
+                                                    <div style="display: flex; flex-direction: row; justify-content: space-between; margin-top: 20px;">
+                                                        <div>
+                                                            <p>Hình ảnh kết quả</p>
+                                                            <img src="../../img/OIP.jpg" alt="Image 1" style="width: 350px; object-fit: cover; border-radius: 8px;">
+                                                        </div>
+                                                        <div>
+                                                            <p>Hình ảnh thuốc</p>
+                                                            <img src="../../img/OIP.jpg" alt="Image 2" style="width: 350px; object-fit: cover; border-radius: 8px;">
+                                                        </div>
+                                                    </div>
+                                </div>
+                            `,
+                            confirmButtonText: '<i class="fas fa-check-circle"></i> OK',
+                            confirmButtonColor: '#4CAF50',
+                            background: '#f9f9f9',
+                            width: '825px',
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'Không thể lấy thông tin của receipt!',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    });
+}
 
 function showAlert(button) {
     var checkbox = button.previousElementSibling;
@@ -387,6 +348,4 @@ function sendSelectedValuesToController(selectedValues, action, changedValue) {
     .catch(error => {
         console.error("Error handling response:", error);
     });
-
 }
-

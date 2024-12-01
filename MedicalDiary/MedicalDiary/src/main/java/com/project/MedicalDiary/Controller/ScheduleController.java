@@ -80,9 +80,38 @@ public class ScheduleController {
 
         List<Information> listIf = iSe.findByFamily_IDFamily(idFamily);
 
-        List<Receipt> listReceipt = new ArrayList<>();
-        model.addAttribute("listReceipt", listReceipt);
-        model.addAttribute("listIf", listIf);
+        // Lấy hoặc khởi tạo userInfoMap từ session
+        Map<String, List<Map<String, Object>>> userInfoMap =
+                (Map<String, List<Map<String, Object>>>) session.getAttribute("userInfoMap");
+        if (userInfoMap == null) {
+            userInfoMap = new LinkedHashMap<>();
+        }
+
+        // Tạo danh sách thông tin cho các thành viên
+        List<Map<String, Object>> memberInfoList = new ArrayList<>();
+
+        for (Information info : listIf) {
+            Map<String, Object> memberInfo = new HashMap<>();
+            memberInfo.put("info", info);  // Lưu trực tiếp đối tượng Information
+            memberInfo.put("name", info.getName());
+            memberInfo.put("cccd", info.getCCCD());
+
+            // Tạo màu ngẫu nhiên cho thành viên
+            String randomColor = getRandomColor();
+            memberInfo.put("color", randomColor);
+
+            memberInfoList.add(memberInfo);
+        }
+
+
+        // Lưu danh sách thông tin vào userInfoMap với key riêng
+        userInfoMap.put("family_" + idFamily, memberInfoList);
+
+        // Lưu userInfoMap vào session
+        session.setAttribute("userInfoMap", userInfoMap);
+
+        // Truyền thông tin sang view
+        model.addAttribute("listIf", memberInfoList);
         model.addAttribute("currentUrl", "/schedule");
 
         List<Receipt> listRemind = receiptService.findReceiptsWithinDateRange();
@@ -91,24 +120,27 @@ public class ScheduleController {
 
         model.addAttribute("familyName", account.getFamily().getName());
 
-        Map<String, List<Information>> userInfoMap = (Map<String, List<Information>>) session.getAttribute("userInfoMap");
 
-        if (userInfoMap == null) {
-            userInfoMap = new HashMap<>();
-        }
 
         model.addAttribute("listinfor", userInfoMap.values());
-        model.addAttribute("name", session.getAttribute("name"));
+        System.out.println("family_" + idFamily);
+        System.out.println(userInfoMap.values());
         return "pages/fragments/schedule";
     }
+
+
+
 
     @PostMapping("/schedule")
     public String submitPin(@RequestParam("pin") String pin, @RequestParam("cccd") String cccd, HttpSession session) {
         Information ifor = iSe.getByCCCD(cccd);
         if (roSe.comparePin(pin, cccd)) {
-            Map<String, List<Map<String, Object>>> userInfoMap = (Map<String, List<Map<String, Object>>>) session.getAttribute("userInfoMap");
+            Map<String, List<Map<String, Object>>> userInfoMap =
+                    (Map<String, List<Map<String, Object>>>) session.getAttribute("userInfoMap");
+
+            // Thay đổi từ HashMap sang LinkedHashMap
             if (userInfoMap == null) {
-                userInfoMap = new HashMap<>();
+                userInfoMap = new LinkedHashMap<>();
             }
 
             List<RoomDetail> members = rodeSe.getAllRoomDetailsByRoomID(cccd);
@@ -116,7 +148,7 @@ public class ScheduleController {
 
             for (RoomDetail t : members) {
                 Map<String, Object> memberInfo = new HashMap<>();
-                System.out.println(t.getIsFollowed());
+                System.out.println("Information: "+t.getIsFollowed());
                 memberInfo.put("info", t.getIsFollowed());
                 memberInfo.put("name", ifor.getName());
 
@@ -125,6 +157,7 @@ public class ScheduleController {
                 memberInfoList.add(memberInfo);
             }
 
+            // Sử dụng put để thêm vào cuối
             userInfoMap.put(cccd, memberInfoList);
             session.setAttribute("userInfoMap", userInfoMap);
         }
@@ -144,9 +177,7 @@ public class ScheduleController {
         String groupId = request.get("groupId");
         Optional<Receipt> receiptOpt = rSe.getReceiptById(groupId);
 
-
-            return ResponseEntity.ok(receiptOpt.orElse(null));
-
+        return ResponseEntity.ok(receiptOpt.orElse(null));
     }
 
     @PostMapping("/createCalendar")
@@ -155,6 +186,7 @@ public class ScheduleController {
         List<String> selectedValues = (List<String>) payload.get("selectedValues");
         String action = (String) payload.get("action");
         String changedValue = (String) payload.get("changedValue");
+
 
         Map<String, Object> response = new HashMap<>();
         response.put("status", "success");
@@ -173,7 +205,7 @@ public class ScheduleController {
                 event.put("groupId", t.getIDReceipt());
                 event.put("title", t.getReason());
                 event.put("start", t.getDate().toString());
-                event.put("followUp", false);  // Không phải sự kiện follow-up
+                event.put("extendedProps", Map.of("followUp", false));  // Cách viết ngắn gọn hơn
 
                 // Lấy màu từ session (dựa trên CCCD)
                 String color = getColorForMember(changedValue, userInfoMap);
@@ -189,7 +221,8 @@ public class ScheduleController {
                     followUpEvent.put("groupId", t.getIDReceipt()); // Cùng groupId
                     followUpEvent.put("title", "Follow-up visit for: " + t.getReason());
                     followUpEvent.put("start", dateVisit.toString());
-                    followUpEvent.put("followUp", true);  // Đây là sự kiện follow-up
+                    followUpEvent.put("extendedProps", Map.of("followUp", true));  // Cách viết ngắn gọn
+
                     followUpEvent.put("color", color);    // Thêm màu giống sự kiện chính
 
                     events.add(followUpEvent);

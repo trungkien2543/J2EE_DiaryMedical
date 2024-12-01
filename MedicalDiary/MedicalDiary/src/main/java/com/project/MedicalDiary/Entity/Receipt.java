@@ -1,5 +1,6 @@
 package com.project.MedicalDiary.Entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,24 +19,19 @@ public class Receipt {
     @Column(name = "ID_Receipt")
     private Long IDReceipt;
 
-//    @Column(name = "ID_Patient", nullable = false)
-//    private String idPatient; // Keep as String
-//
-//    @Column(name = "ID_Doctor", nullable = false)
-//    private String idDoctor; // Keep as String
-
     @ManyToOne
     @JoinColumn(name = "ID_Patient", referencedColumnName = "CCCD", nullable = false)
     private Information patient;
 
-    @ManyToOne // Relationship with Information for doctor
+    @ManyToOne
     @JoinColumn(name = "ID_Doctor", referencedColumnName = "CCCD", nullable = false)
-    private Information doctor; // Reference to Information for the doctor
+    private Information doctor;
 
     @Column(name = "Place")
     private String place;
 
     @Column(name = "Date")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy") // Định dạng ngày
     private LocalDateTime date;
 
     @Column(name = "Reason")
@@ -57,7 +53,8 @@ public class Receipt {
     private String remind;
 
     @Column(name = "Date_Visit")
-    private java.time.LocalDateTime dateVisit;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy") // Định dạng ngày tái khám
+    private LocalDateTime dateVisit;
 
     @Column(name = "Blood_Pressure")
     private Integer bloodPressure;
@@ -74,11 +71,10 @@ public class Receipt {
     @Column(name = "Temperature")
     private Integer temperature;
 
-    public Receipt(Information idPat, Information idDoc, String place, java.time.LocalDateTime date) {
+    public Receipt(Information idPat, Information idDoc, String place, LocalDateTime date) {
         this.patient = idPat;
         this.doctor = idDoc;
         this.place = place;
         this.date = date;
     }
 }
-

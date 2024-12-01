@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head th:replace="~{components/head :: head}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+<div th:replace="~{layouts/main :: layout}">
+    <div class="container-fluid" th:fragment="content">
+        <div>
+            <button id="prevYear" style="margin-right: 10px;">&#9664;</button>
+            <span id="currentYear">Hôm nay: <b>2023</b></span>
+            <button id="nextYear" style="margin-left: 10px;">&#9654;</button>
+        </div>
+        <canvas id="multiAxisChart" width="800" height="400"></canvas>
+        <script th:inline="javascript">
+            const statistics = /*[[${statistics}]]*/ [];
+        </script>
+
+    </div>
+</div>
+<script src="../js/pages/statistic.js"></script>
+</body>
+</html>

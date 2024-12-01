@@ -322,3 +322,39 @@
             border-radius: 3px;
         }
 
+        .checkbox-list input[type="checkbox"] {
+            appearance: none; /* Ẩn kiểu checkbox mặc định */
+            width: 18px;
+            height: 18px;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            margin-right: 10px;
+            outline: none;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .checkbox-list input[type="checkbox"]::after {
+            content: ''; /* Nội dung stick mặc định rỗng */
+            position: absolute;
+            top: 2px;
+            left: 6px;
+            width: 5px;
+            height: 10px;
+            border: solid #fff; /* Màu của stick */
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+            opacity: 0; /* Ẩn stick mặc định */
+            transition: opacity 0.2s ease-in-out; /* Hiệu ứng mượt */
+        }
+
+        .checkbox-list input[type="checkbox"]:checked {
+            background-color: #1E88E5; /* Màu xanh khi chọn */
+            border-color: #1E88E5;
+        }
+
+        .checkbox-list input[type="checkbox"]:checked::after {
+            opacity: 1; /* Hiện dấu stick khi checkbox được chọn */
+        }
+
+
