@@ -31,8 +31,9 @@ public class Receipt {
     private String place;
 
     @Column(name = "Date")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy") // Định dạng ngày
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime date;
+
 
     @Column(name = "Reason")
     private String reason;
@@ -53,7 +54,7 @@ public class Receipt {
     private String remind;
 
     @Column(name = "Date_Visit")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy") // Định dạng ngày tái khám
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime dateVisit;
 
     @Column(name = "Blood_Pressure")

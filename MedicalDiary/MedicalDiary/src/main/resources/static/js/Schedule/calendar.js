@@ -105,11 +105,11 @@ document.addEventListener('DOMContentLoaded', function () {
                             <div style="display: flex; flex-direction: row; justify-content: space-between; margin-top: 20px;">
                                 <div>
                                     <p>Hình ảnh kết quả</p>
-                                    <img src="../../img/OIP.jpg" alt="Image 1" style="width: 350px; object-fit: cover; border-radius: 8px;">
+                                    <img src="${data.urlResult}" alt="Image 1" style="width: 350px; object-fit: cover; border-radius: 8px;">
                                 </div>
                                 <div>
                                     <p>Hình ảnh thuốc</p>
-                                    <img src="../../img/OIP.jpg" alt="Image 2" style="width: 350px; object-fit: cover; border-radius: 8px;">
+                                    <img src="${data.urlBill}" alt="Image 2" style="width: 350px; object-fit: cover; border-radius: 8px;">
                                 </div>
                             </div>
                         </div>
@@ -204,60 +204,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
 });
 
-function showReceipt(event){
-    // Giữ nguyên logic cũ cho các sự kiện không phải follow-up
-                    fetch(`/getReceiptInfo`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ groupId: groupId })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        Swal.fire({
-                            html: `
-                            <div style="display: flex; flex-direction: column; font-size: 16px; padding: 10px;">
-                                                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; align-items: start; text-align: justify; padding-left: 20px;">
-                                                        <p><i class="fas fa-receipt"></i> <strong>Receipt ID:</strong> ${data.idReceipt}</p>
-                                                        <p><i class="fas fa-user"></i> <strong>Patient ID:</strong> ${data.idPatient}</p>
-                                                        <p><i class="fas fa-user-md"></i> <strong>Doctor ID:</strong> ${data.idDoctor}</p>
-                                                        <p><i class="fas fa-map-marker-alt"></i> <strong>Place:</strong> ${data.place}</p>
-                                                        <p><i class="fas fa-calendar-alt"></i> <strong>Date:</strong> ${data.date}</p>
-                                                        <p><i class="fas fa-clock"></i> <strong>Time:</strong> ${data.time}</p>
-                                                        <p><i class="fas fa-file-invoice-dollar"></i> <strong>Total Amount:</strong> ${data.totalAmount}</p>
-                                                        <p><i class="fas fa-procedures"></i> <strong>Service ID:</strong> ${data.idService}</p>
-                                                        <p><i class="fas fa-clinic-medical"></i> <strong>Clinic:</strong> ${data.clinic}</p>
-                                                        <p><i class="fas fa-notes-medical"></i> <strong>Diagnosis:</strong> ${data.diagnosis}</p>
-                                                        <p><i class="fas fa-phone-alt"></i> <strong>Phone:</strong> ${data.phone}</p>
-                                                        <p><i class="fas fa-envelope"></i> <strong>Email:</strong> ${data.email}</p>
-                                                    </div>
-                                                    <div style="display: flex; flex-direction: row; justify-content: space-between; margin-top: 20px;">
-                                                        <div>
-                                                            <p>Hình ảnh kết quả</p>
-                                                            <img src="../../img/OIP.jpg" alt="Image 1" style="width: 350px; object-fit: cover; border-radius: 8px;">
-                                                        </div>
-                                                        <div>
-                                                            <p>Hình ảnh thuốc</p>
-                                                            <img src="../../img/OIP.jpg" alt="Image 2" style="width: 350px; object-fit: cover; border-radius: 8px;">
-                                                        </div>
-                                                    </div>
-                                </div>
-                            `,
-                            confirmButtonText: '<i class="fas fa-check-circle"></i> OK',
-                            confirmButtonColor: '#4CAF50',
-                            background: '#f9f9f9',
-                            width: '825px',
-                        });
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        Swal.fire({
-                            title: 'Error',
-                            text: 'Không thể lấy thông tin của receipt!',
-                            icon: 'error',
-                            confirmButtonText: 'OK'
-                        });
-                    });
-}
 
 function showAlert(button) {
     var checkbox = button.previousElementSibling;
