@@ -3,10 +3,7 @@ package com.project.MedicalDiary.Controller;
 import com.project.MedicalDiary.DTO.InformationRequestDTO;
 import com.project.MedicalDiary.DTO.RoomDetailRequestDTO;
 import com.project.MedicalDiary.Entity.*;
-import com.project.MedicalDiary.Service.ImpInterface.FamilyService;
-import com.project.MedicalDiary.Service.ImpInterface.InformationService;
-import com.project.MedicalDiary.Service.ImpInterface.RoomDetailService;
-import com.project.MedicalDiary.Service.ImpInterface.RoomService;
+import com.project.MedicalDiary.Service.ImpInterface.*;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -27,6 +24,7 @@ public class RoomDetailController {
     private final FamilyService familyService;
     private final RoomDetailService roomDetailService;
     private final RoomService roomService;
+    private final ReceiptService receiptService;
     private Information info;
 
     @GetMapping("")
@@ -46,7 +44,9 @@ public class RoomDetailController {
             }
             List<RoomDetail> temps = roomDetailService.findByIsFollowed_CCCDAndStatus(roomId, 0);
             List<RoomDetailRequestDTO> pendingRequests = convertToDTOList(temps);
+            List<Receipt> listRemind = receiptService.findReceiptsWithinDateRange();
 
+            model.addAttribute("listRemind", listRemind);
             model.addAttribute("info", info);
             model.addAttribute("IDRoom", roomId);
             model.addAttribute("list", list);
