@@ -203,7 +203,7 @@ public class ScheduleController {
                 // Tạo sự kiện chính (không phải follow-up)
                 Map<String, Object> event = new HashMap<>();
                 event.put("groupId", t.getIDReceipt());
-                event.put("title", t.getReason());
+                event.put("title", t.getTreat());
                 event.put("start", t.getDate().toString());
                 event.put("extendedProps", Map.of("followUp", false));  // Cách viết ngắn gọn hơn
 
