@@ -177,6 +177,8 @@ public class ScheduleController {
         String groupId = request.get("groupId");
         Optional<Receipt> receiptOpt = rSe.getReceiptById(groupId);
 
+        System.out.println(receiptOpt);
+
         return ResponseEntity.ok(receiptOpt.orElse(null));
     }
 
