@@ -231,5 +231,19 @@ public class RoomDetailController {
         }
     }
 
+    @GetMapping("/existsByEmail")
+    @ResponseBody
+    public ResponseEntity<Boolean> existsByEmail(@RequestParam String email) {
+        System.out.println("Received Email: " + email); // Debugging log
+        boolean exists = informationService.existsByEmail(email);
+        return ResponseEntity.ok(exists);
+    }
+    @GetMapping("/getByEmail")
+    @ResponseBody
+    public ResponseEntity<Information> getByEmail(@RequestParam String email) {
+        Information info = informationService.getByEmail(email).get();
+        return ResponseEntity.ok(info);
+    }
+
 
 }

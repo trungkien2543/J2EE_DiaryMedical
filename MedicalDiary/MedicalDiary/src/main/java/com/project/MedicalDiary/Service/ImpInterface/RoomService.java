@@ -5,6 +5,7 @@ import com.project.MedicalDiary.Entity.Room;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public interface RoomService {
     public Room createRoom(Room room) ;
@@ -22,4 +23,5 @@ public interface RoomService {
     public Boolean changePIN(String IDRoom, String oldPIN, String newPIN);
     Boolean existByIDRoom(String IDRoom);
     Boolean deleteRoomByIDRoom(String IDRoom);
+    Boolean setupPIN(String IDRoom, String newPIN);
 }

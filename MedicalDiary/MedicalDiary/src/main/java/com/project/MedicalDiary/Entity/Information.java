@@ -14,6 +14,7 @@ import lombok.*;
 @Table(name = "information")
 public class Information {
 
+    public static final String EMAIL = "Email";
     @Id
     @Column(name = "CCCD")
     @NotNull(message = "Please enter your identification code")
@@ -46,7 +47,7 @@ public class Information {
     @Column(name = "Medical_History")
     private String MedicalHistory;
 
-    @Column(name = "Email")
+    @Column(name = EMAIL)
     private String Email;
 
     @ManyToOne(fetch = FetchType.EAGER)

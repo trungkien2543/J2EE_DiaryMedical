@@ -299,24 +299,40 @@ function validateForm() {
             success: function (is_exists) {
                 if (!is_exists) {
                     $.ajax({
-                        type: "POST",
-                        url: `./family/add`,
+                        type: "get",
+                        url: `./family/existsByEmail`,
                         contentType: 'application/json', // Đảm bảo rằng bạn đã chỉ định đúng contentType
                         dataType: "json", // Thêm header để server biết đây là JSON
-                        data: JSON.stringify(information), // Gửi dữ liệu dưới dạng JSON
-                        success: function (response) {
-                            console.log("Information created: :" + response);
-                            // window.location.href ="/family?add-success-member"
-                            $("#AddQuanTam").modal("hide");
-                            notify('success', 'Message Add sucessfully', 'Add new family member successfully');
+                        data: {
+                            email: $("#Email").val(),
+                        }, // Gửi dữ liệu dưới dạng JSON
+                        success: function (is_exists_email) {
+                            if(!is_exists_email){
+                                $.ajax({
+                                    type: "POST",
+                                    url: `./family/add`,
+                                    contentType: 'application/json', // Đảm bảo rằng bạn đã chỉ định đúng contentType
+                                    dataType: "json", // Thêm header để server biết đây là JSON
+                                    data: JSON.stringify(information), // Gửi dữ liệu dưới dạng JSON
+                                    success: function (response) {
+                                        console.log("Information created: :" + response);
+                                        // window.location.href ="/family?add-success-member"
+                                        $("#AddQuanTam").modal("hide");
+                                        notify('success', 'Message Add sucessfully', 'Add new family member successfully');
 
-                            addNewRecord(information);
+                                        addNewRecord(information);
 
 
-                        },
-                        error: function (jqXHR, textStatus, errorThrown) {
-                            console.error("AJAX Error:", textStatus, errorThrown);
-                            console.error("Response Text:", jqXHR.responseText);
+                                    },
+                                    error: function (jqXHR, textStatus, errorThrown) {
+                                        console.error("AJAX Error:", textStatus, errorThrown);
+                                        console.error("Response Text:", jqXHR.responseText);
+                                    }
+                                });
+                            } else {
+                                $("#Email").after("<div class='invalid-feedback'>Duplicate Email with another person or your Email has been added</div>");
+                                $("#Email").addClass("is-invalid"); // Add Bootstrap class for invalid
+                            }
                         }
                     });
                 } else {
@@ -391,64 +407,150 @@ function validateForm() {
         });
 
     });
-    $(document).on("click", "#btn-updates", function (e) {
-        e.preventDefault();
-        const information = {
-            "information": {
-                cccd: $("#CCCD").val(),
-                name: $("#HoTen").val(),
-                gender: parseInt($("#Gender").val(), 10),
-                bhyt: $("#BHYT").val(),
-                phone: $("#Phone").val(),
-                email: $("#Email").val(),
-                job: $("#Job").val(),
-                department: $("#Department").val(),
-                address: $("#Address").val(),
-                medicalHistory: $("#Medical_History").val(),
-            },
-            "family": {
-                idfamily: parseInt($("#idfml").val(), 10),
-                name: $("#namefml").val()
+    // $(document).on("click", "#btn-updates", function (e) {
+    //     e.preventDefault();
+    //     const information = {
+    //         "information": {
+    //             cccd: $("#CCCD").val(),
+    //             name: $("#HoTen").val(),
+    //             gender: parseInt($("#Gender").val(), 10),
+    //             bhyt: $("#BHYT").val(),
+    //             phone: $("#Phone").val(),
+    //             email: $("#Email").val(),
+    //             job: $("#Job").val(),
+    //             department: $("#Department").val(),
+    //             address: $("#Address").val(),
+    //             medicalHistory: $("#Medical_History").val(),
+    //         },
+    //         "family": {
+    //             idfamily: parseInt($("#idfml").val(), 10),
+    //             name: $("#namefml").val()
+    //         }
+    //     };
+    //
+    //     $.ajax({
+    //         type: "post",
+    //         url: "./family/update",
+    //         data: JSON.stringify(information), // Gửi dữ liệu dưới dạng JSON
+    //         contentType: "application/json",
+    //         dataType: "json",
+    //         success: function (response) {
+    //             console.log("response :" + response);
+    //             // window.location.href ="/family?update-success-member"
+    //             $("#AddQuanTam").modal("hide");
+    //             notify('success', 'Message updated successfully', 'Update family member successfully.');
+    //
+    //             // Update the existing row in the table without changing its position
+    //             const cccdObjUpdate = information.information.cccd; // Get the CCCD of the family member to be updated
+    //             const row = $(`tr[data-id="${cccdObjUpdate}"]`); // Locate the row by data-id
+    //
+    //             console.log("Updating row with CCCD:", cccdObjUpdate);
+    //
+    //             if (row.length) {
+    //                 console.log("Row found:", row);
+    //                 row.find("td:nth-child(2)").text(information.information.cccd);
+    //                 row.find("td:nth-child(3)").text(information.information.name);
+    //                 row.find("td:nth-child(4)").text(information.information.gender ? 'Nam' : 'Nữ');
+    //                 row.find("td:nth-child(5)").text(information.information.job);
+    //                 row.find("td:nth-child(6)").text(information.information.department);
+    //                 row.find("td:nth-child(7)").text(information.information.address);
+    //             } else {
+    //                 console.error("Row not found for CCCD:", cccdObjUpdate);
+    //             }
+    //
+    //         },
+    //         error: function (jqXHR, textStatus, errorThrown) {
+    //             console.error("AJAX Error:", textStatus, errorThrown);
+    //             console.error("Response Text:", jqXHR.responseText);
+    //         }
+    //     });
+    // });
+$(document).on("click", "#btn-updates", function (e) {
+    e.preventDefault();
+
+    const newEmail = $("#Email").val();
+    const currentCCCD = $("#CCCD").val();
+
+    // Kiểm tra email trùng lặp trước khi gửi dữ liệu cập nhật
+    $.ajax({
+        type: "get",
+        url: `./family/existsByEmail`,
+        data:{
+            Email: newEmail
+        },
+        contentType: "application/json",
+        dataType: "json",
+        success: function (isDuplicate) {
+            if (isDuplicate) {
+                // Nếu trùng lặp, kiểm tra xem có phải cùng CCCD không
+                $.ajax({
+                    type: "get",
+                    url: `./family/getByEmail`,
+                    data:{
+                        Email: newEmail
+                    },
+                    contentType: "application/json",
+                    dataType: "json",
+                    success: function (existingData) {
+                        if (existingData.cccd === currentCCCD) {
+                            console.log("Updating with the same email as the current user.");
+                            // Gọi hàm cập nhật nếu email thuộc về người dùng hiện tại
+                            updateInformation();
+                        } else {
+                            console.error("Email already exists for another user.");
+                            notify('error', 'Email Error', 'This email belongs to another user.');
+                        }
+                    }
+                });
+            } else {
+                // Không trùng lặp, tiếp tục cập nhật
+                updateInformation();
             }
-        };
-
-        $.ajax({
-            type: "post",
-            url: "./family/update",
-            data: JSON.stringify(information), // Gửi dữ liệu dưới dạng JSON
-            contentType: "application/json",
-            dataType: "json",
-            success: function (response) {
-                console.log("response :" + response);
-                // window.location.href ="/family?update-success-member"
-                $("#AddQuanTam").modal("hide");
-                notify('success', 'Message updated successfully', 'Update family member successfully.');
-
-                // Update the existing row in the table without changing its position
-                const cccdObjUpdate = information.information.cccd; // Get the CCCD of the family member to be updated
-                const row = $(`tr[data-id="${cccdObjUpdate}"]`); // Locate the row by data-id
-
-                console.log("Updating row with CCCD:", cccdObjUpdate);
-
-                if (row.length) {
-                    console.log("Row found:", row);
-                    row.find("td:nth-child(2)").text(information.information.cccd);
-                    row.find("td:nth-child(3)").text(information.information.name);
-                    row.find("td:nth-child(4)").text(information.information.gender ? 'Nam' : 'Nữ');
-                    row.find("td:nth-child(5)").text(information.information.job);
-                    row.find("td:nth-child(6)").text(information.information.department);
-                    row.find("td:nth-child(7)").text(information.information.address);
-                } else {
-                    console.error("Row not found for CCCD:", cccdObjUpdate);
-                }
-
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                console.error("AJAX Error:", textStatus, errorThrown);
-                console.error("Response Text:", jqXHR.responseText);
-            }
-        });
+        }
     });
+});
+
+// Hàm cập nhật thông tin
+function updateInformation() {
+    const information = {
+        "information": {
+            cccd: $("#CCCD").val(),
+            name: $("#HoTen").val(),
+            gender: parseInt($("#Gender").val(), 10),
+            bhyt: $("#BHYT").val(),
+            phone: $("#Phone").val(),
+            email: $("#Email").val(),
+            job: $("#Job").val(),
+            department: $("#Department").val(),
+            address: $("#Address").val(),
+            medicalHistory: $("#Medical_History").val(),
+        },
+        "family": {
+            idfamily: parseInt($("#idfml").val(), 10),
+            name: $("#namefml").val()
+        }
+    };
+
+    $.ajax({
+        type: "post",
+        url: "./family/update",
+        data: JSON.stringify(information),
+        contentType: "application/json",
+        dataType: "json",
+        success: function (response) {
+            console.log("response :", response);
+            $("#AddQuanTam").modal("hide");
+            notify('success', 'Update Success', 'Family member updated successfully.');
+
+            // Update table logic here (unchanged)
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            console.error("AJAX Error:", textStatus, errorThrown);
+            console.error("Response Text:", jqXHR.responseText);
+        }
+    });
+}
+
     $(document).on("click", ".family-delete", function (e) {
         e.preventDefault(); // Prevent the default button behavior
         const familyId = $(this).data("id"); // Get the family ID from data attribute

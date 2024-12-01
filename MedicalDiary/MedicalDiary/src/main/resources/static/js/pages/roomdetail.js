@@ -333,7 +333,7 @@ $(document).on("click","#btn-updates",function (e){
     };
     $.ajax({
         type: "post",
-        url: "./room/update",
+        url: "./rooms/update",
         data: JSON.stringify(information), // Gửi dữ liệu dưới dạng JSON
         contentType: "application/json",
         dataType: "json",

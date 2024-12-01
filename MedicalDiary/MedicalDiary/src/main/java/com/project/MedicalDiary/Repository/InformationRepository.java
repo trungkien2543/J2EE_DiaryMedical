@@ -6,6 +6,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -32,6 +33,12 @@ public interface InformationRepository extends JpaRepository<Information, String
     Boolean existsByCCCD(String cccd);
     @Query("SELECT i FROM Information i WHERE i.CCCD = :cccd AND i.family.IDFamily <> :idFamily")
     Optional<Information> findByCCCDAndFamily_IDFamilyNot(String cccd, Long idFamily);
+
+    @Query("SELECT CASE WHEN COUNT(i) > 0 THEN true ELSE false END FROM Information i WHERE i.Email = :email")
+    boolean existsByEmail(@Param("email") String email);
+
+    @Query("SELECT i FROM Information i WHERE i.Email = :email")
+    Optional<Information> findByEmail(@Param("email") String email);
 
 
 }

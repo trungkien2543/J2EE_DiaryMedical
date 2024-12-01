@@ -202,6 +202,19 @@ public class FamilyController {
         return ResponseEntity.ok(exists);
     }
 
+    @GetMapping("/existsByEmail")
+    @ResponseBody
+    public ResponseEntity<Boolean> existsByEmail(@RequestParam String Email) {
+        System.out.println("Received Email: " + Email); // Debugging log
+        boolean exists = informationService.existsByEmail(Email);
+        return ResponseEntity.ok(exists);
+    }
+    @GetMapping("/getByEmail")
+    @ResponseBody
+    public ResponseEntity<Information> getByEmail(@RequestParam String Email) {
+        Information info = informationService.getByEmail(Email).get();
+        return ResponseEntity.ok(info);
+    }
 
     @GetMapping("/existsByCCCD")
     @ResponseBody

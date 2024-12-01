@@ -4,6 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.MedicalDiary.Entity.*;
 import com.project.MedicalDiary.Service.Imp.AccountServiceImp;
 import com.project.MedicalDiary.Service.ImpInterface.*;
+import com.project.MedicalDiary.Service.OAuth.SendEmailService;
+import jakarta.mail.MessagingException;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,9 +22,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -41,6 +42,11 @@ public class RoomController {
     private final AccountServiceImp accountServiceImp;
 
     private final ReceiptService receiptService;
+
+    @Autowired
+    private SendEmailService sendEmailService;
+    @Autowired
+    private  AccountService accountService;
 
     @GetMapping("/getRoomDetailByID")
     @ResponseBody
@@ -153,6 +159,19 @@ public class RoomController {
             return ResponseEntity.ok(false);
         }
     }
+    @GetMapping("/existsByEmail")
+    @ResponseBody
+    public ResponseEntity<Boolean> existsByEmail(@RequestParam String email) {
+        System.out.println("Received Email: " + email); // Debugging log
+        boolean exists = informationService.existsByEmail(email);
+        return ResponseEntity.ok(exists);
+    }
+    @GetMapping("/getByEmail")
+    @ResponseBody
+    public ResponseEntity<Information> getByEmail(@RequestParam String email) {
+        Information info = informationService.getByEmail(email).get();
+        return ResponseEntity.ok(info);
+    }
     @DeleteMapping("deleteRoom/{idroom}")
     @ResponseBody
     public ResponseEntity<Boolean> deleteRoom(@PathVariable String idroom){
@@ -217,6 +236,75 @@ public class RoomController {
         } else {
             return ResponseEntity.ok(false);
         }
-     }
+    }
+    @PostMapping("/setup-pin")
+    @ResponseBody
+    public ResponseEntity<?> setupRoomPIN(
+            @RequestParam String IDRoom,
+            @RequestParam String newPIN) {
+        try {
+            boolean result = roomService.setupPIN(IDRoom, newPIN);
+            if (result) {
+                return ResponseEntity.ok(true);
+            }
+            return ResponseEntity.badRequest().body(false);
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(Collections.singletonMap("error", e.getMessage()));
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("error", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.singletonMap("error", "An unexpected error occurred."));
+        }
+    }
+
+    @PostMapping("/forgotPIN")
+    @ResponseBody
+    public ResponseEntity<?> checkEmail(@RequestParam String email) {
+        Information info = informationService.getByEmail(email).get();
+
+        if (info == null) {
+//            model.addAttribute("errorMessage", "This email is not registered in the system");
+            return ResponseEntity.ok(-1);
+        } else {
+
+            try {
+
+                Random random = new Random();
+                // Sinh số ngẫu nhiên trong khoảng từ 1000000 đến
+
+                long YourCode = 100000 + random.nextInt(900000);
+
+
+                sendEmailService.sendCodeOTPChangePIN(info.getEmail(), Long.toString(YourCode));
+//                model.addAttribute("successMessage", "We will send code to your mail");
+                return ResponseEntity.ok(YourCode);
+            } catch (MessagingException e) {
+//                model.addAttribute("errorMessage", "Error sending email, please wait");
+            }
+            return ResponseEntity.ok(-1);
+
+        }
+    }
+    @GetMapping("/getRoom")
+    @ResponseBody
+    public ResponseEntity<?> getRoom(@RequestParam String IDRoom) {
+        try {
+            // Tìm phòng dựa trên IDRoom
+            Room room = null;
+            room = roomService.getRoomByID(IDRoom) ;
+
+            if (room != null) {
+                return ResponseEntity.ok(room); // Trả về thông tin phòng nếu tìm thấy
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(Collections.singletonMap("error", "Room not found with ID: " + IDRoom));
+            }
+        } catch (Exception e) {
+            // Xử lý các trường hợp lỗi bất ngờ
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.singletonMap("error", "An unexpected error occurred."));
+        }
+    }
+
 
 }
