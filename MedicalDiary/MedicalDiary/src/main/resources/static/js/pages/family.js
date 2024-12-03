@@ -224,7 +224,7 @@ function validateForm() {
             </td>
             <td>${newRecordData.information.cccd}</td>
             <td>${newRecordData.information.name}</td>
-            <td>${newRecordData.information.gender ? 'Nam' : 'Nữ'}</td>
+            <td>${newRecordData.information.gender ? 'Male' : 'Female'}</td>
             <td>${newRecordData.information.job}</td>
             <td>${newRecordData.information.department}</td>
             <td>${newRecordData.information.address}</td>

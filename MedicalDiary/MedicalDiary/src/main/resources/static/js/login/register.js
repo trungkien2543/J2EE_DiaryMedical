@@ -32,6 +32,7 @@ function resetForm() {
     document.getElementById('BHYT').value = ''; // Reset Health Insurance
     document.getElementById('Phone').value = ''; // Reset Phone
     document.getElementById('Job').value = ''; // Reset Job
+    document.getElementById('Email').value = '';
     document.getElementById('Department').value = ''; // Reset Department
     document.getElementById('Address').value = ''; // Reset Address
     document.getElementById('Medical_History').value = ''; // Reset Medical History
@@ -67,6 +68,10 @@ function renderMembers(members) {
             <td>
                 <div>${member.bhyt}</div>
                 <input type="hidden" name="familyMembers[${index}].bhyt" value="${member.bhyt}" />
+            </td>
+            <td>
+                <div>${member.email}</div>
+                <input type="hidden" name="familyMembers[${index}].email" value="${member.email}" />
             </td>
             <td>
                 <div>${member.phone}</div>
@@ -205,6 +210,7 @@ function editInfo (id){
             document.getElementById('BHYT').value = member.bhyt
             document.getElementById('Phone').value = member.phone
             document.getElementById('Job').value = member.job
+            document.getElementById('Email').value = member.email
             document.getElementById('Department').value = member.department
             document.getElementById('Address').value = member.address
             document.getElementById('Medical_History').value = member.medicalHistory
@@ -258,6 +264,7 @@ function GetandCheck() {
         bhyt: document.getElementById('BHYT').value,
         phone: document.getElementById('Phone').value,
         job: document.getElementById('Job').value,
+        email: document.getElementById('Email').value,
         department: document.getElementById('Department').value,
         address: document.getElementById('Address').value,
         medicalHistory: document.getElementById('Medical_History').value
@@ -277,10 +284,18 @@ function GetandCheck() {
         return null;
     }
 
-    if (member.phone.length !== 10) {
-        showError('Phone number must be 10 digits');
+    if (member.phone.length !== 10 || member.phone[0] !== '0') {
+        showError('Phone number must be 10 digits and start with 0');
         return null;
     }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(member.email)) {
+        showError('Invalid email format. Please enter a valid email address.');
+        return null;
+    }
+
 
     // Kiểm tra trùng lặp trong danh sách
     if (checkDuplicate(member, membersList) || checkDuplicate(member, membersRegister)) {
@@ -315,6 +330,12 @@ function checkDuplicate(member, list) {
             showError('Phone number has already been used');
             return true;
         }
+
+        if (memberInList.email === member.email){
+            showError('Email number has already been used');
+            return true;
+        }
+
     }
     return false;
 }
