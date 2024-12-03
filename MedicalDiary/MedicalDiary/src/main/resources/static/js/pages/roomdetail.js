@@ -320,7 +320,7 @@ $(document).on("click","#btn-updates",function (e){
             gender: parseInt($("#Gender").val(), 10),
             bhyt: $("#BHYT").val(),
             phone: $("#Phone").val(),
-            phone: $("#Email").val(),
+            email: $("#Email").val(),
             job: $("#Job").val(),
             department: $("#Department").val(),
             address: $("#Address").val(),

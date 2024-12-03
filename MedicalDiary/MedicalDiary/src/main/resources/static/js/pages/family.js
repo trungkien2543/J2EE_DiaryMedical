@@ -304,7 +304,7 @@ function validateForm() {
                         contentType: 'application/json', // Đảm bảo rằng bạn đã chỉ định đúng contentType
                         dataType: "json", // Thêm header để server biết đây là JSON
                         data: {
-                            email: $("#Email").val(),
+                            Email: $("#Email").val(),
                         }, // Gửi dữ liệu dưới dạng JSON
                         success: function (is_exists_email) {
                             if(!is_exists_email){
