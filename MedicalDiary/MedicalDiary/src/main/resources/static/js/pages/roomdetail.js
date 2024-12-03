@@ -23,7 +23,6 @@ function validationAdd(){
     }
     return isValid;
 }
-
 $(document).on("click", ".room-detail-element", function () {
     let cccd = $(this).data("id");
     $("#titleModal").text("View member details");
@@ -105,7 +104,6 @@ function clearInputFields() {
     $("#namefml").val("");
     $("#IDFamily").val("").prop("disabled",true);
 }
-
 $(document).on("click",".room-detail-add",function (){
     clearInputFields();
     $("#CCCD").attr("placeholder", "Enter your CCCD");
@@ -126,6 +124,7 @@ $("#CCCD").on("keydown", function(event) {
             },
             dataType: "json",
             success: function (response) {
+                console.log(response);
                 console.log(response);
                 // Cập nhật giá trị cho các trường thông tin
                 $("#CCCD").val(response.cccd);
@@ -434,8 +433,8 @@ $(document).on("click", ".room-resend-element", function (e) {
                 success: function (response) {
                     // Handle successful deletion
                     Swal.fire({
-                        title: 'Deleted!',
-                        text: 'The person you follow has been deleted.',
+                        title: 'Request has been sent!',
+                        text: 'The person you are following is being sent a request back',
                         icon: 'success',
                         confirmButtonText: 'OK'
                     }).then(() => {
@@ -472,25 +471,27 @@ function acceptRequest(button) {
     const idIsFollowed = button.getAttribute("data-isfollowed-cccd");
     var roomDetailId = {
         idroom: idRoom,
-        idisFollowed: idIsFollowed
+        idisFollowed: idIsFollowed,
     };
     console.log(roomDetailId );
     $.ajax({
         url: '/roomdetail/getRoomDetailByID', // The endpoint URL
-        type: 'post',
+        type: 'GET',
         contentType: 'application/json',
-        data: JSON.stringify(roomDetailId),
+        data: {
+            idroom: idRoom,
+            idisFollowed : idIsFollowed
+        },
         success: function(response) {
             // Handle success - you can display the room details or process the response
             console.log('Room Detail:', response);
-            let cccd =response.id.idroom;
-            console.log('Room Detail CCCCD:', cccd);
+            // let cccd =response.id.idroom; //senter
 
             $.ajax({
                 url: '/roomdetail/acceptRequest',
                 type: 'POST',
                 contentType: 'application/json',
-                data: JSON.stringify(response),
+                data: JSON.stringify(roomDetailId),
                 success: function(data) {
                     $(`a.item-message[data-houseowner-cccd="${idRoom}"]`).remove();
                     notify('success', 'Request Accepted', data);
@@ -515,25 +516,29 @@ function cancelRequest(button) {
     const idIsFollowed = button.getAttribute("data-isfollowed-cccd");
     var roomDetailId = {
         idroom: idRoom,
-        idisFollowed: idIsFollowed
+        idisFollowed: idIsFollowed,
+
     };
     console.log(roomDetailId );
     $.ajax({
-        url: '/roomdetail/getRoomDetailByID', // The endpoint URL
-        type: 'post',
+        url: './roomdetail/getRoomDetailByID', // The endpoint URL
+        type: 'GET',
         contentType: 'application/json',
-        data: JSON.stringify(roomDetailId),
+        data: {
+            idroom: idRoom,
+            idisFollowed : idIsFollowed
+        },
         success: function(response) {
             // Handle success - you can display the room details or process the response
             console.log('Room Detail:', response);
-            let cccd =response.id.idroom;
-            console.log('Room Detail CCCCD:', cccd);
+            // let cccd =response.id.idroom;
+            // console.log('Room Detail CCCCD:', cccd);
 
             $.ajax({
                 url: '/roomdetail/cancelRequest',
                 type: 'POST',
                 contentType: 'application/json',
-                data: JSON.stringify(response),
+                data: JSON.stringify(roomDetailId),
                 success: function(data) {
                     $(`a.item-message[data-houseowner-cccd="${idRoom}"]`).remove();
                     notify('success', 'Request Accepted', data);

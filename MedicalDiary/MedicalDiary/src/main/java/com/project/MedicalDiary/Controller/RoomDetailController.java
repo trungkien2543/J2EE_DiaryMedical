@@ -1,6 +1,7 @@
 package com.project.MedicalDiary.Controller;
 
 import com.project.MedicalDiary.DTO.InformationRequestDTO;
+import com.project.MedicalDiary.DTO.RoomDetailDTO;
 import com.project.MedicalDiary.DTO.RoomDetailRequestDTO;
 import com.project.MedicalDiary.Entity.*;
 import com.project.MedicalDiary.Service.ImpInterface.*;
@@ -173,11 +174,21 @@ public class RoomDetailController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete family member.");
         }
     }
+    public RoomDetailDTO convertToDTO(RoomDetail roomDetail) {
+        return new RoomDetailDTO(
+                roomDetail.getID().getIDRoom(),
+                roomDetail.getID().getIDisFollowed(),
+                roomDetail.getStatus()
+        );
+    }
     @RequestMapping(value = "getRoomDetailByID",method = {RequestMethod.POST,RequestMethod.PUT ,RequestMethod.GET})
     @ResponseBody
-    public ResponseEntity<?> getRoomDetailByID(@RequestBody RoomDetailId roomDetailId) {
+    public ResponseEntity<?> getRoomDetailByID(@RequestParam String idroom,@RequestParam String idisFollowed) {
 
-        Optional<RoomDetail> optionalRoomDetail = roomDetailService.findRoomDetailById(roomDetailId);
+        RoomDetailId roomDetailId = new RoomDetailId();
+        roomDetailId.setIDRoom(idroom);
+        roomDetailId.setIDisFollowed(idisFollowed);
+        Optional<RoomDetail> optionalRoomDetail = roomDetailService.getRoomDetail(idroom,idisFollowed);
         if (optionalRoomDetail.isPresent()) {
             return ResponseEntity.ok(optionalRoomDetail.get());
         } else {
@@ -188,12 +199,12 @@ public class RoomDetailController {
     // New methods for accepting and canceling requests
     @RequestMapping(value = "acceptRequest",method = {RequestMethod.POST,RequestMethod.PUT ,RequestMethod.GET})
     @ResponseBody
-    public ResponseEntity<String> acceptRequest(@RequestBody RoomDetail roomDetail, HttpSession session) {
+    public ResponseEntity<String> acceptRequest(@RequestBody RoomDetailId  roomDetailId, HttpSession session) {
         String roomId = (String) session.getAttribute("IDRoom");
 //        String idIsFollowed = request.getCCCDAccept();
-        System.out.println(roomDetail);
+        System.out.println(roomDetailId);
         try {
-            roomDetailService.updateStatus(roomDetail.getID().getIDRoom(),  roomId, 1); // 1 for accepted
+            roomDetailService.updateStatus(roomDetailId.getIDRoom(),  roomId, 1); // 1 for accepted
             return ResponseEntity.ok("Request accepted successfully.");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to accept request.");
@@ -202,11 +213,11 @@ public class RoomDetailController {
 
     @PostMapping("/cancelRequest")
     @ResponseBody
-    public ResponseEntity<String> cancelRequest(@RequestBody RoomDetail roomDetail,HttpSession session) {
+    public ResponseEntity<String> cancelRequest(@RequestBody RoomDetailId  roomDetailId,HttpSession session) {
         String roomId = (String) session.getAttribute("IDRoom");
 
         try {
-            roomDetailService.updateStatus(roomDetail.getID().getIDRoom(), roomId, -1); // -1 for canceled
+            roomDetailService.updateStatus(roomDetailId.getIDRoom(), roomId, -1); // -1 for canceled
             return ResponseEntity.ok("Request canceled successfully.");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to cancel request.");

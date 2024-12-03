@@ -3,6 +3,8 @@ package com.project.MedicalDiary.Config;
 
 import com.cloudinary.Cloudinary;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.project.MedicalDiary.Service.OAuth.CustomUserDetailsService;
 import com.project.MedicalDiary.Service.Imp.AccountServiceImp;
@@ -55,6 +57,7 @@ public class WebConfig {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule()); // Đăng ký module JavaTimeModule
         objectMapper.findAndRegisterModules(); // Đảm bảo tìm kiếm và đăng ký tất cả các module cần thiết
+        objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false); // Bỏ qua lỗi Bean rỗng
         return objectMapper;
     }
 
