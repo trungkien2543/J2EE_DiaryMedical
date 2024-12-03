@@ -158,7 +158,7 @@ function validateFormReceipt() {
 
     // Validate Department
     if ($("#remind").val() === "") {
-        $("#remind").after("<div class='invalid-feedback'>Please enter your doctor's diagnosis</div>");
+        $("#remind").after("<div class='invalid-feedback'>Please enter your doctor's remind</div>");
         $("#remind").addClass("is-invalid");
         isValid = false;
     } else {
