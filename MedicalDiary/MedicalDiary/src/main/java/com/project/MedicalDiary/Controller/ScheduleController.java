@@ -16,6 +16,7 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -23,6 +24,8 @@ import java.util.*;
 @Controller
 @RequiredArgsConstructor
 public class ScheduleController {
+
+    private Set<String> usedColors = new HashSet<>();
 
     @Autowired
     private ReceiptServiceImp rSe;
@@ -132,7 +135,7 @@ public class ScheduleController {
 
 
     @PostMapping("/schedule")
-    public String submitPin(@RequestParam("pin") String pin, @RequestParam("cccd") String cccd, HttpSession session) {
+    public String submitPin(@RequestParam("pin") String pin, @RequestParam("cccd") String cccd, HttpSession session, RedirectAttributes redirectAttributes) {
         Information ifor = iSe.getByCCCD(cccd);
         if (roSe.comparePin(pin, cccd)) {
             Map<String, List<Map<String, Object>>> userInfoMap =
@@ -160,17 +163,26 @@ public class ScheduleController {
             // Sử dụng put để thêm vào cuối
             userInfoMap.put(cccd, memberInfoList);
             session.setAttribute("userInfoMap", userInfoMap);
+            redirectAttributes.addFlashAttribute("success", "Mã PIN đã được xác nhận thành công!");
+        }
+        else {
+            // Nếu mã PIN không đúng, thêm thông báo lỗi vào RedirectAttributes
+            redirectAttributes.addFlashAttribute("error", "Mã PIN không chính xác. Vui lòng thử lại.");
         }
         return "redirect:/schedule";
     }
     private String getRandomColor() {
         Random random = new Random();
-        int r = random.nextInt(256);
-        int g = random.nextInt(256);
-        int b = random.nextInt(256);
-        return String.format("#%02x%02x%02x", r, g, b);
+        String color;
+        do {
+            int r = random.nextInt(256);
+            int g = random.nextInt(256);
+            int b = random.nextInt(256);
+            color = String.format("#%02x%02x%02x", r, g, b);
+        } while (usedColors.contains(color)); // Kiểm tra xem màu đã tồn tại hay chưa
+        usedColors.add(color); // Lưu màu vào tập hợp để tránh trùng lặp
+        return color;
     }
-
 
     @PostMapping("/getReceiptInfo")
     public ResponseEntity<Receipt> getReceiptInfo(@RequestBody Map<String, String> request) {
@@ -205,7 +217,7 @@ public class ScheduleController {
                 // Tạo sự kiện chính (không phải follow-up)
                 Map<String, Object> event = new HashMap<>();
                 event.put("groupId", t.getIDReceipt());
-                event.put("title", t.getTreat());
+                event.put("title", t.getDiagnosis());
                 event.put("start", t.getDate().toString());
                 event.put("extendedProps", Map.of("followUp", false));  // Cách viết ngắn gọn hơn
 

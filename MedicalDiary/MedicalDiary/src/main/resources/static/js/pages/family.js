@@ -21,7 +21,7 @@ $(document).on("click", ".family-detail", function () {
             $("#HoTen").val(response.name);
             $("#HoTen").prop("disabled", true);
             // Cập nhật giới tính trong select
-            if (response.gender === 1) {
+            if (response.gender === true) {
                 $("#Gender").val(1); // Nam
             } else {
                 $("#Gender").val(0); // Nữ
@@ -365,8 +365,9 @@ function validateForm() {
                 $("#CCCD").prop("disabled", true);
                 $("#HoTen").val(response.name);
                 $("#HoTen").prop("disabled", false);
+                console.log(response.gender)
                 // Cập nhật giới tính trong select
-                if (response.gender === 1) {
+                if (response.gender === true) {
                     $("#Gender").val(1); // Nam
                 } else {
                     $("#Gender").val(0); // Nữ

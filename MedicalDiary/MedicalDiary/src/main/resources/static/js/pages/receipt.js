@@ -129,6 +129,16 @@ function validateFormReceipt() {
         $("#datetime").removeClass("is-invalid");
     }
 
+    // Validate Gender (required, valid selection)
+    if ( ($("#dateVisit").val() !== "" && $("#dateVisit").val() !== null) && !CheckDateVisitAnDateExamine($("#dateVisit").val(),$("#datetime").val() ) ) {
+
+        $("#dateVisit").after("<div class='invalid-feedback'>Please enter the visit date that is after the examining date.</div>");
+        $("#dateVisit").addClass("is-invalid");
+        isValid = false;
+    } else {
+        $("#datetime").removeClass("is-invalid");
+    }
+
     // Validate Phone (numeric only)
     if ($("#reason").val() === "") {
         $("#reason").after("<div class='invalid-feedback'>Please enter the reason for going to the doctor</div>");
@@ -158,7 +168,7 @@ function validateFormReceipt() {
 
     // Validate Department
     if ($("#remind").val() === "") {
-        $("#remind").after("<div class='invalid-feedback'>Please enter your doctor's diagnosis</div>");
+        $("#remind").after("<div class='invalid-feedback'>Please enter your doctor's remind</div>");
         $("#remind").addClass("is-invalid");
         isValid = false;
     } else {
@@ -183,6 +193,19 @@ function validateFormReceipt() {
     }
 
     return isValid;
+}
+
+function CheckDateVisitAnDateExamine(DateVist, DateExamine){
+
+    let VisitDateObj = new Date(DateVist);
+    let ExamineDateObj = new Date(DateExamine);
+
+
+    if (VisitDateObj > ExamineDateObj) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 
@@ -360,6 +383,11 @@ $(document).on("click","#btnSubmitReceipt",function (e){
                             text: 'This receipt is added successfully',
                             icon: 'success',
                             confirmButtonText: 'OK'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // Nếu người dùng nhấn "OK", tải lại trang
+                                location.reload();
+                            }
                         });
                         closeReceiptModal();
                     }, 500); // Đợi một chút để hoàn thành hiệu ứng
@@ -559,6 +587,11 @@ $(document).on("click","#btnEditReceipt",function (e){
                             text: 'This receipt is added successfully',
                             icon: 'success',
                             confirmButtonText: 'OK'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // Nếu người dùng nhấn "OK", tải lại trang
+                                location.reload();
+                            }
                         });
                         closeReceiptModal();
                     }, 500); // Đợi một chút để hoàn thành hiệu ứng
