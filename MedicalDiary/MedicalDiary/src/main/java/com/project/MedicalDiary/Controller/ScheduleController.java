@@ -24,6 +24,8 @@ import java.util.*;
 @RequiredArgsConstructor
 public class ScheduleController {
 
+    private Set<String> usedColors = new HashSet<>();
+
     @Autowired
     private ReceiptServiceImp rSe;
 
@@ -165,12 +167,16 @@ public class ScheduleController {
     }
     private String getRandomColor() {
         Random random = new Random();
-        int r = random.nextInt(256);
-        int g = random.nextInt(256);
-        int b = random.nextInt(256);
-        return String.format("#%02x%02x%02x", r, g, b);
+        String color;
+        do {
+            int r = random.nextInt(256);
+            int g = random.nextInt(256);
+            int b = random.nextInt(256);
+            color = String.format("#%02x%02x%02x", r, g, b);
+        } while (usedColors.contains(color)); // Kiểm tra xem màu đã tồn tại hay chưa
+        usedColors.add(color); // Lưu màu vào tập hợp để tránh trùng lặp
+        return color;
     }
-
 
     @PostMapping("/getReceiptInfo")
     public ResponseEntity<Receipt> getReceiptInfo(@RequestBody Map<String, String> request) {
@@ -203,7 +209,7 @@ public class ScheduleController {
                 // Tạo sự kiện chính (không phải follow-up)
                 Map<String, Object> event = new HashMap<>();
                 event.put("groupId", t.getIDReceipt());
-                event.put("title", t.getTreat());
+                event.put("title", t.getDiagnosis());
                 event.put("start", t.getDate().toString());
                 event.put("extendedProps", Map.of("followUp", false));  // Cách viết ngắn gọn hơn
 
