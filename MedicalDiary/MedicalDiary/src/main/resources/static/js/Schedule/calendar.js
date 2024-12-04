@@ -410,3 +410,72 @@ function sendSelectedValuesToController(selectedValues, action, changedValue) {
         console.error("Error handling response:", error);
     });
 }
+
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const exportExcelBtn = document.getElementById('exportExcelBtn');
+
+        exportExcelBtn.addEventListener('click', function () {
+            if (selectedCheckboxValues.length === 0) {
+                alert('No items selected to export!');
+                return;
+            }
+
+            // Gửi danh sách idReceipt đến server
+            fetch('/exportReceipts', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(selectedCheckboxValues),
+            })
+            .then(response => response.json())
+            .then(receiptDetails => {
+                // Tạo một Workbook mới
+                console.log('Dữ liệu nhận được:', receiptDetails);
+                console.log('Số lượng dữ liệu:', receiptDetails.length);
+                const workbook = XLSX.utils.book_new();
+
+
+                selectedCheckboxValues.forEach((id, index) => {
+
+                    const receiptData = receiptDetails.filter(receipt => receipt.patient.cccd === id);
+                    console.log("ReceiptDATA :",receiptData);
+
+                    const data = receiptData.map((receipt, index) => ({
+                            Index: index + 1,
+                            ReceiptID: receipt.IDReceipt,
+                            NamePatient: receipt.patient.name,
+                            NameDoctor: receipt.doctor.name,
+                            Place: receipt.place,
+                            Date: receipt.date,
+                            Reason: receipt.reason,
+                            Diagnosis: receipt.diagnosis,
+                            Treat: receipt.treat,
+                            Remind: receipt.remind,
+                            DateVisit: receipt.dateVisit,
+                            BloodPressure: receipt.bloodPressure,
+                            Weight: receipt.weight,
+                            Height: receipt.height,
+                            HeartRate: receipt.heartRate,
+                            Temperature: receipt.temperature
+                    }));
+
+                    // Tạo một sheet với tên là idReceipt
+                    const worksheet = XLSX.utils.json_to_sheet(data);
+
+                    // Thêm sheet vào Workbook
+                    XLSX.utils.book_append_sheet(workbook, worksheet, receiptData[0].patient.name);
+                });
+
+                // Xuất file Excel
+                const excelFileName = 'Receipts.xlsx';
+                XLSX.writeFile(workbook, excelFileName);
+            })
+            .catch(error => {
+                console.error('Error exporting data:', error);
+                alert('Failed to export receipts!');
+            });
+        });
+    });
+

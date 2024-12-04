@@ -121,8 +121,8 @@ function validateForm() {
     $(".invalid-feedback").remove();
 
     // Validate CCCD (required, numeric only, no blanks allowed)
-    if ($("#CCCD").val().trim() === "" || !/^\d+$/.test($("#CCCD").val())) {
-        $("#CCCD").after("<div class='invalid-feedback'>CCCD is required and must contain only numbers</div>");
+    if ($("#CCCD").val().trim() === "" || !/^\d{12}$/.test($("#CCCD").val())) {
+        $("#CCCD").after("<div class='invalid-feedback'>CCCD is mandatory and must contain only numbers and include 12 characters</div>");
         $("#CCCD").addClass("is-invalid"); // Add Bootstrap class for invalid
         isValid = false;
     } else {
@@ -471,7 +471,10 @@ $(document).on("click", "#btn-updates", function (e) {
 
     const newEmail = $("#Email").val();
     const currentCCCD = $("#CCCD").val();
-
+    if (!validateForm()) {
+        console.log("Form validation failed.");
+        return;
+    }
     // Kiểm tra email trùng lặp trước khi gửi dữ liệu cập nhật
     $.ajax({
         type: "get",

@@ -269,4 +269,21 @@ public class ScheduleController {
     }
 
 
+    @PostMapping("/exportReceipts")
+    public ResponseEntity<List<Receipt>> exportReceipts(@RequestBody List<String> idReceipts) {
+        if (idReceipts == null || idReceipts.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        List<Receipt> giveReceipt = new ArrayList<>();
+        for (String id : idReceipts) {
+            System.out.println("ID: " + id);
+            List<Receipt> temp = rSe.getListReceiptByIdPatient(id);
+            System.out.println("Temp: " + temp);
+            giveReceipt.addAll(temp); // Thêm tất cả các phần tử trong temp vào giveReceipt
+        }
+        System.out.println("Toàn bộ dữ liệu giveReceipt: " + giveReceipt);
+        return ResponseEntity.ok(giveReceipt);
+    }
+
+
 }

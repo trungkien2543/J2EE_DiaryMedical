@@ -127,4 +127,8 @@ public Information createInformation(Information information) {
     public Optional<Information> getByEmail(String email) {
         return informationRepository.findByEmail(email);
     }
+    @Override
+    public Boolean updateEmailToNull(String id){
+        return informationRepository.updateEmailToNull(id) > 0;
+    }
 }
