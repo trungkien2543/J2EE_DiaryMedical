@@ -40,5 +40,8 @@ public interface InformationRepository extends JpaRepository<Information, String
     @Query("SELECT i FROM Information i WHERE i.Email = :email")
     Optional<Information> findByEmail(@Param("email") String email);
 
-
+    @Modifying
+    @Transactional
+    @Query("UPDATE Information i SET i.Email = null WHERE i.CCCD = :cccd")
+    int updateEmailToNull(@Param("cccd") String cccd);
 }
