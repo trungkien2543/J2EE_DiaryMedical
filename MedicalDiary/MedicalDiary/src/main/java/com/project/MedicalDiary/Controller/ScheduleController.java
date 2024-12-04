@@ -16,6 +16,7 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -134,7 +135,7 @@ public class ScheduleController {
 
 
     @PostMapping("/schedule")
-    public String submitPin(@RequestParam("pin") String pin, @RequestParam("cccd") String cccd, HttpSession session) {
+    public String submitPin(@RequestParam("pin") String pin, @RequestParam("cccd") String cccd, HttpSession session, RedirectAttributes redirectAttributes) {
         Information ifor = iSe.getByCCCD(cccd);
         if (roSe.comparePin(pin, cccd)) {
             Map<String, List<Map<String, Object>>> userInfoMap =
@@ -162,6 +163,11 @@ public class ScheduleController {
             // Sử dụng put để thêm vào cuối
             userInfoMap.put(cccd, memberInfoList);
             session.setAttribute("userInfoMap", userInfoMap);
+            redirectAttributes.addFlashAttribute("success", "Mã PIN đã được xác nhận thành công!");
+        }
+        else {
+            // Nếu mã PIN không đúng, thêm thông báo lỗi vào RedirectAttributes
+            redirectAttributes.addFlashAttribute("error", "Mã PIN không chính xác. Vui lòng thử lại.");
         }
         return "redirect:/schedule";
     }
