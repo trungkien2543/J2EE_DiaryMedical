@@ -62,7 +62,7 @@ function renderMembers(members) {
                 <input type="hidden" name="familyMembers[${index}].name" value="${member.name}" />
             </td>
             <td>
-                <div>${member.gender === '1' ? 'Nam' : 'Nữ'}</div>
+                <div>${member.gender === '1' ? 'Male' : 'Female'}</div>
                 <input type="hidden" name="familyMembers[${index}].gender" value="${member.gender}" />
             </td>
             <td>

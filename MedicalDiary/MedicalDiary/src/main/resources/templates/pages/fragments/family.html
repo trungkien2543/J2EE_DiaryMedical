@@ -54,8 +54,8 @@
                     <label for="Gender">Gender</label>
                     <select class="form-control" id="Gender" required>
                       <option value="" disabled selected hidden>Chọn giới tính</option>
-                      <option value="0">Male</option>
-                      <option value="1">Female</option>
+                      <option value="1">Male</option>
+                      <option value="0">Female</option>
                     </select>
                     <div class="invalid-feedback">Please select a gender.</div>
                   </div>
@@ -230,7 +230,6 @@
           <tbody>
           <tr th:each="i : ${list}" th:attr="data-id=${i.CCCD}">
             <td th:attr="data-id=${i.CCCD}">
-              <button class="btn btn-datatable btn-icon btn-transparent-dark me-2"><i class='far fa-eye' ></i></button>
               <button class="btn btn-datatable btn-icon btn-transparent-dark me-2" th:onclick="openReceiptModal([[${i.CCCD}]])"><i class='far fa-plus-square' ></i></button>            </td>
             <td th:text="${i.CCCD}"></td>
             <td th:text="${i.Name}"></td>

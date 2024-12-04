@@ -119,7 +119,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             </div>
                         
                         
-                            <div id="receiptModal" class="modal" tabindex="-1" style="display: block; z-index: max()">
+                            <div id="receiptModal" class="modal" tabindex="-1" style="display: none; z-index: max()">
                                 <div class="modal-dialog" style="max-width: 600px;">
                                   <div class="modal-content">
                                     <div class="modal-header">

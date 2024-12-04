@@ -101,9 +101,11 @@ public class FamilyController {
     @ResponseBody
     public ResponseEntity<Information> getDetail(@RequestParam String cccd) {
         System.out.println("Received CCCD: " + cccd); // Debugging log
+
         Optional<Information> informationOptional = informationService.findByCCCD(cccd);
-        System.out.println("Information GETDETAIL: " + informationOptional.get());
+
         if (informationOptional.isPresent()) {
+            System.out.println("Information GETDETAIL: " + informationOptional.get());
             return ResponseEntity.ok(informationOptional.get());
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
