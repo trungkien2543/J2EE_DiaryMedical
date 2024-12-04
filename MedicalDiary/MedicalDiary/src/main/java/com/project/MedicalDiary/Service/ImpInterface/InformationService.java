@@ -14,6 +14,7 @@ public interface InformationService {
     Boolean updateInformation(Information information);
     Boolean deleteInformation(String id);
     Boolean updateIDFamilyToNull(String id);
+    Boolean updateEmailToNull(String id);
     Boolean existsByCCCDAndFamily_IDFamilyNotNull(String CCCD);
     Boolean existsByCCCDAndFamily_IDFamilyNull(String CCCD);
     Boolean existsByCCCD(String CCCD);

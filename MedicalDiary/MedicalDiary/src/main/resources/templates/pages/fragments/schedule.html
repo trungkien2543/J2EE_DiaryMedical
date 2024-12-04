@@ -129,8 +129,35 @@
                 </div>
             </form>
         </div>
+        <th:block>
+            <script th:inline="javascript">
+                document.addEventListener('DOMContentLoaded', function() {
+                    const errorMessage = /*[[${error}]]*/ null;
+                    const successMessage = /*[[${success}]]*/ null;
+
+                    if (errorMessage) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Lỗi',
+                            text: errorMessage,
+                            confirmButtonText: 'OK'
+                        });
+                    }
+
+                    if (successMessage) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Thành Công',
+                            text: successMessage,
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                });
+            </script>
+        </th:block>
     </div>
 </div>
+
 
 
 <script src="../js/Schedule/calendar.js"></script>

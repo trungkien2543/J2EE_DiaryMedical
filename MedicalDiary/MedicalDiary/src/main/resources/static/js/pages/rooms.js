@@ -700,7 +700,6 @@ $(document).ready(function () {
         const newPin = $('#newPinInput').val();
         const confirmNewPin = $('#confirmNewPinInput').val();
         let oldPIN; // Ví dụ, mật khẩu cũ cần thay bằng giá trị thực tế
-
         $.ajax({
             type: "get",
             url: "./rooms/getRoom",
@@ -780,6 +779,9 @@ $(document).ready(function () {
                 console.log(`Verifying OTP: ${otp}`);
                 $('#step-otp').hide();
                 $('#step-new-pin').show();
+
+                $('#newPinInput').val('');
+                $('#confirmNewPinInput').val('');
             } else{
                 notify('danger', 'Message Change Error', 'Incorrect PIN please re-enter');
 

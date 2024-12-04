@@ -178,9 +178,11 @@ public class FamilyController {
         try {
 //            informationService.deleteInformation(id);
             // Set IDFamily to null before deleting the information
-            informationService.updateIDFamilyToNull(id);
+            if(informationService.updateIDFamilyToNull(id))
+                informationService.updateEmailToNull(id);
             return ResponseEntity.ok().body("Family member deleted successfully.");
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete family member.");
         }
     }
