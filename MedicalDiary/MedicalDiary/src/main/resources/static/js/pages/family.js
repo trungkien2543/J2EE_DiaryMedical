@@ -122,7 +122,7 @@ function validateForm() {
 
     // Validate CCCD (required, numeric only, no blanks allowed)
     if ($("#CCCD").val().trim() === "" || !/^\d{12}$/.test($("#CCCD").val())) {
-        $("#CCCD").after("<div class='invalid-feedback'>CCCD is required and must contain only numbers</div>");
+        $("#CCCD").after("<div class='invalid-feedback'>CCCD is mandatory and must contain only numbers and include 12 characters</div>");
         $("#CCCD").addClass("is-invalid"); // Add Bootstrap class for invalid
         isValid = false;
     } else {
