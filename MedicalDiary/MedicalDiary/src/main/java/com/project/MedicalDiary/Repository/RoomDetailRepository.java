@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface RoomDetailRepository extends JpaRepository<RoomDetail, RoomDetailId> {
@@ -32,4 +33,5 @@ public interface RoomDetailRepository extends JpaRepository<RoomDetail, RoomDeta
     Boolean deleteByID_IDRoomAndIsFollowed_CCCD(String idRoom, String idIsFollowed);
     List<RoomDetail> findAllByRoom_IDRoomAndStatus(String IDRoom, int Status);
     Boolean existsByID(RoomDetailId id);
+    Optional<RoomDetail> findByID_IDRoomAndID_IDisFollowed(String IDRoom, String IDisFollowed);
 }

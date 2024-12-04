@@ -1,6 +1,7 @@
 package com.project.MedicalDiary.Entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -11,9 +12,11 @@ import lombok.*;
 @AllArgsConstructor
 @ToString(exclude = "family")
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "information")
 public class Information {
 
+    public static final String EMAIL = "Email";
     @Id
     @Column(name = "CCCD")
     @NotNull(message = "Please enter your identification code")
@@ -46,7 +49,7 @@ public class Information {
     @Column(name = "Medical_History")
     private String MedicalHistory;
 
-    @Column(name = "Email")
+    @Column(name = EMAIL)
     private String Email;
 
     @ManyToOne(fetch = FetchType.EAGER)

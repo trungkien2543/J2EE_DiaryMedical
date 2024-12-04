@@ -2,7 +2,6 @@ package com.project.MedicalDiary.Service.Imp;
 
 import com.project.MedicalDiary.Entity.Family;
 import com.project.MedicalDiary.Entity.Information;
-import com.project.MedicalDiary.Repository.FamilyRepository;
 import com.project.MedicalDiary.Repository.InformationRepository;
 import com.project.MedicalDiary.Service.ImpInterface.FamilyService;
 import com.project.MedicalDiary.Service.ImpInterface.InformationService;
@@ -119,5 +118,13 @@ public Information createInformation(Information information) {
             return true; // Update successful
         }
         return false; // Information does not exist
+    }
+    @Override
+    public boolean existsByEmail(String email) {
+        return informationRepository.existsByEmail(email);
+    }
+    @Override
+    public Optional<Information> getByEmail(String email) {
+        return informationRepository.findByEmail(email);
     }
 }

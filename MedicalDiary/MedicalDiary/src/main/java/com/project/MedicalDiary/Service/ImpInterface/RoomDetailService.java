@@ -32,4 +32,5 @@ public interface RoomDetailService {
     Boolean existsByRoom_IDRoom(String idRoom);
     Boolean deleteAllByRoom_IDRoom(String idRoom);
     Boolean existsByID(RoomDetailId id);
+    Optional<RoomDetail> getRoomDetail(String IDRoom, String IDisFollowed);
 }

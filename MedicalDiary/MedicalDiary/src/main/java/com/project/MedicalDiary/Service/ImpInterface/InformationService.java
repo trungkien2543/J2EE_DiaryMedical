@@ -18,4 +18,6 @@ public interface InformationService {
     Boolean existsByCCCDAndFamily_IDFamilyNull(String CCCD);
     Boolean existsByCCCD(String CCCD);
     Optional<Information> findByCCCDAndFamily_IDFamilyNot(String CCCD, Long idFamily);
+    boolean existsByEmail(String email);
+    Optional<Information> getByEmail(String email);
 }

@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Random;
@@ -25,6 +27,8 @@ import java.util.Random;
 public class RegisterController {
 
     private Long codeRandom = 0L;
+
+    private LocalDateTime TimeRequest;
 
     String familyName, email, password;
 
@@ -54,7 +58,7 @@ public class RegisterController {
 
         if (codeFromMail != null) {
 
-            if (codeFromMail.equals(codeRandom)) {
+            if (codeFromMail.equals(codeRandom) && Duration.between(TimeRequest, LocalDateTime.now()).toMinutes() <= 3) {
                 // Tạo gia đình mới
                 Family familyNew = familyServiceImp.createFamily(new Family(familyName));
 
@@ -81,31 +85,35 @@ public class RegisterController {
 
                 password = "";
 
+                return  "login";
+
             }else{
                 System.out.println(codeFromMail+ " " + codeRandom);
+
                 model.addAttribute("errorMessage", "Your request has expired");
-            }
-            return "login";
 
-        } else {
-            ArrayList<Information> temp = (ArrayList<Information>) informationServiceImp.getAll();
-
-            familyMembers = new ArrayList<>();
-
-
-            // Kiểm tra xem dữ liệu có tồn tại không
-            if (temp == null || temp.isEmpty()) {
-                System.out.println("No data available in the list");
-            } else {
-                System.out.println("Data in list: " + temp);
             }
 
-            model.addAttribute("list", temp);
-
-            model.addAttribute("familyMemberList", familyMembers);
-
-            return "register.html";
         }
+
+        ArrayList<Information> temp = (ArrayList<Information>) informationServiceImp.getAll();
+
+        familyMembers = new ArrayList<>();
+
+
+        // Kiểm tra xem dữ liệu có tồn tại không
+        if (temp == null || temp.isEmpty()) {
+            System.out.println("No data available in the list");
+        } else {
+            System.out.println("Data in list: " + temp);
+        }
+
+        model.addAttribute("list", temp);
+
+        model.addAttribute("familyMemberList", familyMembers);
+
+        return "register.html";
+
 
 
     }
@@ -132,6 +140,7 @@ public class RegisterController {
             member.setGender(Boolean.valueOf(allParams.get("familyMembers[" + index + "].gender")));
             member.setBHYT(allParams.get("familyMembers[" + index + "].bhyt"));
             member.setPhone(allParams.get("familyMembers[" + index + "].phone"));
+            member.setEmail(allParams.get("familyMembers[" + index + "].email"));
             member.setJob(allParams.get("familyMembers[" + index + "].job"));
             member.setDepartment(allParams.get("familyMembers[" + index + "].department"));
             member.setAddress(allParams.get("familyMembers[" + index + "].address"));
@@ -170,7 +179,11 @@ public class RegisterController {
 
 
             sendEmailService.sendVerifyEmail(email, Long.toString(codeRandom), "Verify Email");
-            model.addAttribute("successMessage", "We will send mail to your mail");
+
+            TimeRequest = LocalDateTime.now();
+
+            model.addAttribute("successMessage", "We will send mail to your mail and you must verify in 3 minutes");
+
         } catch (MessagingException e) {
             model.addAttribute("errorMessage", "Error sending email, please wait");
         }
@@ -185,8 +198,6 @@ public class RegisterController {
 
         model.addAttribute("familyMemberList",familyMembers);
 
-
-//        model.addAttribute("successMessage", "You can use this account for login");
 
 
         return "/register";

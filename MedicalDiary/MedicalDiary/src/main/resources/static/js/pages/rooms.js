@@ -1,3 +1,48 @@
+Notify = function(text, callback, close_callback, style) {
+
+    var time = '10000';
+    var $container = $('#notifications');
+    var icon = '<i class="fa fa-info-circle "></i>';
+
+    if (typeof style == 'undefined' ) style = 'warning'
+
+    var html = $('<div class="alert alert-' + style + '  hide">' + icon +  " " + text + '</div>');
+
+    $('<a>',{
+        text: '×',
+        class: 'button close',
+        style: 'padding-left: 10px;',
+        href: '#',
+        click: function(e){
+            e.preventDefault()
+            close_callback && close_callback()
+            remove_notice()
+        }
+    }).prependTo(html)
+
+    $container.prepend(html)
+    html.removeClass('hide').hide().fadeIn('slow')
+
+    function remove_notice() {
+        html.stop().fadeOut('slow').remove()
+    }
+
+    var timer =  setInterval(remove_notice, time);
+
+    $(html).hover(function(){
+        clearInterval(timer);
+    }, function(){
+        timer = setInterval(remove_notice, time);
+    });
+
+    html.on('click', function () {
+        clearInterval(timer)
+        callback && callback()
+        remove_notice()
+    });
+
+
+}
 function validateFormChangPIN() {
     let isValid = true;
 
@@ -274,11 +319,9 @@ $(document).on('click','#btn-update-room',function (){
                                 text: 'PIN has been changed successfully!',
                                 icon: 'success',
                                 confirmButtonText: 'OK'
-                            })
-                                .then( () =>{
+                            }).then( () =>{
                                         $("#AddRoomsModal").modal("hide");
-                                }
-                                );
+                            });
 
                         },
                         error: function (jqXHR, textStatus, errorThrown) {
@@ -348,6 +391,8 @@ function checkComfirmPIN() {
 $(document).on('click','.join-room',function (){
     let name = $(this).data("name");
     $('#btn-join-room').data("id", $(this).data("id"));
+    $('#forgot').data("email", $(this).data("email"));
+    $('#forgot').data("id", $(this).data("id"));
     InputFirldsJoin(name);
     $('#btn-save-room, #btn-update-room').hide();
     $('#btn-join-room').show();
@@ -504,3 +549,258 @@ $(document).on('click',".delete-room",function (e) {
         }
     });
 });
+
+function resetForgotPinModal() {
+    // Reset all input fields
+    $('#emailInput').val('');
+    // $('#otpInput').val('');
+    $('#newPinInput').val('');
+    $('#confirmNewPinInput').val('');
+    $('#otp-1, #otp-2, #otp-3, #otp-4, #otp-5, #otp-6').val('');
+
+    // Reset step visibility
+    $('#step-email').show();
+    $('#step-otp').hide();
+    $('#step-new-pin').hide();
+}
+$('#ForgotPinModal').on('hidden.bs.modal', function () {
+    resetForgotPinModal();
+});
+
+$('#ForgotPinModal').on('show.bs.modal', function () {
+    resetForgotPinModal();
+});
+// Restrict input to numeric values only
+$(document).on('input', '#newPinInput, #confirmNewPinInput', function () {
+    let value = $(this).val();
+    // Replace any non-numeric characters
+    $(this).val(value.replace(/\D/g, ''));
+});
+document.getElementById('forgot').addEventListener('click', function () {
+    $('#ForgotPinModal').modal('show');
+    $('#AddRoomsModal').modal('hide');
+});
+$(document).ready(function () {
+    $('.toggle-password').on('click', function () {
+        const target = $(this).data('target'); // Lấy id của input cần toggle
+        const input = $(target);
+        const icon = $(this).find('i');
+
+        // Chuyển đổi giữa type "password" và "text"
+        if (input.attr('type') === 'password') {
+            input.attr('type', 'text');
+            icon.removeClass('fa-eye').addClass('fa-eye-slash'); // Đổi biểu tượng
+        } else {
+            input.attr('type', 'password');
+            icon.removeClass('fa-eye-slash').addClass('fa-eye'); // Đổi biểu tượng
+        }
+    });
+});
+
+$(document).ready(function () {
+    $(".otp-box").on("input", function () {
+        const $current = $(this);
+        const $next = $current.next(".otp-box");
+        const $prev = $current.prev(".otp-box");
+
+        // Chỉ cho phép nhập số, xóa các ký tự không hợp lệ
+        this.value = this.value.replace(/[^0-9]/g, "");
+
+        // Chuyển sang ô tiếp theo nếu nhập xong
+        if ($current.val().length == $current.attr("maxlength")) {
+            $next.focus();
+        }
+
+        // Quay lại ô trước nếu nhấn Backspace và ô hiện tại rỗng
+        $current.on("keydown", function (event) {
+            if (event.key === "Backspace" && $current.val() === "") {
+                $prev.focus();
+            }
+        });
+    });
+
+    // Ngăn nhập các ký tự không phải số
+    $(".otp-box").on("keydown", function (event) {
+        // Các phím được phép: Backspace, Tab, Delete, mũi tên
+        const allowedKeys = ["Backspace", "Tab", "ArrowLeft", "ArrowRight", "Delete"];
+        if (
+            allowedKeys.includes(event.key) || // Cho phép phím đặc biệt
+            (event.key >= "0" && event.key <= "9") // Cho phép số
+        ) {
+            return; // Không ngăn chặn
+        }
+
+        // Ngăn các phím khác
+        event.preventDefault();
+    });
+});
+var YourCode = -1;
+
+$(document).ready(function () {
+    const $stepEmail = $('#step-email');
+    const $stepOtp = $('#step-otp');
+    const $stepNewPin = $('#step-new-pin');
+
+    const $btnSendOtp = $('#btn-send-otp');
+    const $btnVerifyOtp = $('#btn-verify-otp');
+    const $btnSaveNewPin = $('#btn-save-new-pin');
+    let IDRoomisCCCD;
+
+    // Xử lý sự kiện khi bấm nút Gửi OTP
+    $btnSendOtp.on('click', function () {
+        const email = $('#emailInput').val();
+        let emailOwner = $('#forgot').data("email");
+        IDRoomisCCCD = $('#forgot').data("id");
+        let isValid = true;
+        if (validateEmail(email)) {
+            // Gửi yêu cầu OTP tới backend
+            // Validate Email (format)
+            // $stepEmail.hide();
+            // $stepOtp.show();
+            $("#emailInput").removeClass("is-invalid");
+            $("#emailInput").next(".invalid-feedback").remove();
+            if (!(emailOwner === email)) {
+                $("#emailInput").after("<div class='invalid-feedback'>A valid Email is required</div>");
+                $("#emailInput").addClass("is-invalid");
+                isValid = false;
+            } else {
+                $("#emailInput").removeClass("is-invalid");
+                $("#emailInput").next(".invalid-feedback").remove();
+            }
+            if(isValid){
+                console.log(`Sending OTP to ${email}`);
+                $.ajax({
+                    type: "post",
+                    url: "./rooms/forgotPIN",
+                    data: {
+                        email : email,
+                    },
+                    dataType: "json",
+                    success : function (isExist){
+                        if(isExist !== -1){
+                            $stepEmail.hide();
+                            $stepOtp.show();
+                            YourCode = isExist;
+                            notify('success', 'Send OTP Email', 'OTP has been sent to your email');
+                            console.log(YourCode);
+                        }
+
+                    }
+                });
+
+            }
+
+
+        } else {
+            // Notify("Please enter a valid email!", null, null, 'danger');
+            notify('danger', 'Message Change Error', 'Please enter a valid email!');
+        }
+    });
+    $btnSaveNewPin.on('click', function () {
+        const newPin = $('#newPinInput').val();
+        const confirmNewPin = $('#confirmNewPinInput').val();
+        let oldPIN; // Ví dụ, mật khẩu cũ cần thay bằng giá trị thực tế
+
+        $.ajax({
+            type: "get",
+            url: "./rooms/getRoom",
+            data: {
+                IDRoom: IDRoomisCCCD,
+            },
+            contentType: "application/json",
+            dataType: "json",
+            success: function (response) {
+                oldPIN = response.pin;
+                // Biến lưu mật khẩu cũ - cần có sẵn từ server hoặc frontend
+
+                if (!newPin || !confirmNewPin) {
+                    notify('warning', 'Message Change Error', 'PIN fields cannot be empty!');
+                    return;
+                }
+
+                if (newPin == oldPIN) {
+                    notify('error', 'Invalid PIN', 'New PIN must be different from the old PIN.');
+                    return;
+                }
+
+                if (newPin != confirmNewPin) {
+                    notify('warning', 'Message Change Error', 'PINs do not match!');
+                    return;
+                }
+
+                // Nếu mọi thứ hợp lệ, gửi yêu cầu AJAX
+                $.ajax({
+                    type: "POST",
+                    url: "./rooms/setup-pin",
+                    data: {
+                        IDRoom: IDRoomisCCCD,
+                        newPIN: confirmNewPin,
+                    },
+                    dataType: "json",
+                    success: function (response) {
+                        if (response) {
+                            Swal.fire({
+                                title: 'Success',
+                                text: 'PIN has been changed successfully!',
+                                icon: 'success',
+                                confirmButtonText: 'OK'
+                            }).then(() => {
+                                $("#ForgotPinModal").modal("hide");
+                            });
+                        } else {
+                            notify('error', 'Change Failed', 'Unable to change PIN. Please try again.');
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        notify('error', 'Error', 'An unexpected error occurred.');
+                    }
+                });
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.error("AJAX Error:", textStatus, errorThrown);
+                console.error("Response Text:", jqXHR.responseText);
+            }
+        });
+
+
+    });
+
+
+    // Xử lý sự kiện khi bấm nút Xác minh OTP
+    $('#btn-verify-otp').on('click', function () {
+        // Lấy giá trị OTP từ các ô nhập
+        let otp = '';
+        $('.otp-box').each(function () {
+            otp += $(this).val(); // Ghép giá trị từ từng ô
+        });
+
+        // Kiểm tra độ dài OTP
+        if (otp.length === 6) {
+            if(otp == YourCode){
+                console.log(`Verifying OTP: ${otp}`);
+                $('#step-otp').hide();
+                $('#step-new-pin').show();
+            } else{
+                notify('danger', 'Message Change Error', 'Incorrect PIN please re-enter');
+
+            }
+            // Gửi OTP đến backend để xác minh
+
+        } else {
+            // alert('Please enter a valid 6-digit OTP!');
+            notify('warning', 'Message Change Error', 'Please enter a valid 6-digit OTP!');
+        }
+    });
+
+
+    // Xử lý sự kiện khi bấm nút Lưu PIN mới
+
+
+    // Hàm kiểm tra định dạng email
+    function validateEmail(email) {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(email);
+    }
+});
+
+

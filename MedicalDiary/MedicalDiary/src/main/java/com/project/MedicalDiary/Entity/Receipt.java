@@ -1,6 +1,7 @@
 package com.project.MedicalDiary.Entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,6 +18,7 @@ public class Receipt {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID_Receipt")
+    @JsonProperty("IDReceipt")
     private Long IDReceipt;
 
     @ManyToOne

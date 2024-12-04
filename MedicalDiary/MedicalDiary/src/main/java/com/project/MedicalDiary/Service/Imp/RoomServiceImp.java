@@ -4,6 +4,7 @@ import com.project.MedicalDiary.Entity.Information;
 import com.project.MedicalDiary.Entity.Room;
 import com.project.MedicalDiary.Repository.RoomRepository;
 import com.project.MedicalDiary.Service.ImpInterface.RoomService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -90,6 +91,28 @@ public class RoomServiceImp implements RoomService {
         }
         return false;
     }
+    @Override
+    public Boolean setupPIN(String IDRoom, String newPIN) {
+        // Tìm phòng theo IDRoom
+        Optional<Room> roomOptional = roomRepository.findById(IDRoom);
+
+        if (roomOptional.isPresent()) {
+            Room room = roomOptional.get();
+
+            // Kiểm tra nếu phòng chưa có PIN
+            if (!(room.getPIN() == null || room.getPIN().isEmpty())) {
+                room.setPIN(newPIN); // Thiết lập PIN mới
+                roomRepository.save(room); // Lưu thay đổi
+                return true;
+            } else {
+                // Nếu PIN đã tồn tại, không cho phép thiết lập lại
+                throw new IllegalStateException("PIN is already set for this room.");
+            }
+        } else {
+            throw new EntityNotFoundException("Room not found with ID: " + IDRoom);
+        }
+    }
+
 
     @Override
     public Boolean existByIDRoom(String IDRoom) {

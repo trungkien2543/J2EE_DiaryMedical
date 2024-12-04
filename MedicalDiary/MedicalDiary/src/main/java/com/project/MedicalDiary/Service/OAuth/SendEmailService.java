@@ -152,6 +152,59 @@ public class SendEmailService {
         mailSender.send(mimeMessage);
     }
 
+    public void sendCodeOTPChangePIN(String recipient, String otpCode) throws MessagingException {
+        // Create a MIME message
+        MimeMessage mimeMessage = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+
+        // Set the sender, recipient, and subject
+        helper.setFrom(from);
+        helper.setTo(recipient);
+        helper.setSubject("Your OTP Code for PIN Change");
+
+        // HTML content for the email
+        String body = "<!DOCTYPE html>"
+                + "<html lang=\"en\">"
+                + "<head>"
+                + "    <meta charset=\"UTF-8\">"
+                + "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">"
+                + "    <title>OTP for PIN Change</title>"
+                + "    <style>"
+                + "        body { font-family: Arial, sans-serif; background-color: #f8f9fa; margin: 0; padding: 0; }"
+                + "        .email-container { max-width: 600px; margin: 40px auto; background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); padding: 20px; text-align: center; }"
+                + "        .header { background-color: #4caf50; color: #ffffff; padding: 15px; border-radius: 8px 8px 0 0; font-size: 18px; }"
+                + "        .content { padding: 20px; color: #333; font-size: 16px; line-height: 1.6; }"
+                + "        .otp-box { background-color: #e8f5e9; padding: 15px; border-radius: 5px; font-family: \"Courier New\", Courier, monospace; color: #2e7d32; font-size: 20px; font-weight: bold; border: 1px solid #81c784; margin: 20px auto; display: inline-block; }"
+                + "        .footer { font-size: 12px; color: #777; margin-top: 20px; }"
+                + "        .footer a { color: #4caf50; text-decoration: none; }"
+                + "    </style>"
+                + "</head>"
+                + "<body>"
+                + "    <div class=\"email-container\">"
+                + "        <div class=\"header\">"
+                + "            PIN Change Verification Code"
+                + "        </div>"
+                + "        <div class=\"content\">"
+                + "            <p>Dear User,</p>"
+                + "            <p>You requested to change your PIN. Please use the following OTP code to proceed:</p>"
+                + "            <div class=\"otp-box\">" + otpCode + "</div>"
+                + "            <p>This OTP is valid for the next 10 minutes. If you did not request this, please ignore this email.</p>"
+                + "        </div>"
+                + "        <div class=\"footer\">"
+                + "            <p>Thank you,</p>"
+                + "            <p>The Secure Team</p>"
+                + "        </div>"
+                + "    </div>"
+                + "</body>"
+                + "</html>";
+
+        // Set the HTML content for the email
+        helper.setText(body, true);
+
+        // Send the email
+        mailSender.send(mimeMessage);
+    }
+
 
 
 }

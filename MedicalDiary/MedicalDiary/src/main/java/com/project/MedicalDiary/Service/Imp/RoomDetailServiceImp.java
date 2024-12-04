@@ -125,5 +125,8 @@ public class RoomDetailServiceImp implements RoomDetailService {
     public Boolean existsByID(RoomDetailId id) {
         return roomDetailRepository.existsByID(id);
     }
-
+    @Override
+    public Optional<RoomDetail> getRoomDetail(String IDRoom, String IDisFollowed) {
+        return roomDetailRepository.findByID_IDRoomAndID_IDisFollowed(IDRoom, IDisFollowed);
+    }
 }

@@ -81,11 +81,12 @@ document.addEventListener('DOMContentLoaded', function () {
                     return response.json();
                 })
                 .then(data => {
+                    console.log(data)
                     Swal.fire({
                         html: `
                         <div style="display: flex; flex-direction: column; font-size: 16px; padding: 10px;">
                             <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; align-items: start; text-align: justify; padding-left: 20px;">
-                                <p><i class="fas fa-receipt"></i> <strong>Receipt ID:</strong> ${data.idreceipt}</p>
+                                <p><i class="fas fa-receipt"></i> <strong>Receipt ID:</strong> ${data.IDReceipt}</p>
                                 <p><i class="fas fa-user"></i> <strong>Patient:</strong> ${data.patient.name}</p>
                                 <p><i class="fas fa-user-md"></i> <strong>Doctor:</strong> ${data.doctor.name}</p>
                                 <p><i class="fas fa-map-marker-alt"></i> <strong>Place:</strong> ${data.place}</p>
@@ -104,20 +105,134 @@ document.addEventListener('DOMContentLoaded', function () {
                             </div>
                             <div style="display: flex; flex-direction: row; justify-content: space-between; margin-top: 20px;">
                                 <div>
-                                    <p>Hình ảnh kết quả</p>
+                                    <p>Image Result</p>
                                     <img src="${data.urlResult}" alt="Image 1" style="width: 350px; object-fit: cover; border-radius: 8px;">
                                 </div>
                                 <div>
-                                    <p>Hình ảnh thuốc</p>
+                                    <p>Image bill</p>
                                     <img src="${data.urlBill}" alt="Image 2" style="width: 350px; object-fit: cover; border-radius: 8px;">
                                 </div>
                             </div>
+                        
+                            <div class="mb-2 mx-3" style="margin-top: 42px;">
+                                <button class="btn btn-primary family-add" type="button" data-toggle="modal" onclick="openReceiptModal(${data.patient.cccd})">Edit Receipt</button>
+                            </div>
+                        
+                        
+                            <div id="receiptModal" class="modal" tabindex="-1" style="display: none; z-index: max()">
+                                <div class="modal-dialog" style="max-width: 600px;">
+                                  <div class="modal-content">
+                                    <div class="modal-header">
+                                      <h5 class="modal-title">Receipt Form</h5>
+                                      <button type="button" class="btn btn-close" onclick="closeReceiptModal()" aria-label="Close">
+                                        <i class="fas fa-times-circle" style="color: #dc3545; font-size: 1.5rem;"></i>
+                                      </button>
+                        
+                                    </div>
+                                    <div class="modal-body" style="max-height: 85vh; overflow-y: auto;">
+                                      <form id="receiptForm" method="post" enctype="multipart/form-data">
+                                        
+                                        <!-- Input ẩn chứa idReceipt -->
+                                        <input type="hidden" id="idReceipt" name="idReceipt" value="${data.IDReceipt}">
+                                        
+                                        
+                                        <div class="mb-3">
+                                          <label for="idPatient"><strong>Patient ID:</strong></label>
+                                          <input type="text" id="idPatient" name="idPatient" class="form-control" readonly value="${data.patient.cccd}">
+                                        </div>
+                                        <div class="mb-3">
+                                          <label for="idDoctor"><strong>Doctor ID:</strong></label>
+                                          <input type="number" id="idDoctor" name="idDoctor" class="form-control" value="${data.doctor.cccd}">
+                                        </div>
+                                        <div class="mb-3">
+                                          <label for="place"><strong>Place:</strong></label>
+                                          <input type="text" id="place" name="place" class="form-control" readonly value="${data.place}">
+                                        </div>
+                        
+                                        <div class="mb-3">
+                                          <label for="datetime"><strong>Date and Time:</strong></label>
+                                          <input type="datetime-local" id="datetime" name="datetime" class="form-control" value="${data.date}">
+                                        </div>
+                        
+                                        <div class="mb-3">
+                                          <label for="reason"><strong>Reason:</strong></label>
+                                          <input type="text" id="reason" name="idService" class="form-control" value="${data.reason}">
+                                        </div>
+                                        <div class="mb-3">
+                                          <label for="diagnosis"><strong>Diagnosis:</strong></label>
+                                          <textarea id="diagnosis" name="diagnosis" class="form-control" rows="2" >${data.diagnosis}</textarea>
+                                        </div>
+                                        <div class="mb-3">
+                                          <label for="treat"><strong>Treat:</strong></label>
+                                          <input type="text" id="treat" name="treat" class="form-control" value="${data.treat}">
+                                        </div>
+                                        <div class="mb-3">
+                                          <label for="remind"><strong>Remind:</strong></label>
+                                          <input type="text" id="remind" name="remind" class="form-control" value="${data.remind}">
+                                        </div>
+                        
+                                        <div class="row">
+                                          <div class="col-md-6">
+                                          <div class="mb-3">
+                                                <label for="dateVisit"><strong>Date of Visit:</strong></label>
+                                                <input type="datetime-local" id="dateVisit" name="dateVisit" class="form-control" 
+                                                       value="${data.dateVisit}">
+                                            </div>
+    
+                                            <div class="mb-3">
+                                              <label for="weight"><strong>Weight (kg):</strong></label>
+                                              <input type="number" id="weight" name="weight" class="form-control" value="${data.weight}">
+                                            </div>
+                                            <div class="mb-3">
+                                              <label for="height"><strong>Height (cm):</strong></label>
+                                              <input type="number" id="height" name="height" class="form-control" value="${data.height}">
+                                            </div>
+                                          </div>
+                                          <div class="col-md-6">
+                                            <div class="mb-3">
+                                              <label for="bloodPressure"><strong>Blood Pressure:</strong></label>
+                                              <input type="number" id="bloodPressure" name="bloodPressure" class="form-control" value="${data.bloodPressure}">
+                                            </div>
+                                            <div class="mb-3">
+                                              <label for="heartRate"><strong>Heart Rate:</strong></label>
+                                              <input type="number" id="heartRate" name="heartRate" class="form-control" value="${data.heartRate}">
+                                            </div>
+                                            <div class="mb-3">
+                                              <label for="temperature"><strong>Temperature (°C):</strong></label>
+                                              <input type="number" id="temperature" name="temperature" class="form-control" value="${data.temperature}">
+                                            </div>
+                                          </div>
+                                        </div>
+                        
+                                        <div class="mb-3">
+                                          <label for="resultImage"><strong>Result Image:</strong></label>
+                                          <input type="file" id="resultImage" name="resultImage" class="form-control" accept="image/*" onchange="previewImage(event, 'resultPreview')">
+                                          <img id="resultPreview" alt="Preview Result Image" class="img-fluid mt-2" style="display: block; max-height: 200px; border-radius: 8px;"  src="${data.urlResult}">
+                                        </div>
+                                        <div class="mb-3">
+                                          <label for="medicineImage"><strong>Medicine Image:</strong></label>
+                                          <input type="file" id="medicineImage" name="medicineImage" class="form-control" accept="image/*" onchange="previewImage(event, 'medicinePreview')">
+                                          <img id="medicinePreview" alt="Preview Medicine Image" class="img-fluid mt-2" style="display: block; max-height: 200px; border-radius: 8px;"  src="${data.urlBill}">
+                                        </div>
+                                        <div class="text-center mt-4">
+                                          <button type="button" class="btn btn-success" id="btnEditReceipt">Submit</button>
+                                        </div>
+                                      </form>
+                                    </div>
+                                  </div>
+                                </div>
+                            </div>    
                         </div>
-                        `,
-                        confirmButtonText: '<i class="fas fa-check-circle"></i> OK',
-                        confirmButtonColor: '#4CAF50',
+                         `, footer: '<button type="button" class="btn btn-success" id="btnCustomClose">OK</button>',
+                        showConfirmButton: false, // Tắt nút xác nhận mặc định của SweetAlert2
                         background: '#f9f9f9',
                         width: '825px',
+                        didRender: () => {
+                            document.getElementById('btnCustomClose').addEventListener('click', () => {
+                                    Swal.close();
+                                }
+                            );
+                        },
                     });
                 })
                 .catch(error => {
